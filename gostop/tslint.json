@@ -1,4 +1,9 @@
 {
+  "extends": [     
+    "tslint:recommended",     
+    "tslint-config-prettier",    
+     "tslint-config-airbnb"   
+    ],
     "rules": {
       "member-access": false,
       "member-ordering": [
