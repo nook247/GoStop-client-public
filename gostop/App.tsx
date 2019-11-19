@@ -1,7 +1,13 @@
-import React from 'react'
-// import { createStore } from 'redux';
-// import { Provider } from 'react-redux';
-import { StyleSheet, Text, View } from 'react-native'
+import React from 'react';
+import { Text, View, StyleSheet } from 'react-native';
+
+export default function App() {
+  return (
+    <View style={styles.container}>
+      <Text>Open up App.tsx to start working on your app!</Text>
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -10,12 +16,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-})
-
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>up App.tsx to start working on your app!</Text>
-    </View>
-  )
-}
+});
