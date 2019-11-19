@@ -8,7 +8,15 @@
     "jsRules": { 
         "no-unused-expression": true 
     },   
-    "rules": {     
+    "rules": { 
+        "function-name": [
+            true, {   
+                "method-regex": "^\\*?\\[?[a-zA-Z][\\w\\d\\.]*\\]?$",   
+                "private-method-regex": "^\\*?\\[?[a-zA-Z][\\w\\d\\.]*\\]?$",   
+                "protected-method-regex": "^\\*?\\[?[a-zA-Z][\\w\\d\\.]*\\]?$",   
+                "static-method-regex": "^\\*?\\[?[a-zA-Z][\\w\\d\\.]*\\]?$",   
+                "function-regex": "^\\*?\\[?[a-zA-Z][\\w\\d\\.]*\\]?$" }
+        ],
         "max-line-length": [
             true, 130
         ],     
