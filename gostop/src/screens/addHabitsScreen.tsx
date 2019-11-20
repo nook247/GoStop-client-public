@@ -3,21 +3,21 @@ import { Button, Text, View } from 'react-native';
 import { createStackNavigator, createAppContainer } from 'react-navigation';
 import HabitScreen from './HabitScreen';
 import App from '../../App'
+import AddHabit from '../components/AddHabit';
 
 class AddHabitscreen extends React.Component <any, any> {
  render() {
    console.log('addprop',this.props)
   console.log('addkey',this.props.navigation.state.key)
    return (
-     
 <View>
-<Text>
-  habits 추가
+
   <Button
           title="Go back"
           onPress={() => this.props.navigation.goBack(0)}
         />
-</Text>
+        <AddHabit />
+
 </View>
    );
  }

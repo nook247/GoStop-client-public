@@ -7,6 +7,8 @@ import { createStore } from 'redux';
 import reducer from '../reducers/reducer';
 import AddHabitsScreen from './addHabitsScreen';
 import { createStackNavigator, createAppContainer } from 'react-navigation';
+//import Sidebar from '../components/Sidebar';
+import Underbar from '../components/Underbar';
 
 class Habitscreen extends React.Component <any, any> {
  render() {
@@ -20,13 +22,10 @@ class Habitscreen extends React.Component <any, any> {
           <Button
           title='Add habits'
           onPress={() => navigate('AddHabitsScreen')}
-         
           />
         </View>
       <Habits/>
-      <Text>
-        여기에 하단바가 들어갑니다
-      </Text>
+      <Underbar />
       </View>
       </Provider>
    );
