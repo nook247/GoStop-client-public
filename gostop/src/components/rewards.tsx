@@ -1,48 +1,46 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { connect } from 'react-redux';
-import { coinchange, healthchange, pointchange } from '../actions/characterinfoaction';
+import { coinchange } from '../actions/characterinfoaction';
 import fakeserver from '../fakeserver';
 
-export interface Habit {
+export interface Reward {
+  id : number;
+  userId : number;
   title : string;
   desc : string;
-  alarm : boolean;
-  difficulty : number;
-  positive : boolean;
+  coin : number;
 }
 
-interface habitsinfoProps {
-  pointchange(value : number) : void;
+interface rewardsinfoProps {
   coinchange(value : number) : void;
-  healthchange(value : number) : void;
 }
 
-interface habitsStates {
-  habits : Habit[];
+interface rewardsStates {
+  rewards : Reward[];
 }
 
-class Habits extends Component<habitsinfoProps, habitsStates> {
+class Rewards extends Component<rewardsinfoProps, rewardsStates> {
   constructor(props) {
     super(props);
     this.state = {
-      habits : [],
+      rewards : [],
     };
   }
 
   public componentDidMount() {
-    fetch(`${fakeserver}/habits`).then((res) => {
+    fetch(`${fakeserver}/rewards`).then((res) => {
       if (res.status === 200 || res.status === 201) { // 성공을 알리는 HTTP 상태 코드면
         res.json().then(data => {
-          const newhabits = this.state.habits.slice();
+          const newrewards = this.state.rewards.slice();
 
           data.map(elem => {
-            newhabits.push({ title : elem.title, desc : elem.description, alarm : elem.alarm,
-              difficulty : elem.difficulty, positive : elem.positive });
+            newrewards.push({ id : elem.id, userId : elem.userId,
+              title : elem.title, desc : elem.description, coin : elem.coin });
           });
 
           this.setState({
-            habits: newhabits,
+            rewards: newrewards,
           });
         },
 
@@ -57,17 +55,8 @@ class Habits extends Component<habitsinfoProps, habitsStates> {
     return (
             <View style = {styles.container}>
 
-        {this.state.habits.map((item) => {
+        {this.state.rewards.map((item) => {
           return   <View style = {styles.onehabit} key = {item.title}>
-
-          <View style = {styles.positive}>
-          <TouchableOpacity style={{ backgroundColor:'blue' }}
-          onPress = {() => { this.props.pointchange(item.difficulty * 10);
-            this.props.coinchange(item.difficulty * 10);
-          }}>
-              <Text>++</Text>
-            </TouchableOpacity>
-      </View>
 
       <View style = {styles.habits}>
           <Text style = {styles.habittitle}>{item.title}</Text>
@@ -77,12 +66,9 @@ class Habits extends Component<habitsinfoProps, habitsStates> {
 
       <View style = {styles.negative}>
       <TouchableOpacity style={{ backgroundColor:'gray' }}
-      onPress = {() => { this.props.healthchange(item.difficulty * 10); }}>
+      onPress = {() => { this.props.coinchange(-(item.coin)); }}>
           <Text>--</Text>
         </TouchableOpacity>
-      </View>
-      <View>
-        <Text>알람여부{item.alarm}</Text>
       </View>
 
       </View>;
@@ -94,26 +80,13 @@ class Habits extends Component<habitsinfoProps, habitsStates> {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    name : state.changepointreducer.name,
-    healthvalue : state.changepointreducer.healthvalue,
-    pointsvalue : state.changepointreducer.pointsvalue,
-    coinsvalue : state.changepointreducer.coinsvalue,
-    level : state.changepointreducer.level,
-  };
-
-};
-
 const mapDispatchToProps = dispatch => {
   return {
-    pointchange : value => dispatch(pointchange(value)),
     coinchange : value => dispatch(coinchange(value)),
-    healthchange : value => dispatch(healthchange(value)),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Habits);
+export default connect(null, mapDispatchToProps)(Rewards);
 
 const styles = StyleSheet.create({
   container: {

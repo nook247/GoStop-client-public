@@ -1,0 +1,5 @@
+
+export const IMAGE_CHANGE = 'IMAGE_CHANGE';
+export const IMAGE_CHANGE1 = 'IMAGE_CHANGE1';
+export const IMAGE_CHANGE2 = 'IMAGE_CHANGE2';
+export const IMAGE_CHANGE3 = 'IMAGE_CHANGE3';
