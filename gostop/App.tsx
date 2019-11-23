@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import { StyleSheet, Text, View } from 'react-native';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
@@ -15,9 +16,20 @@ export default class App extends Component {
       </View>
       <Item/>
       </Provider>
+
     );
   }
 }
+
+const store = createStore(reducer);
+
+const MainNavigator = createStackNavigator({
+  Home: { screen: HomeScreen },
+  HabitScreen: { screen: HabitScreen },
+  // AddHabitsScreen : { screen : AddHabitsScreen },
+});
+const App = createAppContainer(MainNavigator);
+export default App;
 
 const styles = StyleSheet.create({
   container: {
@@ -33,5 +45,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     margin: 10,
     height: 50,
+
   },
 });
