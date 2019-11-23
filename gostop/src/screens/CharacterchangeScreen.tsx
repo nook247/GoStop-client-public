@@ -14,7 +14,7 @@ class CharacterchangeScreen extends Component<any, any> {
     return (
       // <Provider store = {store} style = {{ width : '100%' }}>
             <View style = {{ borderWidth : 1, borderColor : 'red' }}>
-                <Characterinfo style = {{ flex : 2 }}/>
+                <Characterinfo />
 
                 <TouchableOpacity style={{ backgroundColor:'blue' }}
           onPress = {() => {
