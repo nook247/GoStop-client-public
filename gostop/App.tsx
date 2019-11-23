@@ -1,41 +1,22 @@
 import React, { Component } from 'react';
-import { Button, StyleSheet, View } from 'react-native';
-import AddHabitsScreen from './src/screens/addHabitsScreen';
-import HabitScreen from './src/screens/HabitScreen';
-import { createStore } from 'redux';
-// import Redux from 'redux';
-import reducer from './src/reducers/reducer';
+
+import { StyleSheet, Text, View } from 'react-native';
 import { Provider } from 'react-redux';
-import {createBottomTabNavigator, createAppContainer} from 'react-navigation';
-import {createStackNavigator} from 'react-navigation-stack';
+import { createStore } from 'redux';
+import Item from './src/components/Item';
+import reducers from './src/reducers/index';
 
-interface userState {
-  level : number;
-  healthvalue : number;
-  pointsvalue : number;
-  coinsvalue : number;
-}
-
- // 로그인이 되어 있으면 바로 habit 를 띄운다.
-class HomeScreen extends Component<any, userState> {
-  static navigationOptions = {
-    title: 'Welcome',
-  };
+const store = createStore(reducers);
+export default class App extends Component {
   public render() {
-    console.log('appkey',this.props.navigation.state.key)
-    console.log('home.this.props', this.props)
-    const { navigate } = this.props.navigation;
     return (
-      <Provider store = {store}>
+      <Provider store={store}>
+      <View style={styles.container}>
+        <Text style={styles.welcome}>Item Shop</Text>
+      </View>
+      <Item/>
+      </Provider>
 
-      <View style = {styles.container}>
-      <Button
-      title= 'login ok'
-      onPress={() => navigate('HabitScreen') }
-      />
-    </View>
-
-    </Provider>
     );
   }
 }
@@ -52,8 +33,18 @@ export default App;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    width : '100%',
-    backgroundColor: '#fff',
+    marginTop: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF',
+    width: 300,
+    height: '10%',
+  },
+  welcome: {
+    fontSize: 20,
+    textAlign: 'center',
+    margin: 10,
+    height: 50,
+
   },
 });
