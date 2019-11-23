@@ -7,7 +7,7 @@ const initialState : imageState = {
   uri: 'http://pngimg.com/uploads/cap/cap_PNG5675.png',
 };
 
-import * as types from '../Actions/types';
+import * as types from '../actions/types';
 
 export default function uri(state : imageState = initialState, action) {
   if (action.type === types.IMAGE_CHANGE) {

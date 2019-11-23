@@ -7,7 +7,7 @@ const initialState2 : imageState = {
   uri2: 'http://www.pngnames.com/files/3/Kids-Track-Pants-PNG-HD-Background.png',
 };
 
-import * as types from '../Actions/types';
+import * as types from '../actions/types';
 
 export default function uri2(state : imageState = initialState2, action) {
   if (action.type === types.IMAGE_CHANGE2) {

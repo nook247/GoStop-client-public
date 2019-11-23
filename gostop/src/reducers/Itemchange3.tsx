@@ -7,7 +7,7 @@ const initialState3 : imageState = {
   uri3: 'http://pngimg.com/uploads/pokemon/pokemon_PNG122.png',
 };
 
-import * as types from '../Actions/types';
+import * as types from '../actions/types';
 
 export default function uri3(state : imageState = initialState3, action) {
   if (action.type === types.IMAGE_CHANGE3) {

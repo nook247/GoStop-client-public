@@ -2,37 +2,38 @@ import React, { Component } from 'react';
 import { Button, Image, StyleSheet, Text, View } from 'react-native';
 import { connect } from 'react-redux';
 import { fetchCharacterInfo } from '../actions/characterinfoaction';
+import fakeserver from '../fakeserver';
 
-interface characterinfoProps {
+interface CharacterinfoProps {
+  name : string;
   level : number;
   healthvalue : number;
   pointsvalue : number;
   coinsvalue : number;
-  getcharacterinfo(health : number, point : number, coin : number, level : number): void;
+  getcharacterinfo(name : string, health : number, point : number, coin : number, level : number): void;
 }
 
-class Characterinfo  extends React.Component<characterinfoProps, any> {
+class Characterinfo  extends React.Component<CharacterinfoProps, any> {
+  constructor(props) {
+    super(props);
+  }
+
   public componentDidMount() {
-    fetch('http://localhost:3000/users/1').then((res) => {
+  
+    fetch(`${fakeserver}/users/1`).then((res) => {
       if (res.status === 200 || res.status === 201) { // 성공을 알리는 HTTP 상태 코드면
         res.json().then(data => {
-          console.log('data', data);
-
-          this.props.getcharacterinfo(data.health, data.point, data.coin, data.level);
-
+          this.props.getcharacterinfo(data.name, data.health, data.point, data.coin, data.level);
         },
-
-                ); // 텍스트 출력
+                );
       } else { // 실패를 알리는 HTTP 상태 코드면
         console.error(res.statusText);
       }
     }).catch(err => console.error(err));
 
-    console.log('---------------', this.props);
   }
 
   public render() {
-
     return (
 
             <View style={styles.container}>
@@ -42,7 +43,14 @@ class Characterinfo  extends React.Component<characterinfoProps, any> {
               <Image
           style={styles.image}
           source={{ uri:'https://png.pngtree.com/png-clipart/20190630/original/pngtree-handsome-cartoon-dog-image-cute-dog-png-image_4180965.jpg' }}/>
-                  <View style ={styles.level}>
+           <Image
+          style={styles.image}
+          source={{ uri:'https://png.pngtree.com/png-clipart/20190630/original/pngtree-handsome-cartoon-dog-image-cute-dog-png-image_4180965.jpg' }}/>
+           <Image
+          style={styles.image}
+          source={{ uri:'https://png.pngtree.com/png-clipart/20190630/original/pngtree-handsome-cartoon-dog-image-cute-dog-png-image_4180965.jpg' }}/>
+          <View style={styles.level}><Text>{this.props.name}</Text></View>
+                  <View style={styles.level}>
                       <Text style = {styles.levelText}>level{this.props.level}</Text>
                   </View>
               </View>
@@ -56,20 +64,20 @@ class Characterinfo  extends React.Component<characterinfoProps, any> {
 
                     <View style = {styles.health}>
                     <View style={{ flex:1 }}></View>
-                <Text style = {{ flex : 1, height :10, width : this.props.healthvalue ,
+                <Text style = {{ flex : 1, height :10, width : this.props.healthvalue || 0 ,
                   backgroundColor : 'yellow', justifyContent:'flex-end' }}>health</Text>
                     </View>
 
                 <View style = {styles.points}>
                 <View style={{ flex:1 }}></View>
-                <Text style = {{ flex : 1, height :10, width : this.props.pointsvalue,
+                <Text style = {{ flex : 1, height :10, width : this.props.pointsvalue || 0,
                   backgroundColor : 'yellow', justifyContent:'flex-end' }}>points</Text>
 
                     </View>
 
                     <View style = {styles.coins}>
                     <View style={{ flex:1 }}></View>
-                    <Text style = {{ flex : 1, height : 10, width : this.props.coinsvalue,
+                    <Text style = {{ flex : 1, height : 10, width : this.props.coinsvalue || 0,
                       backgroundColor : 'yellow', justifyContent:'flex-end' }} >coins</Text>
 
                     </View>
@@ -83,21 +91,24 @@ class Characterinfo  extends React.Component<characterinfoProps, any> {
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    getcharacterinfo : (health, point, coin, level) => dispatch(fetchCharacterInfo(health, point, coin, level)),
-  };
-};
+
 
 const mapStateToProps = (state) => {
-
+  console.log(state);
   return {
-    healthvalue : state.healthvalue,
-    pointsvalue : state.pointsvalue,
-    coinsvalue : state.coinsvalue,
-    level : state.level,
+    name : state.changepointreducer.name,
+    healthvalue : state.changepointreducer.healthvalue,
+    pointsvalue : state.changepointreducer.pointsvalue,
+    coinsvalue : state.changepointreducer.coinsvalue,
+    level : state.changepointreducer.level,
   };
 
+};
+
+const mapDispatchToProps = dispatch => {
+  return {
+    getcharacterinfo : (name, health, point, coin, level) => dispatch(fetchCharacterInfo(name, health, point, coin, level)),
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Characterinfo);
@@ -105,27 +116,29 @@ export default connect(mapStateToProps, mapDispatchToProps)(Characterinfo);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    borderWidth: 1,
+    borderEndWidth : 1,
+    borderColor: 'red',
     flexDirection: 'column',
     width : '100%',
-    height : '50%',
-  },
-  navBar: {
-    height: 60,
-    backgroundColor: '#FF6E40',
-    justifyContent: 'center',
-    alignItems: 'flex-end',
   },
   body: {
+    borderWidth: 1,
+    borderColor: 'black',
     flex: 1,
     flexDirection: 'row',
 
   },
   left: {
+    borderWidth: 1,
+    borderColor: 'black',
     flex: 1,
     backgroundColor: 'white',
     marginRight : 10,
   },
   image : {
+    borderWidth: 1,
+    borderColor: 'black',
     flex : 3,
     width: '100%',
     height: 100,
@@ -134,7 +147,10 @@ const styles = StyleSheet.create({
 
   },
   level : {
+    borderWidth: 1,
+    borderColor: 'black',
     flex : 1,
+    marginTop : 10,
     justifyContent: 'center',
     alignItems: 'center',
 
