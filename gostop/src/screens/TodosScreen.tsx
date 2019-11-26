@@ -1,15 +1,6 @@
 import React from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
-import { createAppContainer, createStackNavigator } from 'react-navigation';
-import { Provider } from 'react-redux';
-import { createStore } from 'redux';
-import Characterinfo from '../components/characterinfo';
 import Todos from '../components/todos';
-// import Sidebar from '../components/Sidebar';
-import Underbar from '../components/Underbar';
-import combineReducers from '../reducers/index';
-import AddTodosScreen from './addTodosScreen';
-import { Icon } from 'native-base';
 
 export default class TodosScreen extends React.Component <any, any> {
 // class Todosscreen extends React.Component <any, any> {
@@ -26,11 +17,13 @@ export default class TodosScreen extends React.Component <any, any> {
         <View style = { { flex : 1 } }>
           <Button
           title='Add Todos'
-          onPress={() => navigate('AddTodosScreen')}
+          onPress={() => {
+            console.log('button touch');
+            navigate('AddTodosScreen')}}
           />
         </View>
 
-      <View style = {{ flex : 9 }}>
+      <View style = {{ flex : 9}}>
         <Todos/>
         </View>
 

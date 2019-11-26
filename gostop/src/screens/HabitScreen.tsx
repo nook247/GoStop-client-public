@@ -6,6 +6,8 @@ import { createStore } from 'redux';
 import Characterinfo from '../components/characterinfo';
 import Habits from '../components/habits';
 import combineReducers from '../reducers/index';
+import { createStackNavigator, createAppContainer } from 'react-navigation';
+import AddHabitScreen from './addHabitsScreen';
 
 export default class HabitScreen extends React.Component <any, any> {
 // class Habitscreen extends React.Component <any, any> {
@@ -15,6 +17,7 @@ export default class HabitScreen extends React.Component <any, any> {
   //   ),
   // };
   public render() {
+    console.log('habit this.props',this.props)
     const { navigate } = this.props.navigation;
     return (
       <View style = {styles.container}>
@@ -47,8 +50,7 @@ const styles = StyleSheet.create({
 
 // const MainNavigator = createStackNavigator({
 //   Habitscreen: { screen: Habitscreen },
-//   AddHabitsScreen : { screen : AddHabitsScreen },
+//   AddHabitsScreen : { screen : AddHabitScreen },
 // });
 // const HabitScreen = createAppContainer(MainNavigator);
 // export default HabitScreen;
-

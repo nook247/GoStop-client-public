@@ -18,11 +18,11 @@ export interface Habit {
 }
 
 const initialState : HabitsState = {
-  name : 'tube',
+  name : '',
   healthvalue : 0,
   pointsvalue : 0,
   coinsvalue : 0,
-  diff: 10,
+  diff: 0,
   level : 0,
   habits : [],
 };

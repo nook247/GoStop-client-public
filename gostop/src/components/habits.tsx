@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { AsyncStorage, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { connect } from 'react-redux';
 import { coinchange, healthchange, pointchange } from '../actions/characterinfoaction';
 import fakeserver from '../fakeserver';
 
 export interface Habit {
+  id : string,
   title : string;
   desc : string;
   alarm : boolean;
@@ -16,6 +17,7 @@ interface habitsinfoProps {
   pointchange(value : number) : void;
   coinchange(value : number) : void;
   healthchange(value : number) : void;
+  // cookie : string;
 }
 
 interface habitsStates {
@@ -30,16 +32,45 @@ class Habits extends Component<habitsinfoProps, habitsStates> {
     };
   }
 
-  public componentDidMount() {
-    fetch(`${fakeserver}/habits`).then((res) => {
-      if (res.status === 200 || res.status === 201) { // 성공을 알리는 HTTP 상태 코드면
-        res.json().then(data => {
-          const newhabits = this.state.habits.slice();
 
-          data.map(elem => {
-            newhabits.push({ title : elem.title, desc : elem.description, alarm : elem.alarm,
+
+
+  public async componentDidMount() {
+    let token = '';
+    await AsyncStorage.getItem('token', (err, result) => {
+      token = result
+    }
+    )
+    let header = new Headers();
+    header.append('Cookie', token)
+    const myInit = {
+      method : 'GET',
+      headers : header,
+    }
+    fetch(`${fakeserver}/users/habits`, myInit)
+    .then((res) => {
+      if (res.status === 200 || res.status === 201) { 
+        res.json()
+        .then( (data) => {
+          console.log('습관 데이터 ::', data)
+          const newhabits = this.state.habits.slice();
+          if(!data.habits.length){
+            let initState = {
+              id : '',
+              title : '제목을 입력하세요',
+              desc : '설명을 입력하세요',
+              alarm : true,
+              difficulty : 3,
+              positive : true
+            }
+            newhabits.push(initState)
+          } else {
+          
+          data.habits.map(elem => {
+            newhabits.push({ id : elem.id, title : elem.title, desc : elem.description, alarm : elem.alarm,
               difficulty : elem.difficulty, positive : elem.positive });
           });
+        }
 
           this.setState({
             habits: newhabits,
@@ -47,7 +78,7 @@ class Habits extends Component<habitsinfoProps, habitsStates> {
         },
 
             );
-      } else { // 실패를 알리는 HTTP 상태 코드면
+      } else {
         console.error(res.statusText);
       }
     }).catch(err => console.error(err));
@@ -101,6 +132,7 @@ const mapStateToProps = (state) => {
     pointsvalue : state.changepointreducer.pointsvalue,
     coinsvalue : state.changepointreducer.coinsvalue,
     level : state.changepointreducer.level,
+    // cookie : state.loginreducer.cookie,
   };
 
 };

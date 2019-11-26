@@ -1,12 +1,6 @@
 import React from 'react';
 import { Button, StyleSheet, Text, View } from 'react-native';
-import { Provider } from 'react-redux';
-import { createStore } from 'redux';
-import Characterinfo from '../components/characterinfo';
 import Rewards from '../components/rewards';
-import combineReducers from '../reducers/index';
-import { createAppContainer, createStackNavigator, createMaterialTopTabNavigator } from 'react-navigation';
-import AddRewardScreen from './addRewardScreen';
 
 export default class RewardScreen extends React.Component <any, any> {
 // class Rewardscreen extends React.Component <any, any> {
