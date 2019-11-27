@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { TextInput, Text, StyleSheet, View, Button, TouchableOpacity } from "react-native";
-import { readBuilderProgram } from "typescript";
 import DatePicker from './DatePicker';
 import TimeSelector from './TimeSelector';
 

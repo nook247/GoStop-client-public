@@ -5,8 +5,7 @@ import fakeserver from '../fakeserver';
 import { connect } from 'react-redux';
 
 class AddHabitScreen extends React.Component <any, any> {
-  // params = this.props.navigation.state.params
-  // id = this.params.id
+  title = this.props.navigation.state.params.title;
   // alarmId = this.params.alarmId
   // getdata = this.params.getdata
 
@@ -18,7 +17,8 @@ class AddHabitScreen extends React.Component <any, any> {
 //     }
   public render() {
     // console.log('id ::', this.id, 'title')
-    console.log('state 잘 전달됐니?', this.props)
+    console.log('state 잘 전달됐니?', this.props.habitarr)
+    console.log('title전달됐니?', this.title)
 
     return (
 
@@ -61,6 +61,7 @@ const mapStateToProps = (state) =>{
     alarmId :state.passhabitreducer.alarmId,
     difficulty :state.passhabitreducer.difficulty,
     positive : state.passhabitreducer.positive,
+    habitarr : state.habitreducer.habitarr,
   }
 }
 
