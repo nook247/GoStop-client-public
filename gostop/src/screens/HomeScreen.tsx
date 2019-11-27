@@ -15,6 +15,7 @@ import Rewards from '../components/rewards'
 import Signup from '../components/Signup';
 import AddHabit from '../components/AddHabit';
 import AddTodos from '../components/AddTodos';
+import ModifyHabit from '../components/ModifyHabit'
 
 interface UserState {
   level : number;
@@ -46,6 +47,7 @@ export class Homescreen extends Component<any, UserState> {
 const habitStack = createStackNavigator({
   Habits : { screen : Habits },
   AddHabit : { screen : AddHabit },
+  ModifyHabit : { screen : ModifyHabit }
 });
 
 const todosStack = createStackNavigator({
