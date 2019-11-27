@@ -3,6 +3,7 @@ import { TextInput, Text, StyleSheet, View, Button, TouchableOpacity,
 TouchableHighlight } from "react-native";
 import { readBuilderProgram } from "typescript";
 import TimePicker from "react-native-24h-timepicker";
+import { connect } from 'react-redux';
 
 class AddHabit extends Component {
     constructor(props) {
@@ -23,25 +24,25 @@ class AddHabit extends Component {
         }        
     }
 
-    componentDidMount() {
-        fetch('http://localhost:3000/alarms', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then(res => res.json())
-        .then(res => {            
-            this.setState({
-                habit: {
-                    ...this.state.habit,
-                    title: res.title,
-                    alarmId: res.length + 1
-                }
-            })
-            //console.log('HABIT is : ', this.state.habit)
-        })
-        .catch(error => console.error('Error : ', error));
-    }
+    // componentDidMount() {
+    //     fetch('http://42565614.ngrok.io/alarms', {
+    //         method: 'GET',
+    //         headers: {
+    //             'Content-Type': 'application/json'
+    //         }
+    //     }).then(res => res.json())
+    //     .then(res => {            
+    //         this.setState({
+    //             habit: {
+    //                 ...this.state.habit,
+    //                 title: res.title,
+    //                 alarmId: res.length + 1
+    //             }
+    //         })
+    //         //console.log('HABIT is : ', this.state.habit)
+    //     })
+    //     .catch(error => console.error('Error : ', error));
+    // }
 
     onCancel() {
         this.TimePicker.close();
@@ -119,31 +120,37 @@ class AddHabit extends Component {
         //console.log(this.state)
     }
       
-    sendData = () => {
-        let habit = this.state.habit;
-        fetch('http://localhost:3000/habits', {
-            method: 'POST',
-            body: JSON.stringify(habit),
-            headers:{
-                'Content-Type': 'application/json'
-            }
-        }).then(res => res.json())
-        .then(res => console.log('Success : ', JSON.stringify(res)))
-        .catch(error => console.error('Error : ', error));
+    // sendData = () => {   // 수정 요망
+    //     let habit = this.state.habit;
+    //     // this.props.savehabit(data.habits);   수정한 전체 데이터를 넣어주기
+    //     fetch('http://42565614.ngrok.io/habits', {
+    //         method: 'POST',
+    //         body: JSON.stringify(habit),
+    //         headers:{
+    //             'Content-Type': 'application/json'
+    //         }
+    //     }).then(res => res.json())
+    //     .then(res => console.log('Success : ', JSON.stringify(res)))
+    //     .catch(error => console.error('Error : ', error));
 
-        let alarm = this.state.alarmTime;
-        fetch('http://localhost:3000/alarms', {
-            method: 'POST',
-            body: JSON.stringify(alarm),
-            headers:{
-                'Content-Type': 'application/json'
-            }
-        }).then(res => res.json())
-        .then(res => console.log('Success : ', JSON.stringify(res)))
-        .catch(error => console.error('Error : ', error));
-    }
+    //     let alarm = this.state.alarmTime;
+    //     fetch('http://42565614.ngrok.io/alarms', {
+    //         method: 'POST',
+    //         body: JSON.stringify(alarm),
+    //         headers:{
+    //             'Content-Type': 'application/json'
+    //         }
+    //     }).then(res => res.json())
+    //     .then(res => console.log('Success : ', JSON.stringify(res)))
+    //     .catch(error => console.error('Error : ', error));
+    // }
+
+    // title = this.props.navigation.state.params.title;
 
     render() {
+        console.log('state 잘 전달됐니? AddHabit : ', this.props.habitarr)     
+        //console.log('title전달됐니?', this.title)
+
         return (
             <View style={styles.mainContainer}>
 
@@ -258,8 +265,9 @@ class AddHabit extends Component {
                     style={styles.addButton} activeOpacity={0.5}
                     onPress={() => {
                         console.log(this.state);
-                        this.sendData();
+                        //this.sendData();
                         alert("추가되었습니다")
+                        this.props.navigation.navigate('Habits')  // 메인 페이지로 이동
                     }} >
                     <Text style={styles.textStyle}>추가</Text>
                 </TouchableOpacity>  
@@ -275,7 +283,26 @@ class AddHabit extends Component {
     }
 }
 
-export default AddHabit;
+//export default AddHabit;
+
+// 데이터 불러오기
+const mapStateToProps = (state) => {  
+    console.log('state 나와', state)
+    return {
+      habitarr : state.habitreducer.habitarr
+    }
+}  
+
+// 데이터 수정하기
+const mapDispatchToProps = dispatch => {
+    return {      
+      savehabit : (arr) => {
+        dispatch(savehabit(arr));
+      },
+    };
+};
+  
+export default connect(mapStateToProps, mapDispatchToProps)(AddHabit);
 
 const styles = StyleSheet.create({
     mainContainer: {
