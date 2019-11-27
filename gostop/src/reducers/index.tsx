@@ -7,6 +7,7 @@ import changepointreducer from './ChangePointReducer';
 import TodosReducer from './TodosReducer';
 import passhabitreducer from './PasshabitReducer';
 import getuserreducer from './GetuserReducer';
+import habitreducer from './HabitReducer';
 
 export default combineReducers({
   changeReducer,
@@ -17,4 +18,5 @@ export default combineReducers({
   TodosReducer,
   passhabitreducer,
   getuserreducer,
+  habitreducer,
 });

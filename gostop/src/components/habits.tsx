@@ -3,8 +3,8 @@ import { AsyncStorage, StyleSheet, Text, TouchableOpacity, View, Button } from '
 import { connect } from 'react-redux';
 import { coinchange, healthchange, pointchange } from '../actions/characterinfoaction';
 import fakeserver from '../fakeserver';
-import { passhabit } from '../actions/passhabitaction';
 import Characterinfo from './characterinfo';
+import { savehabit } from '../actions/habitaction';
 
 export interface Habit {
   id : string,
@@ -23,14 +23,16 @@ interface habitsinfoProps {
 
 interface habitsStates {
   habits : Habit[];
+  count : number;
 }
 
 class Habits extends Component<any, habitsStates> {
   constructor(props) {
     super(props);
-    this.state = {
-      habits : [],
-    };
+    // this.state = {
+    //   habits : [],
+    //   count : 0,
+    // };
   }
 
   //  componentWillMount(){
@@ -43,7 +45,7 @@ class Habits extends Component<any, habitsStates> {
   //   }
 
   public componentDidMount() {
-    console.log(this.state)
+    // console.log(this.state)
   this.getdata()
   }
 
@@ -66,7 +68,7 @@ async getdata(){
         res.json()
         .then( (data) => {
           console.log('습관 데이터 ::', data)
-          const newhabits = this.state.habits.slice();
+          // const newhabits = this.state.habits.slice();
           if (!data.habits.length) {
             let initState = {
               id : '',
@@ -76,18 +78,20 @@ async getdata(){
               difficulty : 3,
               positive : true
             }
-            newhabits.push(initState)
+            // newhabits.push(initState)
           } else {
+            this.props.savehabit(data.habits);
+
           
-            data.habits.map(elem => {
-            newhabits.push({ id : elem._id, title : elem.title, desc : elem.description, alarmId : elem.alarm,
-              difficulty : elem.difficulty, positive : elem.positive });
-          });
+          //   data.habits.map(elem => {
+          //   newhabits.push({ id : elem._id, title : elem.title, desc : elem.description, alarmId : elem.alarm,
+          //     difficulty : elem.difficulty, positive : elem.positive });
+          // });
           }
 
-          this.setState({
-            habits: newhabits,
-          });
+          // this.setState({
+          //   habits: newhabits,
+          // });
         },
 
             );
@@ -99,6 +103,7 @@ async getdata(){
 }
 
   public render() {
+    console.log('habitreducer 받아왔니?', this.props.habitarr)
     const { navigate } = this.props.navigation;
     return (
             <View style = {styles.container}>
@@ -119,7 +124,7 @@ async getdata(){
           this.props.navigation.navigate('AddHabitsScreen')}>
           </TouchableOpacity>
  
-        {this.state.habits.map((item) => {
+        {this.props.habitarr.map((item) => {
           return   <View style = {styles.onehabit} key = {item.title}>
 
           <View style = {styles.positive}>
@@ -131,15 +136,9 @@ async getdata(){
             </TouchableOpacity>
             <TouchableOpacity style={{ backgroundColor:'skyblue' }}
           onPress = {() => {
-            this.props.passhabit(item.id, item.title, item.desc, item.alarmId, item.difficulty, item.positive);
+            // this.props.passhabit(item.id, item.title, item.desc, item.alarmId, item.difficulty, item.positive);
             this.props.navigation.navigate('AddHabitsScreen', {
-              id : item.id,
               title : item.title,
-              description : item.desc,
-              alarmId : item.alarmId,
-              difficulty : item.difficulty,
-              positive : item.positive,
-              getdata : this.getdata,
             })
           }}>
               <Text>수정</Text>
@@ -148,7 +147,7 @@ async getdata(){
 
       <View style = {styles.habits}>
           <Text style = {styles.habittitle}>{item.title}</Text>
-          <Text style = {styles.habitdesc}>{item.desc}</Text>
+          <Text style = {styles.habitdesc}>{item.description}</Text>
 
       </View >
 
@@ -176,11 +175,12 @@ async getdata(){
 
 const mapStateToProps = (state) => {
   return {
-    name : state.changepointreducer.name,
-    healthvalue : state.changepointreducer.healthvalue,
-    pointsvalue : state.changepointreducer.pointsvalue,
-    coinsvalue : state.changepointreducer.coinsvalue,
-    level : state.changepointreducer.level,
+    // name : state.changepointreducer.name,
+    // healthvalue : state.changepointreducer.healthvalue,
+    // pointsvalue : state.changepointreducer.pointsvalue,
+    // coinsvalue : state.changepointreducer.coinsvalue,
+    // level : state.changepointreducer.level,
+    habitarr : state.habitreducer.habitarr,
   };
 
 };
@@ -190,8 +190,11 @@ const mapDispatchToProps = dispatch => {
     pointchange : value => dispatch(pointchange(value)),
     coinchange : value => dispatch(coinchange(value)),
     healthchange : value => dispatch(healthchange(value)),
-    passhabit : (id, title, description, alarmId, difficulty, positive) => {
-      dispatch(passhabit(id, title, description, alarmId, difficulty, positive))
+    // passhabit : (id, title, description, alarmId, difficulty, positive) => {
+    //   dispatch(passhabit(id, title, description, alarmId, difficulty, positive));
+    // },
+    savehabit : (arr) => {
+      dispatch(savehabit(arr));
     },
   };
 };
