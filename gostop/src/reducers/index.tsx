@@ -5,6 +5,8 @@ import changeReducer2 from './Itemchange2';
 import changeReducer3 from './Itemchange3';
 import changepointreducer from './ChangePointReducer';
 import TodosReducer from './TodosReducer';
+import passhabitreducer from './PasshabitReducer';
+import getuserreducer from './GetuserReducer';
 
 export default combineReducers({
   changeReducer,
@@ -13,4 +15,6 @@ export default combineReducers({
   changeReducer3,
   changepointreducer,
   TodosReducer,
+  passhabitreducer,
+  getuserreducer,
 });

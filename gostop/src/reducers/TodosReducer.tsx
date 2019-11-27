@@ -1,6 +1,5 @@
-import { TODOCOMPLETE, TODOINCOMPLETE, TodosAction } from '../actions/todosaction';
+import { TODOCOMPLETE, TodosAction } from '../actions/todosaction';
 import fakeserver from '../fakeserver';
-// import { HabitsState, Habit } from './reducer'
 
 export interface TodosState {
   id : number;

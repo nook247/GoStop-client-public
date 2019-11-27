@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import Characterinfo from '../components/characterinfo'
-import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import combineReducers from '../reducers/index';
-import Item from '../components/Item';
 import { connect } from 'react-redux';
 import { coinchange, healthchange, pointchange } from '../actions/characterinfoaction';
 
@@ -12,7 +10,6 @@ import { coinchange, healthchange, pointchange } from '../actions/characterinfoa
 class CharacterchangeScreen extends Component<any, any> {
   public render() {
     return (
-      // <Provider store = {store} style = {{ width : '100%' }}>
             <View style = {{ borderWidth : 1, borderColor : 'red' }}>
                 <Characterinfo />
 
@@ -22,9 +19,7 @@ class CharacterchangeScreen extends Component<any, any> {
           }}>
               <Text>++</Text>
             </TouchableOpacity>
-                {/* <Item style = {{ flex : 5 }} /> */}
             </View>
-            // </Provider>
       );
   }
 }

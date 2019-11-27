@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import fakeserver from '../fakeserver';
 
-export default class Signup extends Component {
+export default class Signup extends Component<any, any> {
   public state = {
     email: '',
     nickname : '',
@@ -55,7 +55,9 @@ export default class Signup extends Component {
     }).then((res) => {
       if (res.status === 200 || res.status === 201) { // 성공을 알리는 HTTP 상태 코드면
         res.json()
-      .then(() => alert(`${email}로 가입이 완료되었습니다\n로그인 화면으로 이동`));
+      .then(() => {alert(`${email}로 가입이 완료되었습니다\n로그인 화면으로 이동`);
+      this.props.navigation.navigate('Signin');
+    });
       }
     });
   }

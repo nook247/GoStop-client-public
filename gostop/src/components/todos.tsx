@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { CheckBox, StyleSheet, Text, View, AsyncStorage } from 'react-native';
+import { CheckBox, StyleSheet, Text, View, AsyncStorage, Button } from 'react-native';
 import { connect } from 'react-redux';
 import {  coinchange, healthchange, pointchange  } from '../actions/characterinfoaction';
 import  DatePicker  from './DatePicker';
 import fakeserver from '../fakeserver';
+import Characterinfo from './characterinfo';
 
 export interface Todo {
   id : string;
@@ -101,8 +102,22 @@ class Todos extends Component<any, TodosStates> {
 
   }
   public render() {
+    const { navigate } = this.props.navigation;
     return (
             <View style = {styles.container}>
+              
+            <View style ={{flex : 5}}>
+                <Characterinfo/>
+              </View>
+
+      <View style = { { flex : 1 } }>
+          <Button
+          title='Add todo'
+          onPress={() => navigate('AddTodosScreen')}
+          />
+        </View>
+
+                           <View style = {{ flex : 9 }}>
                            <View>
                     <DatePicker />
                 </View>
@@ -155,6 +170,8 @@ class Todos extends Component<any, TodosStates> {
       <View>
         <Text> 완료 {this.state.completecount}건, 미완료 {this.state.todos.length - this.state.completecount} 건</Text>
       </View>
+      </View>
+
       </View>
     );
   }

@@ -29,68 +29,68 @@ const initialState : HabitsState = {
 
 const changepointreducer = (state : HabitsState = initialState, action : HabitsAction): HabitsState => {
   switch (action.type){
-    case POINTCHANGE:
-      const pointchangedata = {
-        point : state.pointsvalue + action.value,
-      };
-      fetch(`${fakeserver}/users/1`, {
-        method : 'PATCH',
-        body : JSON.stringify(pointchangedata),
-        headers : {
-          'Content-Type' : 'application/json',
-        },
-      }).then((res) => {
-        if (res.status === 200 || res.status === 201) { // 성공을 알리는 HTTP 상태 코드면
-          res.json()
-        .then(() => console.log('point patch 성공'));
-        }
-      });
+  //   case POINTCHANGE:
+  //     const pointchangedata = {
+  //       point : state.pointsvalue + action.value,
+  //     };
+  //     fetch(`${fakeserver}/users/1`, {
+  //       method : 'PATCH',
+  //       body : JSON.stringify(pointchangedata),
+  //       headers : {
+  //         'Content-Type' : 'application/json',
+  //       },
+  //     }).then((res) => {
+  //       if (res.status === 200 || res.status === 201) { // 성공을 알리는 HTTP 상태 코드면
+  //         res.json()
+  //       .then(() => console.log('point patch 성공'));
+  //       }
+  //     });
       
-      return Object.assign({}, state, {
-        pointsvalue : state.pointsvalue + action.value,
-      });
+  //     return Object.assign({}, state, {
+  //       pointsvalue : state.pointsvalue + action.value,
+  //     });
       
-    case COINCHANGE:
-      const coinchangedata = {
-        coin : state.coinsvalue  + action.value,
-      };
+  //   case COINCHANGE:
+  //     const coinchangedata = {
+  //       coin : state.coinsvalue  + action.value,
+  //     };
     
-      fetch(`${fakeserver}/users/1`, {
-        method : 'PATCH',
-        body : JSON.stringify(coinchangedata),
-        headers : {
-          'Content-Type' : 'application/json',
-        },
-      }).then((res) => {
-        if (res.status === 200 || res.status === 201) { // 성공을 알리는 HTTP 상태 코드면
-          res.json()
-        .then(() => console.log('coin patch 성공'));
-        }
-      });
+  //     fetch(`${fakeserver}/users/1`, {
+  //       method : 'PATCH',
+  //       body : JSON.stringify(coinchangedata),
+  //       headers : {
+  //         'Content-Type' : 'application/json',
+  //       },
+  //     }).then((res) => {
+  //       if (res.status === 200 || res.status === 201) { // 성공을 알리는 HTTP 상태 코드면
+  //         res.json()
+  //       .then(() => console.log('coin patch 성공'));
+  //       }
+  //     });
 
-      return Object.assign({}, state, {
-        coinsvalue : state.coinsvalue + action.value,
-      });
+  //     return Object.assign({}, state, {
+  //       coinsvalue : state.coinsvalue + action.value,
+  //     });
 
-    case HEALTHCHANGE:
-      const healthchangedata = {
-        health : state.healthvalue - action.value,
-      };
-      fetch(`${fakeserver}/users/1`, {
-        method : 'PATCH',
-        body : JSON.stringify(healthchangedata),
-        headers : {
-          'Content-Type' : 'application/json',
-        },
-      }).then((res) => {
-        if (res.status === 200 || res.status === 201) { // 성공을 알리는 HTTP 상태 코드면
-          res.json()
-          .then(() => console.log('health patch 성공'));
-        }
-      });
-      return Object.assign({}, state, {
-        healthvalue : state.healthvalue - action.value,
-      });
+  //   case HEALTHCHANGE:
+  //     const healthchangedata = {
+  //       health : state.healthvalue - action.value,
+  //     };
+  //     fetch(`${fakeserver}/users/1`, {
+  //       method : 'PATCH',
+  //       body : JSON.stringify(healthchangedata),
+  //       headers : {
+  //         'Content-Type' : 'application/json',
+  //       },
+  //     }).then((res) => {
+  //       if (res.status === 200 || res.status === 201) { // 성공을 알리는 HTTP 상태 코드면
+  //         res.json()
+  //         .then(() => console.log('health patch 성공'));
+  //       }
+  //     });
+  //     return Object.assign({}, state, {
+  //       healthvalue : state.healthvalue - action.value,
+  //     });
 
     case FETCH_CHARACTERINFO:
       return Object.assign({}, state, {

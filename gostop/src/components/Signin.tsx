@@ -9,24 +9,28 @@ import {
   Button
 } from 'react-native';
 import fakeserver from '../fakeserver';
-import Habits from './habits'
 import { createStackNavigator, createAppContainer } from 'react-navigation';
 import HabitScreen from '../screens/HabitScreen';
 import TodosScreen from '../screens/TodosScreen';
 import RewardScreen from '../screens/RewardScreen';
-import { cookiesave } from '../actions/loginaction';
 import { connect } from 'react-redux';
-import loginreducer from '../reducers/LoginReducer';
+import Habits from './habits'
+import { getuser } from '../actions/getuseraction';
 
 interface loginProps {
   cookiesave(value : string) : void;
 }
 class Signin extends Component<any, any> {
-  state = {
-    email: '',
-    password: '',
-    passwordmsg : '비밀번호를 한 번 더 입력해주세요'
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      email: '',
+      password: '',
+      passwordmsg : '비밀번호를 한 번 더 입력해주세요'
+    };
+    };
+  
+
  
   handleEmail = text => {
     this.setState({ email: text });
@@ -48,7 +52,7 @@ class Signin extends Component<any, any> {
     }
   };
  
-  login = (email, password) => {
+   login = (email, password) => {
     const logindata = {
       email : email,
       password : password,
@@ -63,18 +67,18 @@ class Signin extends Component<any, any> {
         'Content-Type' : 'application/json',
       },
     }).then((res) => {
-      console.log('response.headers', res.headers);
-      console.log('response.setcookie', res.headers['map']['set-cookie']);
       const cookie = res.headers['map']['set-cookie'];
-      // const start = res.headers['map']['set-cookie'].indexOf('=');
-      // const end = res.headers['map']['set-cookie'].indexOf(';');
-      // const cookie = res.headers['map']['set-cookie'].slice(start + 1 , end);
       console.log('쿠키니?', cookie);
+
       AsyncStorage.setItem('token', cookie);
+      
 
       if (res.status === 200 || res.status === 201) { // 성공을 알리는 HTTP 상태 코드면
         res.json()
-      .then(() => this.props.navigation.navigate('habitscreen')
+      .then(async (data) =>  {console.log('login시 받아온 data', data);
+      console.log(this.props);
+        await this.props.getuser(data._id, data.email, data.name, data.userCode, data.level, data.health, data.point, data.coin)
+        this.props.navigation.navigate('Habits')}
       );
       }
     })
@@ -112,6 +116,14 @@ class Signin extends Component<any, any> {
         >
           <Text style={styles.submitButtonText}>Submit</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.submitButton}
+          onPress={() => this.props.navigation.navigate('Signup')}
+        >
+          <Text style={styles.submitButtonText}>회원가입</Text>
+        </TouchableOpacity>
+
       </View>
     );
   }
@@ -119,25 +131,13 @@ class Signin extends Component<any, any> {
 
 const mapDispatchToProps = dispatch => {
   return {
-    cookie : value => dispatch(cookiesave(value)),
+    getuser : (id, email, name, userCode, level, health, point, coin) => {
+      dispatch(getuser(id, email, name, userCode, level, health, point, coin))
+    },
   };
 };
 
-connect(null, mapDispatchToProps)(Signin);
-
-const test = createStackNavigator({
-  loginscreen : { screen : Signin},
-  habitscreen : { screen : HabitScreen },
-  todosscreen : { screen : TodosScreen },
-  rewardscreen : { screen : RewardScreen },
-  
-})
-
-const Login = createAppContainer(test);
-export default Login;
-
-
-
+export default connect(null, mapDispatchToProps)(Signin);
 
 const styles = StyleSheet.create({
   container: {

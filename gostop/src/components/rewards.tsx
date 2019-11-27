@@ -3,6 +3,7 @@ import { Button, StyleSheet, Text, TouchableOpacity, View, AsyncStorage } from '
 import { connect } from 'react-redux';
 import { coinchange } from '../actions/characterinfoaction';
 import fakeserver from '../fakeserver';
+import Characterinfo from './characterinfo';
 
 export interface Reward {
   id : string;
@@ -19,7 +20,7 @@ interface rewardsStates {
   rewards : Reward[];
 }
 
-class Rewards extends Component<rewardsinfoProps, rewardsStates> {
+class Rewards extends Component<any, rewardsStates> {
   constructor(props) {
     super(props);
     this.state = {
@@ -46,7 +47,7 @@ class Rewards extends Component<rewardsinfoProps, rewardsStates> {
         .then(data => {
           const newrewards = this.state.rewards.slice();
 
-          if(!data.habits.length){
+          if(!data.rewards.length){
             let initState = {
               id : '',
               title : '제목을 입력하세요',
@@ -56,7 +57,7 @@ class Rewards extends Component<rewardsinfoProps, rewardsStates> {
             newrewards.push(initState)
           } else {
 
-          data.habits.map(elem => {
+          data.rewards.map(elem => {
             newrewards.push({ id : elem.id,
               title : elem.title, desc : elem.description, coin : elem.coin });
           });
@@ -75,9 +76,23 @@ class Rewards extends Component<rewardsinfoProps, rewardsStates> {
 
   }
   public render() {
+    const { navigate } = this.props.navigation;
     return (
             <View style = {styles.container}>
+              <View style ={{flex : 5}}>
+                <Characterinfo/>
+              </View>
 
+      <View style = { { flex : 1 } }>
+          <Button
+          title='Add reward'
+          onPress={() => navigate('AddRewardScreen')}
+          />
+        </View>
+
+        
+
+              <View style = {{ flex : 9 }}>
         {this.state.rewards.map((item) => {
           return   <View style = {styles.onehabit} key = {item.title}>
 
@@ -98,6 +113,7 @@ class Rewards extends Component<rewardsinfoProps, rewardsStates> {
 
         })
     }
+    </View>
             </View>
     );
   }

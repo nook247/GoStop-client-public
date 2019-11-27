@@ -1,19 +1,18 @@
-import { Button, Container, Header, Icon, Left, Right, Text } from 'native-base';
 import React, { Component } from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
-import { createAppContainer, createBottomTabNavigator, createDrawerNavigator, createMaterialTopTabNavigator } from 'react-navigation';
+import { Platform, View, TouchableOpacity } from 'react-native';
+import { createAppContainer, createDrawerNavigator, createMaterialTopTabNavigator, createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import Characterinfo from '../components/characterinfo';
-import HabitScreen from '../screens/HabitScreen';
-import TodosScreen from '../screens/TodosScreen';
 import ItemshopScreen from './ItemshopScreen';
-import CharacterchangeScreen from './CharacterchangeScreen';
-import RewardScreen from './RewardScreen';
+import CharacterchangeScreen from './CharacterchangeScreen';;
 import Signin from '../components/Signin'
 import AddHabitScreen from './addHabitsScreen';
-import { createNativeWrapper } from 'react-native-gesture-handler';
 import AddTodosScreen from './addTodosScreen';
 import AddRewardScreen from './addRewardScreen';
+import AuthLoadingScreen from './AuthLoadingScreen';
+import Habits from '../components/habits';
+import Todos from '../components/todos';
+import Rewards from '../components/rewards'
+import Signup from '../components/Signup';
 
 interface UserState {
   level : number;
@@ -22,43 +21,42 @@ interface UserState {
   coinsvalue : number;
 }
 
- // 로그인이 되어 있으면 바로 habit 를 띄운다.
-class Homescreen extends Component<any, UserState> {
+export class Homescreen extends Component<any, UserState> {
+  [x: string]: any;
   public render() {
     return (
-      <Container>
-        <Header>
-          <Left style={{ flexDirection: 'row' }}>
-           {/* <Icon onPress={() => this.props.navigation.openDrawer()} name='md-menu' style={{ color: 'white', marginRight: 15 }} /> */}
-          </Left>
-          <Right>
-           <Icon name='md-cart' style={{ color: 'white' }} />
-          </Right>
-        </Header>
-        <Characterinfo style = {{ flex : 1 }}/>
-        {/* <AppTabContainet style = {{ flex : 5 }}/> */}
-       </Container>
+//       <View>
+//         <Characterinfo />
+//         {/* <Button title = "press" onPress={() => this.props.navigation.openDrawer()}/> */}
+//         <AppTabNavigator/>
+//       </View>
+<View>
+<TouchableOpacity  >
+</TouchableOpacity>
+<AppTabNavigator/>
+</View>
 
     );
   }
 }
 
+
 const habitStack = createStackNavigator({
-  Habit : { screen : HabitScreen },
+  Habits : { screen : Habits },
   AddHabitsScreen : { screen : AddHabitScreen },
-})
+});
 
 const todosStack = createStackNavigator({
-  Todos : { screen : TodosScreen },
+  Todos : { screen : Todos },
   AddTodosScreen : { screen : AddTodosScreen },
-})
+});
 
 const rewardStack = createStackNavigator({
-  Reward : { screen : RewardScreen },
+  Reward : { screen : Rewards },
   AddRewardScreen : { screen : AddRewardScreen },
-})
+});
 
-const appTabNavigator = createMaterialTopTabNavigator({
+const AppTabNavigator = createMaterialTopTabNavigator({
   habitStack : { screen : habitStack },
   todosStack : { screen : todosStack },
   rewardStack : { screen : rewardStack },
@@ -82,25 +80,44 @@ const appTabNavigator = createMaterialTopTabNavigator({
     showIcon: true,
   },
   });
-const AppTabContainet = createAppContainer(appTabNavigator);
 
-const mainNavigator = createStackNavigator({
-  Signin : { screen : Signin },
-  // Homescreen: { screen: Homescreen }
-  // Characterinfo : { screen : Characterinfo },
-  // AppTabContainet : { screen : AppTabContainet },
-  HabitScreen: { screen: HabitScreen },
-  // TodosScreen : { screen : TodosScreen },
-  // RewardScreen : { screen : rewardScreen },
-  // ItemshopScreen : { screen : ItemshopScreen },
-  // CharacterchangeScreen : { screen : CharacterchangeScreen },
-});
+  const drawerNavigator = createDrawerNavigator({
+    AppTabNavigator : { screen : AppTabNavigator},
+    ItemshopScreen : { screen : ItemshopScreen },
+    CharacterchangeScreen : { screen : CharacterchangeScreen },
+  });
 
-// const myDrawerNavigator = createDrawerNavigator({
-//   mainNavigator : { screen : mainNavigator },
-//   ItemshopScreen : { screen : ItemshopScreen },
-//   CharacterchangeScreen : { screen : CharacterchangeScreen },
+
+
+
+const HomeScreen = createAppContainer(createSwitchNavigator(
+  {
+    AuthLoading: AuthLoadingScreen,
+    Signin : Signin,
+    Signup : Signup,
+    drawerNavigator : drawerNavigator,
+  },
+  {
+    initialRouteName: 'AuthLoading',
+  }
+));
+
+export default HomeScreen;
+
+
+// const mainNavigator = createStackNavigator({
+//   // Signin : { screen : Signin },
+//   // Homescreen: { screen: Homescreen }
+//   // Characterinfo : { screen : Characterinfo },
+//   AppTabContainet : { screen : AppTabContainet },
+//   // HabitScreen: { screen: HabitScreen },
+//   // AddHabitsScreen : { screen : AddHabitScreen },
+//   // TodosScreen : { screen : TodosScreen },
+//   // RewardScreen : { screen : rewardScreen },
+//   // ItemshopScreen : { screen : ItemshopScreen },
+//   // CharacterchangeScreen : { screen : CharacterchangeScreen },
 // });
 
-const HomeScreen = createAppContainer(mainNavigator);
-export default HomeScreen;
+
+// const HomeScreen = createAppContainer(mainNavigator);
+// export default HomeScreen;
