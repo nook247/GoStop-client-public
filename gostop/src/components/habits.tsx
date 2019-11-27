@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { AsyncStorage, StyleSheet, Text, TouchableOpacity, View, Button } from 'react-native';
 import { connect } from 'react-redux';
 import { coinchange, healthchange, pointchange } from '../actions/characterinfoaction';
 import fakeserver from '../fakeserver';
+import { passhabit } from '../actions/passhabitaction';
+import Characterinfo from './characterinfo';
 
 export interface Habit {
+  id : string,
   title : string;
   desc : string;
-  alarm : boolean;
+  alarmId : string;
   difficulty : number;
   positive : boolean;
 }
@@ -22,7 +25,7 @@ interface habitsStates {
   habits : Habit[];
 }
 
-class Habits extends Component<habitsinfoProps, habitsStates> {
+class Habits extends Component<any, habitsStates> {
   constructor(props) {
     super(props);
     this.state = {
@@ -30,16 +33,57 @@ class Habits extends Component<habitsinfoProps, habitsStates> {
     };
   }
 
-  public componentDidMount() {
-    fetch(`${fakeserver}/habits`).then((res) => {
-      if (res.status === 200 || res.status === 201) { // 성공을 알리는 HTTP 상태 코드면
-        res.json().then(data => {
-          const newhabits = this.state.habits.slice();
+  //  componentWillMount(){
+  //   // this._subscribe = this.props.navigation.addListener('didFocus', () => {
+  //   //  this.getdata()
+  //   //  //Put your Data loading function here instead of my this.LoadData()
+  //   // });
+  //   this.forceUpdate(this.getdata)
+  //   console.log('asdf')
+  //   }
 
-          data.map(elem => {
-            newhabits.push({ title : elem.title, desc : elem.description, alarm : elem.alarm,
+  public componentDidMount() {
+    console.log(this.state)
+  this.getdata()
+  }
+
+async getdata(){
+    let token = '';
+    await AsyncStorage.getItem('token', (err, result) => {
+      token = result
+    }
+    )
+    let header = new Headers();
+    header.append('Cookie', token)
+    const myInit = {
+      method : 'GET',
+      headers : header,
+      Cookie : token,
+    }
+    fetch(`${fakeserver}/users/habits`, myInit)
+    .then((res) => {
+      if (res.status === 200 || res.status === 201) { 
+        res.json()
+        .then( (data) => {
+          console.log('습관 데이터 ::', data)
+          const newhabits = this.state.habits.slice();
+          if (!data.habits.length) {
+            let initState = {
+              id : '',
+              title : '제목을 입력하세요',
+              desc : '설명을 입력하세요',
+              alarmId : '',
+              difficulty : 3,
+              positive : true
+            }
+            newhabits.push(initState)
+          } else {
+          
+            data.habits.map(elem => {
+            newhabits.push({ id : elem._id, title : elem.title, desc : elem.description, alarmId : elem.alarm,
               difficulty : elem.difficulty, positive : elem.positive });
           });
+          }
 
           this.setState({
             habits: newhabits,
@@ -47,16 +91,34 @@ class Habits extends Component<habitsinfoProps, habitsStates> {
         },
 
             );
-      } else { // 실패를 알리는 HTTP 상태 코드면
+      } else {
         console.error(res.statusText);
       }
     }).catch(err => console.error(err));
 
-  }
+}
+
   public render() {
+    const { navigate } = this.props.navigation;
     return (
             <View style = {styles.container}>
+              <View style ={{flex : 5}}>
+                <Characterinfo/>
+              </View>
 
+      <View style = { { flex : 1 } }>
+          <Button
+          title='Add habits'
+          onPress={() => navigate('AddHabitsScreen')}
+          />
+        </View>
+
+              <View style = {{ flex : 9 }}>
+          <TouchableOpacity style={{ backgroundColor:'skyblue' }}
+          onPress={() =>
+          this.props.navigation.navigate('AddHabitsScreen')}>
+          </TouchableOpacity>
+ 
         {this.state.habits.map((item) => {
           return   <View style = {styles.onehabit} key = {item.title}>
 
@@ -66,6 +128,21 @@ class Habits extends Component<habitsinfoProps, habitsStates> {
             this.props.coinchange(item.difficulty * 10);
           }}>
               <Text>++</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={{ backgroundColor:'skyblue' }}
+          onPress = {() => {
+            this.props.passhabit(item.id, item.title, item.desc, item.alarmId, item.difficulty, item.positive);
+            this.props.navigation.navigate('AddHabitsScreen', {
+              id : item.id,
+              title : item.title,
+              description : item.desc,
+              alarmId : item.alarmId,
+              difficulty : item.difficulty,
+              positive : item.positive,
+              getdata : this.getdata,
+            })
+          }}>
+              <Text>수정</Text>
             </TouchableOpacity>
       </View>
 
@@ -82,13 +159,16 @@ class Habits extends Component<habitsinfoProps, habitsStates> {
         </TouchableOpacity>
       </View>
       <View>
-        <Text>알람여부{item.alarm}</Text>
+        <Text>알람여부{item.alarmId}</Text>
       </View>
 
       </View>;
 
         })
     }
+
+</View>
+
             </View>
     );
   }
@@ -110,6 +190,9 @@ const mapDispatchToProps = dispatch => {
     pointchange : value => dispatch(pointchange(value)),
     coinchange : value => dispatch(coinchange(value)),
     healthchange : value => dispatch(healthchange(value)),
+    passhabit : (id, title, description, alarmId, difficulty, positive) => {
+      dispatch(passhabit(id, title, description, alarmId, difficulty, positive))
+    },
   };
 };
 

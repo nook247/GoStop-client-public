@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Button, StyleSheet, Text, TouchableOpacity, View, AsyncStorage } from 'react-native';
 import { connect } from 'react-redux';
 import { coinchange } from '../actions/characterinfoaction';
 import fakeserver from '../fakeserver';
+import Characterinfo from './characterinfo';
 
 export interface Reward {
-  id : number;
-  userId : number;
+  id : string;
   title : string;
   desc : string;
   coin : number;
@@ -20,7 +20,7 @@ interface rewardsStates {
   rewards : Reward[];
 }
 
-class Rewards extends Component<rewardsinfoProps, rewardsStates> {
+class Rewards extends Component<any, rewardsStates> {
   constructor(props) {
     super(props);
     this.state = {
@@ -28,16 +28,40 @@ class Rewards extends Component<rewardsinfoProps, rewardsStates> {
     };
   }
 
-  public componentDidMount() {
-    fetch(`${fakeserver}/rewards`).then((res) => {
+  public async componentDidMount() {
+    let token = '';
+    await AsyncStorage.getItem('token', (err, result) => {
+      token = result
+    }
+    )
+    let header = new Headers();
+    header.append('Cookie', token)
+    const myInit = {
+      method : 'GET',
+      headers : header,
+    }
+    fetch(`${fakeserver}/users/rewards`, myInit)
+    .then((res) => {
       if (res.status === 200 || res.status === 201) { // 성공을 알리는 HTTP 상태 코드면
-        res.json().then(data => {
+        res.json()
+        .then(data => {
           const newrewards = this.state.rewards.slice();
 
-          data.map(elem => {
-            newrewards.push({ id : elem.id, userId : elem.userId,
+          if(!data.rewards.length){
+            let initState = {
+              id : '',
+              title : '제목을 입력하세요',
+              desc : '설명을 입력하세요',
+              coin : 10,
+            }
+            newrewards.push(initState)
+          } else {
+
+          data.rewards.map(elem => {
+            newrewards.push({ id : elem.id,
               title : elem.title, desc : elem.description, coin : elem.coin });
           });
+        }
 
           this.setState({
             rewards: newrewards,
@@ -52,9 +76,23 @@ class Rewards extends Component<rewardsinfoProps, rewardsStates> {
 
   }
   public render() {
+    const { navigate } = this.props.navigation;
     return (
             <View style = {styles.container}>
+              <View style ={{flex : 5}}>
+                <Characterinfo/>
+              </View>
 
+      <View style = { { flex : 1 } }>
+          <Button
+          title='Add reward'
+          onPress={() => navigate('AddRewardScreen')}
+          />
+        </View>
+
+        
+
+              <View style = {{ flex : 9 }}>
         {this.state.rewards.map((item) => {
           return   <View style = {styles.onehabit} key = {item.title}>
 
@@ -75,6 +113,7 @@ class Rewards extends Component<rewardsinfoProps, rewardsStates> {
 
         })
     }
+    </View>
             </View>
     );
   }

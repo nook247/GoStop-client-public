@@ -13,7 +13,7 @@ export default class ItemshopScreen extends Component {
             <View style = {{ borderWidth : 1, borderColor : 'red' }}>
                 <Characterinfo style = {{ flex : 2 }}/>
 
-                <Item style = {{ flex : 5 }} />
+                <Item style = {{ flex : 2 }} />
             </View>
             </Provider>
       );

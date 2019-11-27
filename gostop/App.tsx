@@ -1,68 +1,88 @@
-import { Container } from 'native-base';
 import React, { Component } from 'react';
 import  HomeScreen from './src/screens/HomeScreen';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 import combineReducers from './src/reducers/index';
+import { StyleSheet, View, Text } from 'react-native';
 
 export default class App extends Component{
   public render() {
     return(
       <Provider store = {store}>
-        <Container>
+        <View style = {styles.container}>
           <HomeScreen />
-        </Container>
-        </Provider>
+        </View>
+      </Provider>
+
     );
   }
 }
 
 const store = createStore(combineReducers);
-// import { StyleSheet, Text, View } from 'react-native';
-// import { Provider } from 'react-redux';
-// import { createStore } from 'redux';
-// import Item from './src/components/Item';
-// import reducers from './src/reducers/index';
 
-// const store = createStore(reducers);
-// export default class App extends Component {
-//   public render() {
+const styles = StyleSheet.create({
+  container: {
+    borderWidth: 1,
+    borderColor: 'black',
+    flex: 1,
+    width : '100%',
+  },
+});
+
+
+// import React from "react";
+// import { View } from "native-base";
+// import { Button, StyleSheet } from "react-native"
+// import * as Permissions from 'expo-permissions';
+
+// export default class App extends React.Component<any, any> {
+//   constructor(props) {
+//     super(props);
+//     this.state = {
+//       status : '',
+//     };
+//   }
+
+//   async checkPermisson() {
+//     // const { Permissions } = Expo;
+//     const { status } = await Permissions.getAsync(Permissions.CAMERA);
+//     if (status !== 'granted') {
+//       const { status } = await Permissions.askAsync(Permissions.CAMERA);
+//       this.setState({
+//         status : status,
+//       })
+//     } else {
+//       this.setState({
+//         status : status,
+//       }
+//       )
+//       alert('Hey!  they are good.');
+//     }
+//   }
+
+//   render() {
+//     // ...
 //     return (
-//       <Provider store={store}>
 //       <View style={styles.container}>
-//         <Text style={styles.welcome}>Item Shop</Text>
+//         <Button
+//           title= "Select image"
+//           onPress={() => {
+//             if(this.state.status !== 'granted') {
+//               this.checkPermisson();
+//             } else {
+//               alert('good!');
+//             }  }}
+//         />
 //       </View>
-//       <Item/>
-//       </Provider>
-
 //     );
 //   }
 // }
 
-// const store = createStore(reducer);
-
-// const MainNavigator = createStackNavigator({
-//   Home: { screen: HomeScreen },
-//   HabitScreen: { screen: HabitScreen },
-//   // AddHabitsScreen : { screen : AddHabitsScreen },
-// });
-// const App = createAppContainer(MainNavigator);
-// export default App;
-
 // const styles = StyleSheet.create({
 //   container: {
-//     marginTop: 40,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     backgroundColor: '#F5FCFF',
-//     width: 300,
-//     height: '10%',
-//   },
-//   welcome: {
-//     fontSize: 20,
-//     textAlign: 'center',
-//     margin: 10,
-//     height: 50,
-
+//     borderWidth: 1,
+//     borderColor: 'black',
+//     flex: 1,
+//     width : '100%',
 //   },
 // });

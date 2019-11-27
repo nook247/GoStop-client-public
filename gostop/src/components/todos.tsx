@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import { CheckBox, StyleSheet, Text, View } from 'react-native';
+import { CheckBox, StyleSheet, Text, View, AsyncStorage, Button } from 'react-native';
 import { connect } from 'react-redux';
 import {  coinchange, healthchange, pointchange  } from '../actions/characterinfoaction';
 import  DatePicker  from './DatePicker';
 import fakeserver from '../fakeserver';
+import Characterinfo from './characterinfo';
 
 export interface Todo {
-  id : number;
-  userId : number;
+  id : string;
   title : string;
   desc : string;
   alarm : boolean;
@@ -47,14 +47,39 @@ class Todos extends Component<any, TodosStates> {
     });
   }
 
-  public componentDidMount() {
-    fetch(`${fakeserver}/todos`).then((res) => {
+  public async componentDidMount() {
+    let token = '';
+    await AsyncStorage.getItem('token', (err, result) => {
+      token = result
+    }
+    )
+    console.log('storage 저장된 token이야', token);
+    let header = new Headers();
+    header.append('Cookie', token)
+    const myInit = {
+      method : 'GET',
+      headers : header,
+    }
+    fetch(`${fakeserver}/users/todos`, myInit).then((res) => {
       if (res.status === 200 || res.status === 201) { // 성공을 알리는 HTTP 상태 코드면
-        res.json().then(todosdata => {
+        res.json()
+        .then(todosdata => {
           const newtodos = this.state.todos.slice();
 
-          todosdata.map(elem => {
-            newtodos.push({ id : elem.id, userId : elem.userId, title : elem.title, desc : elem.description,
+          if(!todosdata.todos.length){
+            let initState = {
+              id : '',
+              title : '제목을 입력하세요',
+              desc : '설명을 입력하세요',
+              alarm : true,
+              completed : true,
+              difficulty : 3,
+            }
+            newtodos.push(initState)
+          } else {
+
+          todosdata.todos.map(elem => {
+            newtodos.push({ id : elem.id, title : elem.title, desc : elem.description,
               alarm : elem.alarm, completed : elem.completed, difficulty : elem.difficulty });
             if (elem.completed) {
               this.setState({
@@ -62,6 +87,7 @@ class Todos extends Component<any, TodosStates> {
               });
             }
           });
+        }
 
           this.setState({
             todos: newtodos,
@@ -76,8 +102,22 @@ class Todos extends Component<any, TodosStates> {
 
   }
   public render() {
+    const { navigate } = this.props.navigation;
     return (
             <View style = {styles.container}>
+              
+            <View style ={{flex : 5}}>
+                <Characterinfo/>
+              </View>
+
+      <View style = { { flex : 1 } }>
+          <Button
+          title='Add todo'
+          onPress={() => navigate('AddTodosScreen')}
+          />
+        </View>
+
+                           <View style = {{ flex : 9 }}>
                            <View>
                     <DatePicker />
                 </View>
@@ -130,6 +170,8 @@ class Todos extends Component<any, TodosStates> {
       <View>
         <Text> 완료 {this.state.completecount}건, 미완료 {this.state.todos.length - this.state.completecount} 건</Text>
       </View>
+      </View>
+
       </View>
     );
   }
