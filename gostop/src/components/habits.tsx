@@ -7,7 +7,7 @@ import Characterinfo from './characterinfo';
 import { savehabit } from '../actions/habitaction';
 
 export interface Habit {
-  id : string,
+  id : string;
   title : string;
   desc : string;
   alarmId : string;
@@ -114,15 +114,15 @@ async getdata(){
       <View style = { { flex : 1 } }>
           <Button
           title='Add habits'
-          onPress={() => navigate('AddHabitsScreen')}
+          onPress={() => navigate('AddHabit')}
           />
         </View>
 
               <View style = {{ flex : 9 }}>
-          <TouchableOpacity style={{ backgroundColor:'skyblue' }}
+          {/* <TouchableOpacity style={{ backgroundColor:'skyblue' }}
           onPress={() =>
           this.props.navigation.navigate('AddHabitsScreen')}>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
  
         {this.props.habitarr.map((item) => {
           return   <View style = {styles.onehabit} key = {item.title}>
@@ -137,7 +137,7 @@ async getdata(){
             <TouchableOpacity style={{ backgroundColor:'skyblue' }}
           onPress = {() => {
             // this.props.passhabit(item.id, item.title, item.desc, item.alarmId, item.difficulty, item.positive);
-            this.props.navigation.navigate('AddHabitsScreen', {
+            this.props.navigation.navigate('AddHabit', {
               title : item.title,
             })
           }}>

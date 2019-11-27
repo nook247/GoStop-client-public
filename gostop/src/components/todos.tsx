@@ -5,6 +5,7 @@ import {  coinchange, healthchange, pointchange  } from '../actions/characterinf
 import  DatePicker  from './DatePicker';
 import fakeserver from '../fakeserver';
 import Characterinfo from './characterinfo';
+import { savetodos } from '../actions/todosaction';
 
 export interface Todo {
   id : string;
@@ -16,7 +17,7 @@ export interface Todo {
 }
 
 interface TodosStates {
-  todos : Todo[];
+  // todos : Todo[];
   completecount : number;
 }
 
@@ -24,7 +25,7 @@ class Todos extends Component<any, TodosStates> {
   constructor(props) {
     super(props);
     this.state = {
-      todos : [],
+      // todos : [],
       completecount : 0,
     };
   }
@@ -63,10 +64,10 @@ class Todos extends Component<any, TodosStates> {
     fetch(`${fakeserver}/users/todos`, myInit).then((res) => {
       if (res.status === 200 || res.status === 201) { // 성공을 알리는 HTTP 상태 코드면
         res.json()
-        .then(todosdata => {
-          const newtodos = this.state.todos.slice();
+        .then(data => {
+          // const newtodos = this.state.todos.slice();
 
-          if(!todosdata.todos.length){
+          if(!data.todos.length){
             let initState = {
               id : '',
               title : '제목을 입력하세요',
@@ -75,23 +76,33 @@ class Todos extends Component<any, TodosStates> {
               completed : true,
               difficulty : 3,
             }
-            newtodos.push(initState)
+            // newtodos.push(initState)
           } else {
+            this.props.savetodos(data.todos);
 
-          todosdata.todos.map(elem => {
-            newtodos.push({ id : elem.id, title : elem.title, desc : elem.description,
-              alarm : elem.alarm, completed : elem.completed, difficulty : elem.difficulty });
-            if (elem.completed) {
+            for(let i=0; i<data.todos.length; i++){
+            if (data.todos[i].completed) {
               this.setState({
                 completecount : this.state.completecount + 1,
               });
             }
-          });
+            }
+
+
+          // todosdata.todos.map(elem => {
+          //   newtodos.push({ id : elem.id, title : elem.title, desc : elem.description,
+          //     alarm : elem.alarm, completed : elem.completed, difficulty : elem.difficulty });
+          //   if (elem.completed) {
+              // this.setState({
+              //   completecount : this.state.completecount + 1,
+              // });
+          //   }
+          // });
         }
 
-          this.setState({
-            todos: newtodos,
-          });
+          // this.setState({
+          //   todos: newtodos,
+          // });
         },
 
             );
@@ -112,8 +123,8 @@ class Todos extends Component<any, TodosStates> {
 
       <View style = { { flex : 1 } }>
           <Button
-          title='Add todo'
-          onPress={() => navigate('AddTodosScreen')}
+          title='Add todos'
+          onPress={() => navigate('AddTodos')}
           />
         </View>
 
@@ -122,18 +133,25 @@ class Todos extends Component<any, TodosStates> {
                     <DatePicker />
                 </View>
 
-        {this.state.todos.map((item) => {
-          const index = this.state.todos.indexOf(item);
+        {this.props.todosarr.map((item) => {
+          const index = this.props.todosarr.indexOf(item);
           return   <View style = {styles.onehabit} key = {item.title}>
 
 <CheckBox
       value = {item.completed}
       onValueChange={ () => {
-        const newtodos = this.state.todos;
-        newtodos[index].completed = !newtodos[index].completed;
-        this.setState({
-          todos : newtodos,
-        });
+        const newtodos = this.props.todosarr;
+        for (let i=0; i<newtodos.length; i++) {
+          if (newtodos[i].title === item.title) {
+            newtodos[i].completed = !newtodos[i].completed;
+          }
+        }
+        this.props.savetodos(newtodos);
+        // const newtodos = this.props.todosarr;
+        // newtodos[index].completed = !newtodos[index].completed;
+        // this.setState({
+        //   todos : newtodos,
+        // });
         if (item.completed) {
           this.setState({
             completecount : this.state.completecount + 1,
@@ -155,7 +173,7 @@ class Todos extends Component<any, TodosStates> {
 
       <View style = {styles.habits}>
           <Text style = {styles.habittitle}>{item.title}</Text>
-          <Text style = {styles.habitdesc}>{item.desc}</Text>
+          <Text style = {styles.habitdesc}>{item.description}</Text>
 
       </View >
 
@@ -168,7 +186,7 @@ class Todos extends Component<any, TodosStates> {
         })
     }
       <View>
-        <Text> 완료 {this.state.completecount}건, 미완료 {this.state.todos.length - this.state.completecount} 건</Text>
+        <Text> 완료 {this.state.completecount}건, 미완료 {this.props.todosarr.length - this.state.completecount} 건</Text>
       </View>
       </View>
 
@@ -177,14 +195,23 @@ class Todos extends Component<any, TodosStates> {
   }
 }
 
+const mapStateToProps = (state) => {
+  return {
+    todosarr : state.todosreducer.todosarr,
+  };
+};
+
 const mapDispatchToProps = dispatch => {
   return {
     pointchange : value => dispatch(pointchange(value)),
     coinchange : value => dispatch(coinchange(value)),
     healthchange : value => dispatch(healthchange(value)),
+    savetodos : (arr) => {
+      dispatch(savetodos(arr));
+    },
   };
 };
-export default connect(null, mapDispatchToProps)(Todos);
+export default connect(mapStateToProps, mapDispatchToProps)(Todos);
 
 const styles = StyleSheet.create({
   container: {
