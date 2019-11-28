@@ -12,8 +12,4 @@ export default class AddRewardScreen extends React.Component <any, any> {
   }
 }
 
-// const MainNavigator = createStackNavigator({
-//     AddRewardscreen : { screen : AddRewardscreen },
-// });
-// const AddRewardScreen = createAppContainer(MainNavigator);
-// export default AddRewardScreen;
+

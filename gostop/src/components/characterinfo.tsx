@@ -1,8 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Button, Image, StyleSheet, Text, View } from 'react-native';
 import { connect } from 'react-redux';
 import { fetchCharacterInfo } from '../actions/characterinfoaction';
-import fakeserver from '../fakeserver';
 
 interface CharacterinfoProps {
   name : string;
@@ -19,17 +18,22 @@ class Characterinfo  extends React.Component<CharacterinfoProps, any> {
   }
 
   public componentDidMount() {
+    // let user_id = '';
+    // AsyncStorage.getItem('userinfo', (err, result) => {
+    //   console.log('user정보 가져왔니?', result)
+    //   user_id = result['_id']
+    // });
   
-    fetch(`${fakeserver}/users/1`).then((res) => {
-      if (res.status === 200 || res.status === 201) { // 성공을 알리는 HTTP 상태 코드면
-        res.json().then(data => {
-          this.props.getcharacterinfo(data.name, data.health, data.point, data.coin, data.level);
-        },
-                );
-      } else { // 실패를 알리는 HTTP 상태 코드면
-        console.error(res.statusText);
-      }
-    }).catch(err => console.error(err));
+    // fetch(`${fakeserver}/users/${user_id}`).then((res) => {
+    //   if (res.status === 200 || res.status === 201) { // 성공을 알리는 HTTP 상태 코드면
+    //     res.json().then(data => {
+    //       this.props.getcharacterinfo(data.name, data.health, data.point, data.coin, data.level);
+    //     },
+    //             );
+    //   } else { // 실패를 알리는 HTTP 상태 코드면
+    //     console.error(res.statusText);
+    //   }
+    // }).catch(err => console.error(err));
 
   }
 
@@ -96,11 +100,17 @@ class Characterinfo  extends React.Component<CharacterinfoProps, any> {
 const mapStateToProps = (state) => {
   console.log(state);
   return {
-    name : state.changepointreducer.name,
-    healthvalue : state.changepointreducer.healthvalue,
-    pointsvalue : state.changepointreducer.pointsvalue,
-    coinsvalue : state.changepointreducer.coinsvalue,
-    level : state.changepointreducer.level,
+    // name : state.changepointreducer.name,
+    // healthvalue : state.changepointreducer.healthvalue,
+    // pointsvalue : state.changepointreducer.pointsvalue,
+    // coinsvalue : state.changepointreducer.coinsvalue,
+    // level : state.changepointreducer.level,
+    name : state.getuserreducer.name,
+    healthvalue : state.getuserreducer.health,
+    pointsvalue : state.getuserreducer.point,
+    coinsvalue : state.getuserreducer.coin,
+    level : state.getuserreducer.level,
+
   };
 
 };

@@ -17,6 +17,7 @@ export default class ItemshopScreen extends Component<any,any> {
                 <Characterinfo style = {{ flex : 2 }}/>
 
                 <Itemshop style = {{ flex : 5 }} />
+
             </View>
       // </Provider>
     );

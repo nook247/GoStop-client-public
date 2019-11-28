@@ -4,6 +4,7 @@ import { View } from 'react-native';
 // tslint:disable-next-line: ordered-imports
 import Item from '../components/Item';
 
+
 export default class CharacterchangeScreen extends Component<any, any> {
   public render() {
     return (

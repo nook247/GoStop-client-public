@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
-import { CheckBox, StyleSheet, Text, View } from 'react-native';
+import { CheckBox, StyleSheet, Text, View, AsyncStorage, Button } from 'react-native';
 import { connect } from 'react-redux';
 import {  coinchange, healthchange, pointchange  } from '../actions/characterinfoaction';
 import  DatePicker  from './DatePicker';
 import fakeserver from '../fakeserver';
+import Characterinfo from './characterinfo';
+import { savetodos } from '../actions/todosaction';
 
 export interface Todo {
-  id : number;
-  userId : number;
+  id : string;
   title : string;
   desc : string;
   alarm : boolean;
@@ -16,7 +17,7 @@ export interface Todo {
 }
 
 interface TodosStates {
-  todos : Todo[];
+  // todos : Todo[];
   completecount : number;
 }
 
@@ -24,7 +25,7 @@ class Todos extends Component<any, TodosStates> {
   constructor(props) {
     super(props);
     this.state = {
-      todos : [],
+      // todos : [],
       completecount : 0,
     };
   }
@@ -47,25 +48,61 @@ class Todos extends Component<any, TodosStates> {
     });
   }
 
-  public componentDidMount() {
-    fetch(`${fakeserver}/todos`).then((res) => {
+  public async componentDidMount() {
+    let token = '';
+    await AsyncStorage.getItem('token', (err, result) => {
+      token = result
+    }
+    )
+    console.log('storage 저장된 token이야', token);
+    let header = new Headers();
+    header.append('Cookie', token)
+    const myInit = {
+      method : 'GET',
+      headers : header,
+    }
+    fetch(`${fakeserver}/users/todos`, myInit).then((res) => {
       if (res.status === 200 || res.status === 201) { // 성공을 알리는 HTTP 상태 코드면
-        res.json().then(todosdata => {
-          const newtodos = this.state.todos.slice();
+        res.json()
+        .then(data => {
+          // const newtodos = this.state.todos.slice();
 
-          todosdata.map(elem => {
-            newtodos.push({ id : elem.id, userId : elem.userId, title : elem.title, desc : elem.description,
-              alarm : elem.alarm, completed : elem.completed, difficulty : elem.difficulty });
-            if (elem.completed) {
+          if(!data.todos.length){
+            let initState = {
+              id : '',
+              title : '제목을 입력하세요',
+              desc : '설명을 입력하세요',
+              alarm : true,
+              completed : true,
+              difficulty : 3,
+            }
+            // newtodos.push(initState)
+          } else {
+            this.props.savetodos(data.todos);
+
+            for(let i=0; i<data.todos.length; i++){
+            if (data.todos[i].completed) {
               this.setState({
                 completecount : this.state.completecount + 1,
               });
             }
-          });
+            }
 
-          this.setState({
-            todos: newtodos,
-          });
+
+          // todosdata.todos.map(elem => {
+          //   newtodos.push({ id : elem.id, title : elem.title, desc : elem.description,
+          //     alarm : elem.alarm, completed : elem.completed, difficulty : elem.difficulty });
+          //   if (elem.completed) {
+              // this.setState({
+              //   completecount : this.state.completecount + 1,
+              // });
+          //   }
+          // });
+        }
+
+          // this.setState({
+          //   todos: newtodos,
+          // });
         },
 
             );
@@ -76,24 +113,45 @@ class Todos extends Component<any, TodosStates> {
 
   }
   public render() {
+    const { navigate } = this.props.navigation;
     return (
             <View style = {styles.container}>
+              
+            <View style ={{flex : 5}}>
+                <Characterinfo/>
+              </View>
+
+      <View style = { { flex : 1 } }>
+          <Button
+          title='Add todos'
+          onPress={() => navigate('AddTodos')}
+          />
+        </View>
+
+                           <View style = {{ flex : 9 }}>
                            <View>
                     <DatePicker />
                 </View>
 
-        {this.state.todos.map((item) => {
-          const index = this.state.todos.indexOf(item);
+        {this.props.todosarr.map((item) => {
+          const index = this.props.todosarr.indexOf(item);
           return   <View style = {styles.onehabit} key = {item.title}>
 
 <CheckBox
       value = {item.completed}
       onValueChange={ () => {
-        const newtodos = this.state.todos;
-        newtodos[index].completed = !newtodos[index].completed;
-        this.setState({
-          todos : newtodos,
-        });
+        const newtodos = this.props.todosarr;
+        for (let i=0; i<newtodos.length; i++) {
+          if (newtodos[i].title === item.title) {
+            newtodos[i].completed = !newtodos[i].completed;
+          }
+        }
+        this.props.savetodos(newtodos);
+        // const newtodos = this.props.todosarr;
+        // newtodos[index].completed = !newtodos[index].completed;
+        // this.setState({
+        //   todos : newtodos,
+        // });
         if (item.completed) {
           this.setState({
             completecount : this.state.completecount + 1,
@@ -115,7 +173,7 @@ class Todos extends Component<any, TodosStates> {
 
       <View style = {styles.habits}>
           <Text style = {styles.habittitle}>{item.title}</Text>
-          <Text style = {styles.habitdesc}>{item.desc}</Text>
+          <Text style = {styles.habitdesc}>{item.description}</Text>
 
       </View >
 
@@ -128,21 +186,32 @@ class Todos extends Component<any, TodosStates> {
         })
     }
       <View>
-        <Text> 완료 {this.state.completecount}건, 미완료 {this.state.todos.length - this.state.completecount} 건</Text>
+        <Text> 완료 {this.state.completecount}건, 미완료 {this.props.todosarr.length - this.state.completecount} 건</Text>
       </View>
+      </View>
+
       </View>
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    todosarr : state.todosreducer.todosarr,
+  };
+};
 
 const mapDispatchToProps = dispatch => {
   return {
     pointchange : value => dispatch(pointchange(value)),
     coinchange : value => dispatch(coinchange(value)),
     healthchange : value => dispatch(healthchange(value)),
+    savetodos : (arr) => {
+      dispatch(savetodos(arr));
+    },
   };
 };
-export default connect(null, mapDispatchToProps)(Todos);
+export default connect(mapStateToProps, mapDispatchToProps)(Todos);
 
 const styles = StyleSheet.create({
   container: {
