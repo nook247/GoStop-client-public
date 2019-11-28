@@ -10,9 +10,6 @@ import {
 } from 'react-native';
 import fakeserver from '../fakeserver';
 import { createStackNavigator, createAppContainer } from 'react-navigation';
-import HabitScreen from '../screens/HabitScreen';
-import TodosScreen from '../screens/TodosScreen';
-import RewardScreen from '../screens/RewardScreen';
 import { connect } from 'react-redux';
 import Habits from './habits'
 import { getuser } from '../actions/getuseraction';
@@ -39,19 +36,7 @@ class Signin extends Component<any, any> {
   handlePassword = text => {
     this.setState({ password: text });
   };
-  handlePasswordCheck = text => {
-    if(this.state.password!==text){
-      this.setState({
-        passwordmsg : '비밀번호가 일치하지 않습니다'
-      }) 
 
-    } else {
-      this.setState({
-        passwordmsg : '비밀번호가 일치합니다'
-      })
-    }
-  };
- 
    login = (email, password) => {
     const logindata = {
       email : email,

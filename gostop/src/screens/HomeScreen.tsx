@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Platform, View, TouchableOpacity } from 'react-native';
-import { createAppContainer, createDrawerNavigator, createMaterialTopTabNavigator, createSwitchNavigator } from 'react-navigation';
+import { Platform, View, TouchableOpacity, Button, Text, Image, StyleSheet } from 'react-native';
+import { createAppContainer, createDrawerNavigator, createMaterialTopTabNavigator, createSwitchNavigator, SafeAreaView, DrawerItems, ScrollView } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import ItemshopScreen from './ItemshopScreen';
 import CharacterchangeScreen from './CharacterchangeScreen';;
@@ -15,7 +15,9 @@ import Rewards from '../components/rewards'
 import Signup from '../components/Signup';
 import AddHabit from '../components/AddHabit';
 import AddTodos from '../components/AddTodos';
+import DrawerContainer from '../components/Drawer';
 import ModifyHabit from '../components/ModifyHabit'
+
 
 interface UserState {
   level : number;
@@ -64,7 +66,7 @@ const AppTabNavigator = createMaterialTopTabNavigator({
   habitStack : { screen : habitStack },
   todosStack : { screen : todosStack },
   rewardStack : { screen : rewardStack },
-}, {
+},                                                    {
     animationEnabled: true,
     swipeEnabled: false,
     tabBarPosition: 'bottom',
@@ -86,12 +88,12 @@ const AppTabNavigator = createMaterialTopTabNavigator({
   });
 
   const drawerNavigator = createDrawerNavigator({
-    AppTabNavigator : { screen : AppTabNavigator},
+    AppTabNavigator : { screen : AppTabNavigator },
     ItemshopScreen : { screen : ItemshopScreen },
     CharacterchangeScreen : { screen : CharacterchangeScreen },
-  });
-
-
+    AuthLoading: { screen : AuthLoadingScreen}},
+    { contentComponent: DrawerContainer },
+  );
 
 
 const HomeScreen = createAppContainer(createSwitchNavigator(
