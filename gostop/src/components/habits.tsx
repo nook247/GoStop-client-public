@@ -5,12 +5,13 @@ import { coinchange, healthchange, pointchange } from '../actions/characterinfoa
 import fakeserver from '../fakeserver';
 import Characterinfo from './characterinfo';
 import { savehabit } from '../actions/habitaction';
+import { elementType, element } from 'prop-types';
 
 export interface Habit {
   id : string;
   title : string;
   desc : string;
-  alarmId : string;
+  // alarmId : string;
   difficulty : number;
   positive : boolean;
 }
@@ -29,10 +30,6 @@ interface habitsStates {
 class Habits extends Component<any, habitsStates> {
   constructor(props) {
     super(props);
-    // this.state = {
-    //   habits : [],
-    //   count : 0,
-    // };
   }
 
   //  componentWillMount(){
@@ -45,8 +42,7 @@ class Habits extends Component<any, habitsStates> {
   //   }
 
   public componentDidMount() {
-    // console.log(this.state)
-  this.getdata()
+    this.getdata();
   }
 
 async getdata(){
@@ -68,30 +64,34 @@ async getdata(){
         res.json()
         .then( (data) => {
           console.log('습관 데이터 ::', data)
-          // const newhabits = this.state.habits.slice();
           if (!data.habits.length) {
             let initState = {
               id : '',
               title : '제목을 입력하세요',
-              desc : '설명을 입력하세요',
-              alarmId : '',
+              description : '설명을 입력하세요',
+              // alarmId : '',
               difficulty : 3,
               positive : true
-            }
-            // newhabits.push(initState)
+            };
+            this.props.savehabit([initState]);
           } else {
+            console.log('data.habits 이거야!!!', data.habits);
+            const habits = [];
+            data.habits.forEach( element => {
+              const habitobj = {
+                id : element["_id"],
+                title : element["title"],
+                description : element["description"],
+                difficulty : element["difficulty"],
+                positive : element["positive"],
+                // alarmId : element["alarmId"] || '',
+              }
+              habits.push(habitobj)
+            })
+            console.log('가공한 habits 이거야!!', habits)
             this.props.savehabit(data.habits);
 
-          
-          //   data.habits.map(elem => {
-          //   newhabits.push({ id : elem._id, title : elem.title, desc : elem.description, alarmId : elem.alarm,
-          //     difficulty : elem.difficulty, positive : elem.positive });
-          // });
           }
-
-          // this.setState({
-          //   habits: newhabits,
-          // });
         },
 
             );
@@ -103,7 +103,6 @@ async getdata(){
 }
 
   public render() {
-    console.log('habitreducer 받아왔니?', this.props.habitarr)
     const { navigate } = this.props.navigation;
     return (
             <View style = {styles.container}>
@@ -119,10 +118,10 @@ async getdata(){
         </View>
 
               <View style = {{ flex : 9 }}>
-          {/* <TouchableOpacity style={{ backgroundColor:'skyblue' }}
+          <TouchableOpacity style={{ backgroundColor:'skyblue' }}
           onPress={() =>
           this.props.navigation.navigate('AddHabitsScreen')}>
-          </TouchableOpacity> */}
+          </TouchableOpacity>
  
         {this.props.habitarr.map((item) => {
           return   <View style = {styles.onehabit} key = {item.title}>
@@ -140,7 +139,8 @@ async getdata(){
             this.props.navigation.navigate('ModifyHabit', {
               title : item.title,
             })
-          }}>
+          }}
+          >
               <Text>수정</Text>
             </TouchableOpacity>
       </View>
@@ -158,7 +158,8 @@ async getdata(){
         </TouchableOpacity>
       </View>
       <View>
-        <Text>알람여부{item.alarmId}</Text>
+        {/* <Text>알람여부{item.alarmId}</Text> */}
+        <Text>알람여부</Text>
       </View>
 
       </View>;
@@ -175,11 +176,6 @@ async getdata(){
 
 const mapStateToProps = (state) => {
   return {
-    // name : state.changepointreducer.name,
-    // healthvalue : state.changepointreducer.healthvalue,
-    // pointsvalue : state.changepointreducer.pointsvalue,
-    // coinsvalue : state.changepointreducer.coinsvalue,
-    // level : state.changepointreducer.level,
     habitarr : state.habitreducer.habitarr,
   };
 
@@ -190,9 +186,6 @@ const mapDispatchToProps = dispatch => {
     pointchange : value => dispatch(pointchange(value)),
     coinchange : value => dispatch(coinchange(value)),
     healthchange : value => dispatch(healthchange(value)),
-    // passhabit : (id, title, description, alarmId, difficulty, positive) => {
-    //   dispatch(passhabit(id, title, description, alarmId, difficulty, positive));
-    // },
     savehabit : (arr) => {
       dispatch(savehabit(arr));
     },
