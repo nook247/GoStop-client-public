@@ -4,7 +4,7 @@ const initialhabit : Habit = {
   id : 'aaa',
   title : 'aaa',
   description : 'aaa',
-  alarmId : 'aaa',
+  // alarmId : 'aaa',
   difficulty : 1,
   positive : true,
 };

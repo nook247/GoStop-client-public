@@ -4,7 +4,7 @@ export interface Habit {
   id : string;
   title : string;
   description : string;
-  alarmId : string;
+  // alarmId : string;
   difficulty : number;
   positive : boolean;
 
