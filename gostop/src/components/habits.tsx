@@ -113,15 +113,15 @@ async getdata(){
       <View style = { { flex : 1 } }>
           <Button
           title='Add habits'
-          // onPress={() => navigate('AddHabit')}
+          onPress={() => navigate('AddHabit')}
           />
         </View>
 
               <View style = {{ flex : 9 }}>
-          {/* <TouchableOpacity style={{ backgroundColor:'skyblue' }}
+          <TouchableOpacity style={{ backgroundColor:'skyblue' }}
           onPress={() =>
           this.props.navigation.navigate('AddHabitsScreen')}>
-          </TouchableOpacity> */}
+          </TouchableOpacity>
  
         {this.props.habitarr.map((item) => {
           return   <View style = {styles.onehabit} key = {item.title}>
@@ -134,12 +134,12 @@ async getdata(){
               <Text>++</Text>
             </TouchableOpacity>
             <TouchableOpacity style={{ backgroundColor:'skyblue' }}
-          // onPress = {() => {
-          //   // this.props.passhabit(item.id, item.title, item.desc, item.alarmId, item.difficulty, item.positive);
-          //   this.props.navigation.navigate('AddHabit', {
-          //     title : item.title,
-          //   })
-          // }}
+          onPress = {() => {
+            // this.props.passhabit(item.id, item.title, item.desc, item.alarmId, item.difficulty, item.positive);
+            this.props.navigation.navigate('AddHabit', {
+              title : item.title,
+            })
+          }}
           >
               <Text>수정</Text>
             </TouchableOpacity>
