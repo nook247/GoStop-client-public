@@ -7,6 +7,7 @@ import Characterinfo from './characterinfo';
 import  savehabit  from '../actions/habitaction';
 import { getuser } from '../actions/getuseraction';
 
+
 export interface Habit {
   id : string;
   title : string;
@@ -87,11 +88,11 @@ async getdata(){
             const habits = [];
             data.habits.forEach( element => {
               const habitobj = {
-                id : element["_id"],
-                title : element["title"],
-                description : element["description"],
-                difficulty : element["difficulty"],
-                positive : element["positive"],
+                id : element['_id'],
+                title : element['title'],
+                description : element['description'],
+                difficulty : element['difficulty'],
+                positive : element['positive'],
                 // alarmId : element["alarmId"] || '',
               }
               habits.push(habitobj);
