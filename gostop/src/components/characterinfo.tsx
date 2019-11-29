@@ -85,7 +85,7 @@ class Characterinfo  extends React.Component<CharacterinfoProps, any> {
 }
 
 const mapStateToProps = (state) => {
-  console.log(state);
+  // console.log(state);
   return {
     // name : state.changepointreducer.name,
     // healthvalue : state.changepointreducer.healthvalue,

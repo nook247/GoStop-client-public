@@ -4,11 +4,11 @@ const initialtodos : Todos = {
   id : 'id',
   title : 'title',
   description : 'description',
-  alarmId : 'alamId',
+  // alarmId : 'alamId',
   difficulty : 1,
   dateStart : 'dateStart',
   dateEnd : 'dateEnd',
-  completed : true,
+  completed : false,
 };
 
 const initialState : Todosarr = {

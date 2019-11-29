@@ -4,7 +4,7 @@ export interface Todos {
   id : string;
   title : string;
   description : string;
-  alarmId : string;
+  // alarmId : string;
   difficulty : number;
   dateStart : string;
   dateEnd : string;

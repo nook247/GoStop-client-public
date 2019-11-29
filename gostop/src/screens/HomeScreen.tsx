@@ -2,20 +2,25 @@ import React, { Component } from 'react';
 import { Platform, View, TouchableOpacity, Button, Text, Image, StyleSheet } from 'react-native';
 import { createAppContainer, createDrawerNavigator, createMaterialTopTabNavigator, createSwitchNavigator, SafeAreaView, DrawerItems, ScrollView } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
+import DrawerContainer from '../components/Drawer';
 import ItemshopScreen from './ItemshopScreen';
 import CharacterchangeScreen from './CharacterchangeScreen';;
-import Signin from '../components/Signin'
-import AddHabitScreen from './addHabitsScreen';
-import AddTodosScreen from './addTodosScreen';
-import AddRewardScreen from './addRewardScreen';
+import Signin from '../components/Signin';
+import Signup from '../components/Signup';
 import AuthLoadingScreen from './AuthLoadingScreen';
+
 import Habits from '../components/habits';
 import Todos from '../components/todos';
-import Rewards from '../components/rewards'
-import Signup from '../components/Signup';
+import Rewards from '../components/rewards';
+
 import AddHabit from '../components/AddHabit';
 import AddTodos from '../components/AddTodos';
-import DrawerContainer from '../components/Drawer';
+import AddReward from '../components/AddReward';
+
+import ModifyHabit from '../components/ModifyHabit';
+import ModifyTodos from '../components/ModifyTodos';
+import ModifyReward from '../components/ModifyReward';
+
 
 interface UserState {
   level : number;
@@ -47,16 +52,19 @@ export class Homescreen extends Component<any, UserState> {
 const habitStack = createStackNavigator({
   Habits : { screen : Habits },
   AddHabit : { screen : AddHabit },
+  ModifyHabit : { screen : ModifyHabit }
 });
 
 const todosStack = createStackNavigator({
   Todos : { screen : Todos },
   AddTodos : { screen : AddTodos },
+  ModifyTodos : { screen : ModifyTodos }
 });
 
 const rewardStack = createStackNavigator({
   Reward : { screen : Rewards },
-  AddRewardScreen : { screen : AddRewardScreen },
+  AddReward : { screen : AddReward },
+  ModifyReward : { screen : ModifyReward }
 });
 
 const AppTabNavigator = createMaterialTopTabNavigator({
@@ -106,21 +114,3 @@ const HomeScreen = createAppContainer(createSwitchNavigator(
 ));
 
 export default HomeScreen;
-
-
-// const mainNavigator = createStackNavigator({
-//   // Signin : { screen : Signin },
-//   // Homescreen: { screen: Homescreen }
-//   // Characterinfo : { screen : Characterinfo },
-//   AppTabContainet : { screen : AppTabContainet },
-//   // HabitScreen: { screen: HabitScreen },
-//   // AddHabitsScreen : { screen : AddHabitScreen },
-//   // TodosScreen : { screen : TodosScreen },
-//   // RewardScreen : { screen : rewardScreen },
-//   // ItemshopScreen : { screen : ItemshopScreen },
-//   // CharacterchangeScreen : { screen : CharacterchangeScreen },
-// });
-
-
-// const HomeScreen = createAppContainer(mainNavigator);
-// export default HomeScreen;
