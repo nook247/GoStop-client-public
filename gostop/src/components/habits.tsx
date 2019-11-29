@@ -5,6 +5,7 @@ import { coinchange, healthchange, pointchange } from '../actions/characterinfoa
 import fakeserver from '../fakeserver';
 import Characterinfo from './characterinfo';
 import  savehabit  from '../actions/habitaction';
+import { getuser } from '../actions/getuseraction';
 
 export interface Habit {
   id : string;
@@ -31,16 +32,10 @@ class Habits extends Component<any, habitsStates> {
     super(props);
   }
 
-  //  componentWillMount(){
-  //   // this._subscribe = this.props.navigation.addListener('didFocus', () => {
-  //   //  this.getdata()
-  //   //  //Put your Data loading function here instead of my this.LoadData()
-  //   // });
-  //   this.forceUpdate(this.getdata)
-  //   console.log('asdf')
-  //   }
+ 
 
   public componentDidMount() {
+
     this.getdata();
   }
 
@@ -57,12 +52,26 @@ async getdata(){
       headers : header,
       Cookie : token,
     }
+
+    fetch(`${fakeserver}/users/info`, myInit)
+    .then((res) => {
+      if (res.status === 200 || res.status === 201) {
+        res.json()
+        .then(async (data) => {
+          console.log('이게 받아온 user data야', data);
+          await this.props.getuser(data._id, data.email, data.name, data.userCode,data.level, data.health, data.point, data.coin);
+
+          console.log('userinfo store에 저장');
+        }
+        )}}
+        )
+
     fetch(`${fakeserver}/users/habits`, myInit)
     .then((res) => {
       if (res.status === 200 || res.status === 201) { 
         res.json()
         .then( (data) => {
-          console.log('습관 데이터 ::', data)
+          // console.log('습관 데이터 ::', data)
           if (!data.habits.length) {
             let initState = {
               id : '',
@@ -74,7 +83,7 @@ async getdata(){
             };
             this.props.savehabit([initState]);
           } else {
-            console.log('data.habits 이거야!!!', data.habits);
+            // console.log('data.habits 이거야!!!', data.habits);
             const habits = [];
             data.habits.forEach( element => {
               const habitobj = {
@@ -85,10 +94,10 @@ async getdata(){
                 positive : element["positive"],
                 // alarmId : element["alarmId"] || '',
               }
-              habits.push(habitobj)
+              habits.push(habitobj);
             })
-            console.log('가공한 habits 이거야!!', habits)
-            this.props.savehabit(data.habits);
+            // console.log('가공한 habits 이거야!!', habits)
+            this.props.savehabit(habits);
 
           }
         },
@@ -120,7 +129,7 @@ async getdata(){
               <View style = {{ flex : 9 }}>
           <TouchableOpacity style={{ backgroundColor:'skyblue' }}
           onPress={() =>
-          this.props.navigation.navigate('AddHabitsScreen')}>
+          this.props.navigation.navigate('AddHabit')}>
           </TouchableOpacity>
  
         {this.props.habitarr.map((item) => {
@@ -135,8 +144,6 @@ async getdata(){
             </TouchableOpacity>
             <TouchableOpacity style={{ backgroundColor:'skyblue' }}
           onPress = {() => {
-
-            // this.props.passhabit(item.id, item.title, item.desc, item.alarmId, item.difficulty, item.positive);
             this.props.navigation.navigate('ModifyHabit', {
               title : item.title,
             })
@@ -144,6 +151,25 @@ async getdata(){
           >
               <Text>수정</Text>
             </TouchableOpacity>
+            {/* <TouchableOpacity style={{ backgroundColor:'skyblue' }}
+          onPress = {() => {
+            console.log(this.props.habitarr);
+            console.log(item.title)
+            for(let i=0; i<this.props.habitarr.length; i++){
+              if(this.props.habitarr[i].title === item.title){
+                this.props.habitarr.splice(i,1);
+                const newhabitarr = this.props.habitarr;
+                this.props.savehabit(newhabitarr)
+                console.log('newhabitarr',newhabitarr)
+                this.props.navigation.navigate('Habits')
+              }
+            } 
+            
+          }}
+          >
+              <Text>삭제</Text>
+            </TouchableOpacity> */}
+            
       </View>
 
       <View style = {styles.habits}>
@@ -189,6 +215,9 @@ const mapDispatchToProps = dispatch => {
     healthchange : value => dispatch(healthchange(value)),
     savehabit : (arr) => {
       dispatch(savehabit(arr));
+    },
+    getuser : (id, email, name, userCode, level, health, point, coin) => {
+      dispatch(getuser(id, email, name, userCode, level, health, point, coin))
     },
   };
 };

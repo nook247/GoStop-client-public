@@ -49,32 +49,9 @@ class Signin extends Component<any, any> {
       console.log('쿠키니?', cookie);
 
       AsyncStorage.setItem('token', cookie);
-      
-
       if (res.status === 200 || res.status === 201) { // 성공을 알리는 HTTP 상태 코드면
         res.json()
-      .then(async(data) =>  { 
-        console.log('로그인& 토큰 저장 ok');
-      console.log(this.props);
-        await this.props.getuser(data._id, data.email, data.name, data.userCode, data.level, data.health, data.point, data.coin)
-        this.props.navigation.navigate('Habits')
-
-      // let header = new Headers();
-      // header.append('Cookie', cookie)
-      // const myInit = {
-      //   method : 'GET',
-      //   headers : header,
-      //   Cookie : cookie,
-      // }
-      // fetch(`${fakeserver}/users/info`, myInit)
-      // .then((res) => {
-      //   if (res.status === 200 || res.status === 201) { 
-      //     res.json()
-      //     .then( (data) => { console.log('이게 받아온 user data야', data);
-      //       console.log('userinfo store에 저장')
-      //     }
-      //     )}})
-
+      .then(() =>  { this.props.navigation.navigate('Habits');
       }
       );
       }
