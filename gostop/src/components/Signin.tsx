@@ -1,34 +1,27 @@
 import React, { Component } from 'react';
 import {
   AsyncStorage,
-  View,
+  View, 
   Text,
   TouchableOpacity,
   TextInput,
   StyleSheet,
-  Button
 } from 'react-native';
 import fakeserver from '../fakeserver';
-import { createStackNavigator, createAppContainer } from 'react-navigation';
 import { connect } from 'react-redux';
 import Habits from './habits'
 import { getuser } from '../actions/getuseraction';
 
-interface loginProps {
-  cookiesave(value : string) : void;
-}
 class Signin extends Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {
       email: '',
       password: '',
-      passwordmsg : '비밀번호를 한 번 더 입력해주세요'
+      passwordmsg : '비밀번호를 한 번 더 입력해주세요',
     };
     };
   
-
- 
   handleEmail = text => {
     this.setState({ email: text });
   };
@@ -60,10 +53,29 @@ class Signin extends Component<any, any> {
 
       if (res.status === 200 || res.status === 201) { // 성공을 알리는 HTTP 상태 코드면
         res.json()
-      .then(async (data) =>  {console.log('login시 받아온 data', data);
+      .then(async(data) =>  { 
+        console.log('로그인& 토큰 저장 ok');
       console.log(this.props);
         await this.props.getuser(data._id, data.email, data.name, data.userCode, data.level, data.health, data.point, data.coin)
-        this.props.navigation.navigate('Habits')}
+        this.props.navigation.navigate('Habits')
+
+      // let header = new Headers();
+      // header.append('Cookie', cookie)
+      // const myInit = {
+      //   method : 'GET',
+      //   headers : header,
+      //   Cookie : cookie,
+      // }
+      // fetch(`${fakeserver}/users/info`, myInit)
+      // .then((res) => {
+      //   if (res.status === 200 || res.status === 201) { 
+      //     res.json()
+      //     .then( (data) => { console.log('이게 받아온 user data야', data);
+      //       console.log('userinfo store에 저장')
+      //     }
+      //     )}})
+
+      }
       );
       }
     })

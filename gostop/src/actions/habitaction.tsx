@@ -15,7 +15,7 @@ export interface Habitarr {
 
 }
 
-export function savehabit( habitarr : Habitarr ) {
+export default function savehabit( habitarr : Habitarr ) {
   return {
     habitarr,
     type : SAVEHABIT,
