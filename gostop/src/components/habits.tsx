@@ -4,8 +4,7 @@ import { connect } from 'react-redux';
 import { coinchange, healthchange, pointchange } from '../actions/characterinfoaction';
 import fakeserver from '../fakeserver';
 import Characterinfo from './characterinfo';
-import { savehabit } from '../actions/habitaction';
-import { elementType, element } from 'prop-types';
+import  savehabit  from '../actions/habitaction';
 
 export interface Habit {
   id : string;
@@ -103,6 +102,7 @@ async getdata(){
 }
 
   public render() {
+
     const { navigate } = this.props.navigation;
     return (
             <View style = {styles.container}>
@@ -135,6 +135,7 @@ async getdata(){
             </TouchableOpacity>
             <TouchableOpacity style={{ backgroundColor:'skyblue' }}
           onPress = {() => {
+
             // this.props.passhabit(item.id, item.title, item.desc, item.alarmId, item.difficulty, item.positive);
             this.props.navigation.navigate('ModifyHabit', {
               title : item.title,

@@ -5,7 +5,7 @@ import {  coinchange, healthchange, pointchange  } from '../actions/characterinf
 import  DatePicker  from './DatePicker';
 import fakeserver from '../fakeserver';
 import Characterinfo from './characterinfo';
-import { savetodos } from '../actions/todosaction';
+import  savetodos  from '../actions/todosaction';
 
 export interface Todo {
   id : string;
@@ -65,7 +65,6 @@ class Todos extends Component<any, TodosStates> {
       if (res.status === 200 || res.status === 201) { // 성공을 알리는 HTTP 상태 코드면
         res.json()
         .then(data => {
-          // const newtodos = this.state.todos.slice();
 
           if(!data.todos.length){
             let initState = {
@@ -76,33 +75,18 @@ class Todos extends Component<any, TodosStates> {
               completed : true,
               difficulty : 3,
             }
-            // newtodos.push(initState)
           } else {
             this.props.savetodos(data.todos);
 
             for(let i=0; i<data.todos.length; i++){
-            if (data.todos[i].completed) {
-              this.setState({
-                completecount : this.state.completecount + 1,
-              });
+              if (data.todos[i].completed) {
+                this.setState({
+                  completecount : this.state.completecount + 1,
+                });
+              }
             }
-            }
+          }
 
-
-          // todosdata.todos.map(elem => {
-          //   newtodos.push({ id : elem.id, title : elem.title, desc : elem.description,
-          //     alarm : elem.alarm, completed : elem.completed, difficulty : elem.difficulty });
-          //   if (elem.completed) {
-              // this.setState({
-              //   completecount : this.state.completecount + 1,
-              // });
-          //   }
-          // });
-        }
-
-          // this.setState({
-          //   todos: newtodos,
-          // });
         },
 
             );
@@ -116,8 +100,7 @@ class Todos extends Component<any, TodosStates> {
     const { navigate } = this.props.navigation;
     return (
             <View style = {styles.container}>
-              
-            <View style ={{flex : 5}}>
+            <View style ={{ flex : 5 }}>
                 <Characterinfo/>
               </View>
 
@@ -144,14 +127,11 @@ class Todos extends Component<any, TodosStates> {
         for (let i=0; i<newtodos.length; i++) {
           if (newtodos[i].title === item.title) {
             newtodos[i].completed = !newtodos[i].completed;
+            console.log('이게 뉴투두스야', newtodos)
           }
         }
         this.props.savetodos(newtodos);
-        // const newtodos = this.props.todosarr;
-        // newtodos[index].completed = !newtodos[index].completed;
-        // this.setState({
-        //   todos : newtodos,
-        // });
+
         if (item.completed) {
           this.setState({
             completecount : this.state.completecount + 1,
