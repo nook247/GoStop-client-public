@@ -1,49 +1,20 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
-import Characterinfo from '../components/characterinfo'
-import { createStore } from 'redux';
-import combineReducers from '../reducers/index';
-import { connect } from 'react-redux';
-import { coinchange, healthchange, pointchange } from '../actions/characterinfoaction';
+import { View } from 'react-native';
+// import Characterinfo from '../components/characterinfo';
+// tslint:disable-next-line: ordered-imports
+import Item from '../components/Item';
 
 
-class CharacterchangeScreen extends Component<any, any> {
+export default class CharacterchangeScreen extends Component<any, any> {
   public render() {
     return (
-            <View style = {{ borderWidth : 1, borderColor : 'red' }}>
-                <Characterinfo />
+      // <Provider store = {store} style = {{ width : '100%' }}>
+            <View>
+                {/* <Characterinfo style = {{ flex : 2 }}/> */}
 
-                <TouchableOpacity style={{ backgroundColor:'blue' }}
-          onPress = {() => {
-            this.props.coinchange(-30);
-          }}>
-              <Text>++</Text>
-            </TouchableOpacity>
+                <Item />
             </View>
-      );
+            // </Provider>
+    );
   }
 }
-
-const mapDispatchToProps = dispatch => {
-    return {
-      pointchange : value => dispatch(pointchange(value)),
-      coinchange : value => dispatch(coinchange(value)),
-      healthchange : value => dispatch(healthchange(value)),
-    };
-  };
-
-  export default connect(null, mapDispatchToProps)(CharacterchangeScreen);
-
-
-const styles = StyleSheet.create({
-  container: {
-    borderWidth: 1,
-    borderColor: 'black',
-    // flex: 1,
-    width : '100%',
-    // height : '100%',
-    // justifyContent : "space-around"
-  },
-});
-
-const store = createStore(combineReducers);
