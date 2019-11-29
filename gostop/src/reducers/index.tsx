@@ -9,6 +9,7 @@ import getuserreducer from './GetuserReducer';
 import habitreducer from './HabitReducer';
 import todosreducer from './TodosReducer';
 import rewardreducer from './RewardReducer';
+import datereducer from './DateReducer';
 
 export default combineReducers({
   changeReducer,
@@ -20,5 +21,6 @@ export default combineReducers({
   passhabitreducer,
   getuserreducer,
   habitreducer,
-  rewardreducer
+  rewardreducer,
+  datereducer,
 });

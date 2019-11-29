@@ -6,8 +6,8 @@ const initialtodos : Todos = {
   description : 'description',
   // alarmId : 'alamId',
   difficulty : 1,
-  dateStart : 'dateStart',
-  dateEnd : 'dateEnd',
+  dateStart : '2019-11-28',
+  dateEnd : '2019-12-01',
   completed : false,
 };
 

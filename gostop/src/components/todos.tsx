@@ -110,11 +110,22 @@ class Todos extends Component<any, TodosStates> {
     }).catch(err => console.error(err));
 
   }
+
+  public calculus(date){
+
+    var yyyy = date.substr(0,4);
+    var mm = date.substr(5,2);
+    var dd = date.substr(8,2);
+
+    var resultdate = new Date(yyyy, mm-1, dd);
+    return resultdate;
+  }
+
   public render() {
     console.log(this.props.todosarr)
     const { navigate } = this.props.navigation;
     return (
-    
+
       <View style = {styles.container}>
 
       <View style ={{ flex : 5 }}>
@@ -130,97 +141,98 @@ class Todos extends Component<any, TodosStates> {
 
       <View style = {{ flex : 9 }}>
 
-
           <View>
             <DatePicker />
           </View>
-    
+
         {this.props.todosarr.map((item) => {
-          return <View style = {styles.onehabit} key = {item.description}>
+          const start = this.calculus(item.dateStart);
+          const end = this.calculus(item.dateEnd);
+          if (this.props.date >= start && this.props.date <= end ) {
+            return <View style = {styles.onehabit} key = {item.description}>
 
-<View style = {styles.positive}>
-        <CheckBox
-          value = {item.completed}
-          onValueChange={ () => {
-            const newtodos = this.props.todosarr;
-            for (let i=0; i<newtodos.length; i++) {
-              if (newtodos[i].title === item.title) {
-                newtodos[i].completed = !newtodos[i].completed;
-              }
-            }
-            this.props.savetodos(newtodos);
+            <View style = {styles.positive}>
+                    <CheckBox
+                      value = {item.completed}
+                      onValueChange={ () => {
+                        const newtodos = this.props.todosarr;
+                        for (let i=0; i<newtodos.length; i++) {
+                          if (newtodos[i].title === item.title) {
+                            newtodos[i].completed = !newtodos[i].completed;
+                          }
+                        }
+                        this.props.savetodos(newtodos);
 
-            if (item.completed) {
-              this.setState({
-                completecount : this.state.completecount + 1,
-              });
-              this.props.pointchange(item.difficulty * 10);
-              this.props.coinchange(item.difficulty * 10);
-            } else {
-              this.setState({
-                completecount : this.state.completecount - 1,
-              });
-              this.props.pointchange(item.difficulty * (-10));
-              this.props.coinchange(item.difficulty * (-10));
-            }
-            this.changecomplete(item);
-            // action 이 들어간다.
+                        if (item.completed) {
+                          this.setState({
+                            completecount : this.state.completecount + 1,
+                          });
+                          this.props.pointchange(item.difficulty * 10);
+                          this.props.coinchange(item.difficulty * 10);
+                        } else {
+                          this.setState({
+                            completecount : this.state.completecount - 1,
+                          });
+                          this.props.pointchange(item.difficulty * (-10));
+                          this.props.coinchange(item.difficulty * (-10));
+                        }
+                        this.changecomplete(item);
+                        // action 이 들어간다.
+                      }
+                      }
+                    />
+
+                 <TouchableOpacity style={{ backgroundColor:'skyblue' }}
+                      onPress = {() => {
+                        this.props.navigation.navigate('ModifyTodos', {
+                          title : item.title,
+                        })
+                      }}
+                      >
+                          <Text>수정</Text>
+                        </TouchableOpacity>
+                        {/* <TouchableOpacity style={{ backgroundColor:'skyblue' }}
+                      onPress = {() => {
+                        console.log(this.props.todosarr);
+                        console.log(item.title)
+                        for(let i=0; i<this.props.todosarr.length; i++){
+                          if(this.props.todosarr[i].title === item.title){
+                            this.props.todosarr.splice(i,1);
+                            const newtodosarr = this.props.todosarr;
+                            this.props.savetodos(newtodosarr)
+                            console.log('newtodosarr',newtodosarr)
+                            // this.props.navigation.navigate('Todos')
+                          }
+                        }
+
+                      }}
+                      >
+                          <Text>삭제</Text>
+                        </TouchableOpacity> */}
+                        </View>
+
+
+
+
+
+                  <View style = {styles.habits}>
+                      <Text style = {styles.habittitle}>{item.title}</Text>
+                      <Text style = {styles.habitdesc}>{item.dateStart.slice(0, 10)}~{item.dateEnd.slice(0, 10)}</Text>
+                      <Text style = {styles.habitdesc}>{item.description}</Text>
+
+                  </View >
+
+                  <View>
+                  <CheckBox value = {item.alarm}/>
+                  </View>
+
+                  </View>
           }
-          }
-        />
-
-     <TouchableOpacity style={{ backgroundColor:'skyblue' }}
-          onPress = {() => {
-            this.props.navigation.navigate('ModifyTodos', {
-              title : item.title,
-            })
-          }}
-          >
-              <Text>수정</Text>
-            </TouchableOpacity>
-            {/* <TouchableOpacity style={{ backgroundColor:'skyblue' }}
-          onPress = {() => {
-            console.log(this.props.todosarr);
-            console.log(item.title)
-            for(let i=0; i<this.props.todosarr.length; i++){
-              if(this.props.todosarr[i].title === item.title){
-                this.props.todosarr.splice(i,1);
-                const newtodosarr = this.props.todosarr;
-                this.props.savetodos(newtodosarr)
-                console.log('newtodosarr',newtodosarr)
-                // this.props.navigation.navigate('Todos')
-              }
-            } 
-            
-          }}
-          >
-              <Text>삭제</Text>
-            </TouchableOpacity> */}
-            </View>
-
-
-
-
-
-      <View style = {styles.habits}>
-          <Text style = {styles.habittitle}>{item.title}</Text>
-          <Text style = {styles.habitdesc}>{item.description}</Text>
-
-      </View >
-
-      <View>
-      <CheckBox value = {item.alarm}/>
-      </View>
-
-      </View>
- 
-
-
 
 
         })
     }
-  
+
 
 
 
@@ -231,7 +243,7 @@ class Todos extends Component<any, TodosStates> {
       </View>
 
       </View>
-    
+
     );
   }
 }
@@ -239,6 +251,7 @@ class Todos extends Component<any, TodosStates> {
 const mapStateToProps = (state) => {
   return {
     todosarr : state.todosreducer.todosarr,
+    date : state.datereducer.date,
   };
 };
 
