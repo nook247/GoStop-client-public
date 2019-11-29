@@ -135,7 +135,9 @@ async getdata(){
             </TouchableOpacity>
             <TouchableOpacity style={{ backgroundColor:'skyblue' }}
           onPress = {() => {
-            this.props.navigation.navigate('AddHabit', {
+
+            // this.props.passhabit(item.id, item.title, item.desc, item.alarmId, item.difficulty, item.positive);
+            this.props.navigation.navigate('ModifyHabit', {
               title : item.title,
             })
           }}

@@ -4,10 +4,10 @@ export interface imageState {
 }
 const initialState2 : imageState = {
   // tslint:disable-next-line: max-line-length
-  uri2: 'http://www.pngnames.com/files/3/Kids-Track-Pants-PNG-HD-Background.png',
+  uri2: 'http://pngimg.com/uploads/socks/socks_PNG8244.png',
 };
 
-import * as types from '../actions/types';
+import * as types from '../Actions/types';
 
 export default function uri2(state : imageState = initialState2, action) {
   if (action.type === types.IMAGE_CHANGE2) {
