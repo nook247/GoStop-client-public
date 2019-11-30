@@ -5,6 +5,7 @@ import { readBuilderProgram } from "typescript";
 import TimePicker from "react-native-24h-timepicker";
 import { connect } from 'react-redux';
 import savehabit from '../actions/habitaction'
+import fakeserver from '../fakeserver'
 
 class AddHabit extends Component {
     constructor(props) {
@@ -25,26 +26,6 @@ class AddHabit extends Component {
         }      
     }
 
-    // componentDidMount() {
-    //     fetch('http://52.79.229.136:5000/alarms', {
-    //         method: 'GET',
-    //         headers: {
-    //             'Content-Type': 'application/json'
-    //         }
-    //     }).then(res => res.json())
-    //     .then(res => {            
-    //         this.setState({
-    //             habit: {
-    //                 ...this.state.habit,
-    //                 title: res.title,
-    //                 alarmId: res.length + 1
-    //             }
-    //         })
-    //         //console.log('HABIT is : ', this.state.habit)
-    //     })
-    //     .catch(error => console.error('Error : ', error));
-    // }
-
     onCancel() {
         this.TimePicker.close();
       }
@@ -59,7 +40,6 @@ class AddHabit extends Component {
             }
         });
         this.TimePicker.close();
-        //console.log("TIME IS : ", this.state.alarmTime)
     }
 
     lapsList() {
@@ -134,7 +114,6 @@ class AddHabit extends Component {
         header.append('Cookie', token)
         header.append('Content-Type', 'application/json')
 
-        //console.log('헤더는 ? : ', header)
         const myInit = {
             method : 'POST',
             body: JSON.stringify(habit),
@@ -142,16 +121,13 @@ class AddHabit extends Component {
             Cookie : token
         }
 
-        fetch('http://52.79.229.136:5000/habits', myInit)
+        fetch(`${fakeserver}/habits`, myInit)
         .then(res => res.json())
         .then(res => console.log('Success : ', JSON.stringify(res)))
         .catch(error => console.error('Error : ', error));
     }
 
     render() {
-        //console.log('AddHabit에서 state 잘 전달됐니? : ', this.props.habitarr, '---')
-    
-
         return (
             <View style={styles.mainContainer}>
 
@@ -168,7 +144,6 @@ class AddHabit extends Component {
                                 title: text
                             }
                         })
-                          //console.log(this.state)
                     }}/>
                 </View>
                 
@@ -183,7 +158,6 @@ class AddHabit extends Component {
                                 description: text
                             }
                         })
-                        //console.log(this.state)
                     }}/>
                 </View>
 
@@ -199,7 +173,6 @@ class AddHabit extends Component {
                             difficulty: 1
                         }
                     })
-                    //console.log(this.state)
                     }} >
                     <Text style={styles.textStyle}>1</Text>
                     </TouchableHighlight>
@@ -214,7 +187,6 @@ class AddHabit extends Component {
                             difficulty: 2
                         }
                     }) 
-                    //console.log(this.state)
                     }} >
                     <Text style={styles.textStyle}>2</Text>
                     </TouchableHighlight>
@@ -229,7 +201,6 @@ class AddHabit extends Component {
                             difficulty: 3
                         }
                     })
-                    //console.log(this.state)
                     }} >
                     <Text style={styles.textStyle}>3</Text>
                     </TouchableHighlight>            
@@ -265,7 +236,6 @@ class AddHabit extends Component {
                 <TouchableOpacity
                     style={styles.addButton} activeOpacity={0.5}
                     onPress={() => {
-                        //console.log(this.state);
                         this.sendData();
                         alert("추가되었습니다")
                         this.props.navigation.navigate('Habits')  // 메인 페이지로 이동
@@ -288,7 +258,7 @@ class AddHabit extends Component {
 
 // 데이터 불러오기
 const mapStateToProps = (state) => {  
-    console.log('state 나와', state)
+    //console.log('state 나와', state)
     return {
       habitarr : state.habitreducer.habitarr
     }

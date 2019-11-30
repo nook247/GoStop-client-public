@@ -33,8 +33,8 @@ class DatePicker extends Component {
        'Fri' : '금요일', 'Sat' : '토요일', 'Sun' : '일요일'
       }
     let monthConvert = { 
-      'Jan' : '1월', 'Feb' : '2월', 'Mar' : '3월', 'Apr' : '4월', 'May' : '5월', 
-      'Jun' : '6월', 'Jul' : '7월', 'Aug' : '8월', 'Sep' : '9월', 'Oct' : '10월', 
+      'Jan' : '01월', 'Feb' : '02월', 'Mar' : '03월', 'Apr' : '04월', 'May' : '05월', 
+      'Jun' : '06월', 'Jul' : '07월', 'Aug' : '08월', 'Sep' : '09월', 'Oct' : '10월', 
       'Nov' : '11월', 'Dec' : '12월'
     }
 
