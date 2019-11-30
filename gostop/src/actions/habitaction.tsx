@@ -4,7 +4,7 @@ export interface Habit {
   id : string;
   title : string;
   description : string;
-  alarmId : string;
+  // alarmId : string;
   difficulty : number;
   positive : boolean;
 
@@ -15,7 +15,7 @@ export interface Habitarr {
 
 }
 
-export function savehabit( habitarr : Habitarr ) {
+export default function savehabit( habitarr : Habitarr ) {
   return {
     habitarr,
     type : SAVEHABIT,

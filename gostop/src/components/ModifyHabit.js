@@ -1,19 +1,20 @@
 import React, { Component } from "react";
 import { TextInput, Text, StyleSheet, View, Button, TouchableOpacity,
-TouchableHighlight } from "react-native";
+TouchableHighlight, AsyncStorage } from "react-native";
 import { readBuilderProgram } from "typescript";
 import TimePicker from "react-native-24h-timepicker";
 import { connect } from 'react-redux';
+import savehabit from '../actions/habitaction'
 
-class AddHabit extends Component {
+class ModifyHabit extends Component {
     constructor(props) {
         super(props);
         this.state = {
             habit: {
                 title: '',
                 description: '',
-                alarmId: '',  // alarmId 는 alarm 테이블에서 가져와야 함
-                difficulty: '',            
+                difficulty: '',     
+                completed: true,       
                 positive: true
             },
             alarmTime : {
@@ -22,45 +23,36 @@ class AddHabit extends Component {
                 dayOfWeek: ''
             }
         }    
-        this.habitToModify = 1    
+        this.habitIdToModify;
+        this.dataToModify;
     }
 
-    // componentDidMount() {
-    //     fetch(`http://42565614.ngrok.io/habits/${this.habitToModify}`)   // 테스트를 위해 id=1 인 값을 가져옴.
-    //     .then(res => res.json())
-    //     .then(res => {
-    //         console.log('HABIT 응답 : ', res)
-    //         // console.log(res.title)
-    //         // console.log(res.description)
-    //         // console.log(res.difficulty)
-    //         this._titleInput.setNativeProps({text: res.title})
-    //         this._contentsInput.setNativeProps({text: res.description})
-    //         this.setState({
-    //             habit: {
-    //                 ...this.state.habit,
-    //                 alarmId: res.alarmId,
-    //                 difficulty: res.difficulty
-    //             }
-    //         })
-    //     })
+    componentDidMount() {
+        let dataToModify = this.props.habitarr.filter(
+            element => element.title === this.props.navigation.state.params.title
+        )
+        this.dataToModify = dataToModify[0]
 
-    //     fetch(`http://42565614.ngrok.io/alarms/${this.state.habit.alarmId}`)   // 테스트를 위해 id=1 인 값을 가져옴.
-    //     .then(res => res.json())
-    //     .then(res => {
-    //          console.log('ALARM 응답 : ', res[0])
-    //         // console.log(res.time)
-    //         // console.log(res.dayOfWeek)
+        console.log('원래 데이터 : ', this.props.habitarr)
+        console.log('수정할 데이터 : ', dataToModify[0])
 
-    //         this.setState({
-    //             alarmTime: {
-    //                 status: res[0].status,
-    //                 time: res[0].time,
-    //                 dayOfWeek: res[0].dayOfWeek
-    //             }
-    //         })
-    //     })    
+        let { title, description, completed, difficulty, positive } = dataToModify[0] 
 
-    // }
+        this._titleInput.setNativeProps({text: title})
+        this._contentsInput.setNativeProps({text: description})
+
+        this.setState({
+            habit: {
+                title,
+                description,                
+                difficulty,
+                completed, 
+                positive
+            }
+        })   
+        this.habitIdToModify = dataToModify[0]["_id"]
+        console.log("수정할 데이터 ID : ", this.habitIdToModify)    
+    }
 
     onCancel() {
         this.TimePicker.close();
@@ -138,35 +130,52 @@ class AddHabit extends Component {
         //console.log(this.state)
     }
 
-    // EditData = () => {  // 수정 요망
-    //     // this.props.savehabit(data.habits);   수정한 전체 데이터를 넣어주기
-    //     let habit = this.state.habit;
-    //     fetch(`http://42565614.ngrok.io/habits/${this.habitToModify}`, {   // 테스트를 위해 임시로 id=2 인 값을 수정. 추후에 id 값을 받아서 입력
-    //         method: 'PUT',
-    //         body: JSON.stringify(habit),
-    //         headers:{
-    //             'Content-Type': 'application/json'
-    //         }
-    //     }).then(res => res.json())
-    //     .then(res => console.log('Success : ', JSON.stringify(res)))
-    //     .catch(error => console.error('Error : ', error));
+    EditData = async() => {  // 수정 요망
+        let habit = this.state.habit;
 
-    //     let alarm = this.state.alarmTime;
-    //     fetch(`http://42565614.ngrok.io/alarms/${this.state.habit.alarmId}`, {  // 테스트를 위해 임시로 id=2인 값을 수정
-    //         method: 'PUT',
-    //         body: JSON.stringify(alarm),
-    //         headers:{
-    //             'Content-Type': 'application/json'
-    //         }
-    //     }).then(res => res.json())
-    //     .then(res => console.log('Success : ', JSON.stringify(res)))
-    //     .catch(error => console.error('Error : ', error));
-    // }
+        //console.log('원래 데이터 : ', this.props.habitarr)
+        //console.log('수정할 데이터2 : ', this.dataToModify)
+
+        let arr = this.props.habitarr
+
+        for (let i=0; i<arr.length; i++) {
+            if (arr[i]["_id"] === this.habitIdToModify) {
+                arr[i] = habit;
+                break;
+            }
+        }
+
+        //console.log('수정 후 데이터 : ', arr)
+
+        this.props.savehabit([...arr])
+
+        let token = '';
+        await AsyncStorage.getItem('token', (err, result) => {
+            token = result
+        })
+        let header = new Headers();
+        header.append('Cookie', token)
+        header.append('Content-Type', 'application/json')
+
+        //console.log('헤더는 ? : ', header)
+        const myInit = {
+            method : 'PATCH',
+            body: JSON.stringify(habit),
+            headers : header,
+            Cookie : token
+        }
+
+        fetch(`http://52.79.229.136:5000/habits/${this.habitIdToModify}`, myInit)
+        .then(res => res.json())
+        .then(res => console.log('Success : ', JSON.stringify(res)))
+        .catch(error => console.error('Error : ', error));
+    }
 
     render() {
-        console.log('state 잘 전달됐니? ModifyHabit : ', this.props.habitarr) 
-        title = this.props.navigation.state.params.title;     
-        console.log('title전달됐니? ModifyHabit : ', title)
+        //console.log('ModifyHabit에서 state 잘 전달됐니? : ', this.props.habitarr) 
+        //title = this.props.navigation.state.params.title;     
+        //console.log('title전달됐니? ModifyHabit : ', title)
+
         return (
             <View style={styles.mainContainer}>
 
@@ -183,7 +192,7 @@ class AddHabit extends Component {
                                 title: text
                             }
                         })
-                          console.log(this.state)
+                          //console.log(this.state)
                     }}/>
                 </View>
                 
@@ -198,7 +207,7 @@ class AddHabit extends Component {
                                 description: text
                             }
                         })
-                        console.log(this.state)
+                        //console.log(this.state)
                     }}/>
                 </View>
 
@@ -214,7 +223,7 @@ class AddHabit extends Component {
                             difficulty: 1
                         }
                     })
-                    console.log(this.state)
+                    //console.log(this.state)
                     }} >
                     <Text style={styles.textStyle}>1</Text>
                     </TouchableHighlight>
@@ -229,7 +238,7 @@ class AddHabit extends Component {
                             difficulty: 2
                         }
                     }) 
-                    console.log(this.state)
+                    //console.log(this.state)
                     }} >
                     <Text style={styles.textStyle}>2</Text>
                     </TouchableHighlight>
@@ -244,7 +253,7 @@ class AddHabit extends Component {
                             difficulty: 3
                         }
                     })
-                    console.log(this.state)
+                    //console.log(this.state)
                     }} >
                     <Text style={styles.textStyle}>3</Text>
                     </TouchableHighlight>            
@@ -280,8 +289,8 @@ class AddHabit extends Component {
                 <TouchableOpacity
                     style={styles.addButton} activeOpacity={0.5}
                     onPress={() => {
-                        console.log(this.state);
-                        //this.EditData();
+                        //console.log(this.state);
+                        this.EditData();
                         alert("수정되었습니다")
                         this.props.navigation.navigate('Habits')  // 메인 페이지로 이동
                     }} >
@@ -299,7 +308,7 @@ class AddHabit extends Component {
     }
 }
 
-//export default AddHabit;
+//export default ModifyHabit;
 
 // 데이터 불러오기
 const mapStateToProps = (state) => {  
@@ -317,7 +326,7 @@ const mapDispatchToProps = dispatch => {
     };
 };
   
-export default connect(mapStateToProps, mapDispatchToProps)(AddHabit);
+export default connect(mapStateToProps, mapDispatchToProps)(ModifyHabit);
 
 const styles = StyleSheet.create({
     mainContainer: {
@@ -331,16 +340,6 @@ const styles = StyleSheet.create({
     subContainer: {
         borderColor: 'black',
         borderWidth:2
-    },
-    sideBar: {
-        padding: 10,
-        backgroundColor: "#fcba03",
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: "#fff",
-        alignItems: 'center',
-        alignSelf: 'flex-start',
-        width: 'auto'
     },
     InputContainer: {
         flexDirection: 'row',

@@ -4,10 +4,10 @@ export interface imageState {
 }
 const initialState3 : imageState = {
   // tslint:disable-next-line: max-line-length
-  uri3: 'http://pngimg.com/uploads/pokemon/pokemon_PNG122.png',
+  uri3: 'http://pngimg.com/uploads/polar_bear/polar_bear_PNG23507.png',
 };
 
-import * as types from '../actions/types';
+import * as types from '../Actions/types';
 
 export default function uri3(state : imageState = initialState3, action) {
   if (action.type === types.IMAGE_CHANGE3) {

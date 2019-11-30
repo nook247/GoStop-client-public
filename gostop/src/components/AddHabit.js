@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import { TextInput, Text, StyleSheet, View, Button, TouchableOpacity,
-TouchableHighlight } from "react-native";
+TouchableHighlight, AsyncStorage } from "react-native";
 import { readBuilderProgram } from "typescript";
 import TimePicker from "react-native-24h-timepicker";
 import { connect } from 'react-redux';
+import savehabit from '../actions/habitaction'
 
 class AddHabit extends Component {
     constructor(props) {
@@ -12,8 +13,8 @@ class AddHabit extends Component {
             habit: {
                 title: '',
                 description: '',
-                alarmId: '',  // alarmId 는 alarm 테이블에서 가져와야 함
                 difficulty: '',            
+                completed: true,
                 positive: true
             },
             alarmTime : {
@@ -21,11 +22,11 @@ class AddHabit extends Component {
                 time: '',
                 dayOfWeek: ''
             }
-        }        
+        }      
     }
 
     // componentDidMount() {
-    //     fetch('http://42565614.ngrok.io/alarms', {
+    //     fetch('http://52.79.229.136:5000/alarms', {
     //         method: 'GET',
     //         headers: {
     //             'Content-Type': 'application/json'
@@ -58,7 +59,7 @@ class AddHabit extends Component {
             }
         });
         this.TimePicker.close();
-        console.log("TIME IS : ", this.state.alarmTime)
+        //console.log("TIME IS : ", this.state.alarmTime)
     }
 
     lapsList() {
@@ -117,39 +118,39 @@ class AddHabit extends Component {
                 dayOfWeek: ''
             }
         })
-        //console.log(this.state)
     }
       
-    // sendData = () => {   // 수정 요망
-    //     let habit = this.state.habit;
-    //     // this.props.savehabit(data.habits);   수정한 전체 데이터를 넣어주기
-    //     fetch('http://42565614.ngrok.io/habits', {
-    //         method: 'POST',
-    //         body: JSON.stringify(habit),
-    //         headers:{
-    //             'Content-Type': 'application/json'
-    //         }
-    //     }).then(res => res.json())
-    //     .then(res => console.log('Success : ', JSON.stringify(res)))
-    //     .catch(error => console.error('Error : ', error));
+    sendData = async() => {   // 수정 요망
+        let habit = this.state.habit;        
+        let arr = this.props.habitarr
+        //console.log('원래 state : ', arr)
+        this.props.savehabit([...arr, habit])
+        
+        let token = '';
+        await AsyncStorage.getItem('token', (err, result) => {
+            token = result
+        })
+        let header = new Headers();
+        header.append('Cookie', token)
+        header.append('Content-Type', 'application/json')
 
-    //     let alarm = this.state.alarmTime;
-    //     fetch('http://42565614.ngrok.io/alarms', {
-    //         method: 'POST',
-    //         body: JSON.stringify(alarm),
-    //         headers:{
-    //             'Content-Type': 'application/json'
-    //         }
-    //     }).then(res => res.json())
-    //     .then(res => console.log('Success : ', JSON.stringify(res)))
-    //     .catch(error => console.error('Error : ', error));
-    // }
+        //console.log('헤더는 ? : ', header)
+        const myInit = {
+            method : 'POST',
+            body: JSON.stringify(habit),
+            headers : header,
+            Cookie : token
+        }
 
-    // title = this.props.navigation.state.params.title;
+        fetch('http://52.79.229.136:5000/habits', myInit)
+        .then(res => res.json())
+        .then(res => console.log('Success : ', JSON.stringify(res)))
+        .catch(error => console.error('Error : ', error));
+    }
 
     render() {
-        console.log('state 잘 전달됐니? AddHabit : ', this.props.habitarr)     
-        //console.log('title전달됐니?', this.title)
+        //console.log('AddHabit에서 state 잘 전달됐니? : ', this.props.habitarr, '---')
+    
 
         return (
             <View style={styles.mainContainer}>
@@ -167,7 +168,7 @@ class AddHabit extends Component {
                                 title: text
                             }
                         })
-                          console.log(this.state)
+                          //console.log(this.state)
                     }}/>
                 </View>
                 
@@ -182,7 +183,7 @@ class AddHabit extends Component {
                                 description: text
                             }
                         })
-                        console.log(this.state)
+                        //console.log(this.state)
                     }}/>
                 </View>
 
@@ -198,7 +199,7 @@ class AddHabit extends Component {
                             difficulty: 1
                         }
                     })
-                    console.log(this.state)
+                    //console.log(this.state)
                     }} >
                     <Text style={styles.textStyle}>1</Text>
                     </TouchableHighlight>
@@ -213,7 +214,7 @@ class AddHabit extends Component {
                             difficulty: 2
                         }
                     }) 
-                    console.log(this.state)
+                    //console.log(this.state)
                     }} >
                     <Text style={styles.textStyle}>2</Text>
                     </TouchableHighlight>
@@ -228,7 +229,7 @@ class AddHabit extends Component {
                             difficulty: 3
                         }
                     })
-                    console.log(this.state)
+                    //console.log(this.state)
                     }} >
                     <Text style={styles.textStyle}>3</Text>
                     </TouchableHighlight>            
@@ -264,8 +265,8 @@ class AddHabit extends Component {
                 <TouchableOpacity
                     style={styles.addButton} activeOpacity={0.5}
                     onPress={() => {
-                        console.log(this.state);
-                        //this.sendData();
+                        //console.log(this.state);
+                        this.sendData();
                         alert("추가되었습니다")
                         this.props.navigation.navigate('Habits')  // 메인 페이지로 이동
                     }} >
@@ -317,16 +318,6 @@ const styles = StyleSheet.create({
         borderColor: 'black',
         borderWidth:2
     },
-    sideBar: {
-        padding: 10,
-        backgroundColor: "#fcba03",
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: "#fff",
-        alignItems: 'center',
-        alignSelf: 'flex-start',
-        width: 'auto'
-    },
     InputContainer: {
         flexDirection: 'row',
         marginTop: 10
@@ -374,38 +365,38 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
         //justifyContent: 'space-around'
         //paddingTop: 100
-      },
-      DayButtonContainer: {        
-        flexDirection: 'row',        
-      },
-      DayButtonStyle: {
-          marginLeft: 5,
-          paddingLeft: 5,
-          paddingRight: 5,
-          backgroundColor: "#fcba03",
-          borderRadius: 10,
-          borderWidth: 1,
-          borderColor: "#fff"
-      },
-      DayButtonSelected: {
-          marginLeft: 5,
-          paddingLeft: 5,
-          paddingRight: 5,
-          backgroundColor: "#ff5500",
-          borderRadius: 10,
-          borderWidth: 1,
-          borderColor: "#fff"
-      },
-      button: {
-        backgroundColor: "#4EB151",
-        paddingVertical: 5,
-        borderRadius: 3,
-        alignItems: 'center',
-        alignSelf: 'flex-end',
-        width: 90
-      },
-      buttonText: {
-        color: "#FFFFFF",
-        fontSize: 15,
-      }
+    },
+    DayButtonContainer: {        
+    flexDirection: 'row',        
+    },
+    DayButtonStyle: {
+        marginLeft: 5,
+        paddingLeft: 5,
+        paddingRight: 5,
+        backgroundColor: "#fcba03",
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: "#fff"
+    },
+    DayButtonSelected: {
+        marginLeft: 5,
+        paddingLeft: 5,
+        paddingRight: 5,
+        backgroundColor: "#ff5500",
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: "#fff"
+    },
+    button: {
+    backgroundColor: "#4EB151",
+    paddingVertical: 5,
+    borderRadius: 3,
+    alignItems: 'center',
+    alignSelf: 'flex-end',
+    width: 90
+    },
+    buttonText: {
+    color: "#FFFFFF",
+    fontSize: 15,
+    }
 })
