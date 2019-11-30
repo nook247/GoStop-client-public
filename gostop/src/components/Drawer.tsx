@@ -43,8 +43,8 @@
 //   });
 
 import React from 'react'
-import { StyleSheet, Text, View, Image, Alert, AsyncStorage } from 'react-native'
-import { NavigationActions } from 'react-navigation'
+import { StyleSheet, Text, View, Alert, AsyncStorage, Button } from 'react-native';
+import { } from 'react-navigation';
 import fakeserver from '../fakeserver';
 
 export default class DrawerContainer extends React.Component<any, any> {
@@ -53,6 +53,11 @@ export default class DrawerContainer extends React.Component<any, any> {
     const { navigation } = this.props
     return (
       <View style={styles.container}>
+        <Text
+          onPress={() => navigation.navigate('AppTabNavigator')}
+          style={styles.uglyDrawerItem}>
+          mainpage
+        </Text>
         <Text
           onPress={() => navigation.navigate('ItemshopScreen')}
           style={styles.uglyDrawerItem}>
