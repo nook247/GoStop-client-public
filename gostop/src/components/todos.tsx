@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { CheckBox, StyleSheet, Text, View, AsyncStorage, Button, ScrollView, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import {  coinchange, healthchange, pointchange  } from '../actions/characterinfoaction';
-import  DatePicker  from './DatePicker';
+import  TodoDatePicker  from './tododatepicker';
 import fakeserver from '../fakeserver';
 import Characterinfo from './characterinfo';
 import  savetodos  from '../actions/todosaction';
@@ -142,7 +142,7 @@ class Todos extends Component<any, TodosStates> {
       <View style = {{ flex : 9 }}>
 
           <View>
-            <DatePicker />
+            <TodoDatePicker />
           </View>
 
         {this.props.todosarr.map((item) => {

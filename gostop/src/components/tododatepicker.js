@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import { TouchableOpacity, View, StyleSheet, Text } from "react-native";
 import DateTimePicker from "react-native-modal-datetime-picker";
+import savedate from '../actions/dateaction';
+import { connect } from 'react-redux';
  
-export default class DatePicker extends Component {
+class TodoDatePicker extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -43,6 +45,7 @@ export default class DatePicker extends Component {
  
   handleDatePicked = date => {
     console.log("A date has been picked: ", date);
+    this.props.savedate(date);
     let dateArr = date.toString().split(' ')
 
     let dateConverted = this.DateConverter(dateArr)
@@ -82,6 +85,16 @@ export default class DatePicker extends Component {
     );
   }
 }
+
+
+const mapDispatchToProps = dispatch => {
+  return {
+    savedate : value => dispatch(savedate(value)),
+
+  };
+};
+
+export default connect(null, mapDispatchToProps)(TodoDatePicker);
 
 
 const styles = StyleSheet.create({
