@@ -1,13 +1,14 @@
 import React, { Component } from "react";
 import { TextInput, Text, StyleSheet, View, Button, TouchableOpacity,
 TouchableHighlight, AsyncStorage } from "react-native";
+import { readBuilderProgram } from "typescript";
 import DatePicker from './DatePicker';
 import TimePicker from "react-native-24h-timepicker";
 import { connect } from 'react-redux';
 import savetodos from '../actions/todosaction'
 import fakeserver from '../fakeserver'
 
-class AddTodos extends Component {
+class ModifyTodos extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -15,8 +16,8 @@ class AddTodos extends Component {
                 title: '',
                 description: '',
                 difficulty: '',  
-                dataStart: '',
-                dataEnd: '',         
+                dateStart: '',
+                dateEnd: '',         
                 completed: true
             },
             alarmTime : {
@@ -24,7 +25,35 @@ class AddTodos extends Component {
                 time: '',
                 dayOfWeek: ''
             }
-        }
+        }    
+        this.todoIdToModify;
+        this.title;
+        this.dataToModify;
+    }
+
+    componentDidMount() {
+        this.title = this.props.navigation.state.params.title
+        let dataToModify = this.props.todosarr.filter(
+            element => element.title === this.props.navigation.state.params.title
+        )
+        this.dataToModify = dataToModify[0]
+
+        let { title, description, difficulty, dateStart, dateEnd, completed } = dataToModify[0] 
+
+        this._titleInput.setNativeProps({text: title})
+        this._contentsInput.setNativeProps({text: description})
+
+        this.setState({
+            todo: {
+                title,
+                description,                
+                difficulty,
+                dateStart,
+                dateEnd,
+                completed
+            }
+        })   
+        this.todoIdToModify = dataToModify[0]["_id"]  
     }
 
     onCancel() {
@@ -95,8 +124,8 @@ class AddTodos extends Component {
                 title: '',
                 description: '',
                 difficulty: '',  
-                dataStart: '',
-                dataEnd: '',         
+                dateStart: '',
+                dateEnd: '',         
                 completed: true
             },
             alarmTime: {
@@ -106,13 +135,27 @@ class AddTodos extends Component {
             }
         })
     }
-      
-    sendData = async() => {   // 수정 요망
-        let todo = this.state.todo;        
+
+    EditData = async() => {  // 수정 요망
+        let todo = this.state.todo;
+
+        let startDateConverted = todo.dateStart.slice(0, 4) + '-' + todo.dateStart.slice(6, 8) + '-' + todo.dateStart.slice(10, 12)
+        let EndDateConverted = todo.dateStart.slice(0, 4) + '-' + todo.dateStart.slice(6, 8) + '-' + todo.dateStart.slice(10, 12)
+
+        todo.dateStart = startDateConverted;
+        todo.dateEnd = EndDateConverted;
+
         let arr = this.props.todosarr
-        //console.log('원래 state : ', arr)
-        this.props.savetodos([...arr, todo])
-        
+
+        for (let i=0; i<arr.length; i++) {
+            if (arr[i]["title"] === this.title) {
+                arr[i] = todo;
+                break;
+            }
+        }
+
+        this.props.savetodos([...arr])
+
         let token = '';
         await AsyncStorage.getItem('token', (err, result) => {
             token = result
@@ -121,22 +164,56 @@ class AddTodos extends Component {
         header.append('Cookie', token)
         header.append('Content-Type', 'application/json')
 
-        const myInit = {
-            method : 'POST',
-            body: JSON.stringify(todo),
+        const getInit = {
+            method : 'GET',
             headers : header,
             Cookie : token
         }
 
-        fetch(`${fakeserver}/todos`, myInit)
-        .then(res => res.json())
-        .then(res => console.log('Success : ', JSON.stringify(res)))
-        .catch(error => console.error('Error : ', error));
+        if (this.todoIdToModify === undefined) {
+            fetch(`${fakeserver}/users/todos`, getInit)
+            .then((res) => {
+                if (res.status === 200 || res.status === 201) {
+                    res.json().then((data) => {
+                        let todoData = data.todos.filter(element => element.title === this.props.navigation.state.params.title)
+                        this.todoIdToModify = todoData[0]["_id"]
+
+                        const myInit = {
+                            method : 'PATCH',
+                            body: JSON.stringify(todo),
+                            headers : header,
+                            Cookie : token
+                        }        
+                
+                        fetch(`${fakeserver}/todos/${this.todoIdToModify}`, myInit)
+                        .then(res => res.json())
+                        .then(res => console.log('Success : ', JSON.stringify(res)))
+                        .catch(error => console.error('Error : ', error));
+                    })
+
+                }
+            })
+        }
+        else {
+            const myInit = {
+                method : 'PATCH',
+                body: JSON.stringify(todo),
+                headers : header,
+                Cookie : token
+            }        
+    
+            fetch(`${fakeserver}/todos/${this.todoIdToModify}`, myInit)
+            .then(res => res.json())
+            .then(res => console.log('Success : ', JSON.stringify(res)))
+            .catch(error => console.error('Error : ', error));
+        }
     }
 
-    render() {
-        return (
+    render() {        
+        const dateStart = this.state.todo["dateStart"];
+        const dateEnd = this.state.todo["dateEnd"];
 
+        return (
             <View style={styles.mainContainer}>
 
                 <View style={styles.subContainer}>
@@ -152,7 +229,6 @@ class AddTodos extends Component {
                                 title: text
                             }
                         })
-    
                     }}/>
                 </View>
                 
@@ -167,7 +243,6 @@ class AddTodos extends Component {
                                 description: text
                             }
                         })
-                        console.log(this.state)
                     }}/>
                 </View>
 
@@ -222,7 +297,7 @@ class AddTodos extends Component {
                   <View style={styles.DayButtonContainer}>
                     {this.lapsList()}
                   </View>
-                  
+
                   <TouchableOpacity
                     onPress={() => this.TimePicker.open()}
                     style={styles.button}
@@ -244,19 +319,21 @@ class AddTodos extends Component {
                 </View>
 
                 <View>
-                    <DatePicker setDate={this.setDate} startOrEnd='dateStart'/>
-                    <DatePicker setDate={this.setDate} startOrEnd='dateEnd'/>
+                    <DatePicker setDate={this.setDate} startOrEnd='dateStart' 
+                    forModify='FOR TEST'/>
+                    <DatePicker setDate={this.setDate} startOrEnd='dateEnd' 
+                    forModify={dateEnd}/>
                 </View>
                 
                 <TouchableOpacity
                     style={styles.addButton} activeOpacity={0.5}
                     onPress={() => {
-                        this.sendData();
-                        alert("추가되었습니다")
+                        this.EditData();
+                        alert("수정되었습니다")
                         this.props.navigation.navigate('Todos')  // 메인 페이지로 이동
                     }} >
-                    <Text style={styles.textStyle}>추가</Text>
-                </TouchableOpacity>  
+                    <Text style={styles.textStyle}>수정</Text>                    
+                </TouchableOpacity> 
 
                 <TouchableOpacity style={styles.addButton} activeOpacity={0.5}
                 onPress={this.clearText}>
@@ -271,6 +348,7 @@ class AddTodos extends Component {
 
 //export default AddTodos;
 
+// 데이터 불러오기
 const mapStateToProps = (state) => {  
     // console.log('state 나와', state)
     return {
@@ -278,7 +356,6 @@ const mapStateToProps = (state) => {
     }
 }  
 
-// 데이터 수정하기
 const mapDispatchToProps = dispatch => {
     return {      
       savetodos : (arr) => {
@@ -287,8 +364,7 @@ const mapDispatchToProps = dispatch => {
     };
 };
   
-export default connect(mapStateToProps, mapDispatchToProps)(AddTodos);
-
+export default connect(mapStateToProps, mapDispatchToProps)(ModifyTodos);
 
 const styles = StyleSheet.create({
     mainContainer: {
@@ -350,38 +426,38 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
         //justifyContent: 'space-around'
         //paddingTop: 100
-    },
-    DayButtonContainer: {        
-    flexDirection: 'row',        
-    },
-    DayButtonStyle: {
-        marginLeft: 5,
-        paddingLeft: 5,
-        paddingRight: 5,
-        backgroundColor: "#fcba03",
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: "#fff"
-    },
-    DayButtonSelected: {
-        marginLeft: 5,
-        paddingLeft: 5,
-        paddingRight: 5,
-        backgroundColor: "#ff5500",
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: "#fff"
-    },
-    button: {
-    backgroundColor: "#4EB151",
-    paddingVertical: 5,
-    borderRadius: 3,
-    alignItems: 'center',
-    alignSelf: 'flex-end',
-    width: 90
-    },
-    buttonText: {
-    color: "#FFFFFF",
-    fontSize: 15,
-    }
+      },
+      DayButtonContainer: {        
+        flexDirection: 'row',        
+      },
+      DayButtonStyle: {
+          marginLeft: 5,
+          paddingLeft: 5,
+          paddingRight: 5,
+          backgroundColor: "#fcba03",
+          borderRadius: 10,
+          borderWidth: 1,
+          borderColor: "#fff"
+      },
+      DayButtonSelected: {
+          marginLeft: 5,
+          paddingLeft: 5,
+          paddingRight: 5,
+          backgroundColor: "#ff5500",
+          borderRadius: 10,
+          borderWidth: 1,
+          borderColor: "#fff"
+      },
+      button: {
+        backgroundColor: "#4EB151",
+        paddingVertical: 5,
+        borderRadius: 3,
+        alignItems: 'center',
+        alignSelf: 'flex-end',
+        width: 90
+      },
+      buttonText: {
+        color: "#FFFFFF",
+        fontSize: 15,
+      }
 })
