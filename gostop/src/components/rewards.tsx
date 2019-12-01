@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View, AsyncStorage } from 'react-native';
+import { Button, StyleSheet, Text, TouchableOpacity, View, AsyncStorage, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 import { coinchange } from '../actions/characterinfoaction';
 import fakeserver from '../fakeserver';
@@ -89,6 +89,9 @@ class Rewards extends Component<any, rewardsStates> {
         </View>
 
               <View style = {{ flex : 9 }}>
+
+              <ScrollView style={styles.scrollView}>
+                
         {this.props.rewardarr.map((item) => {
           return   <View style = {styles.onehabit} key = {item.title}>
 
@@ -141,6 +144,8 @@ class Rewards extends Component<any, rewardsStates> {
 
         })
     }
+
+</ScrollView>
     </View>
             </View>
     );
@@ -170,6 +175,10 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     flex: 1,
     width : '100%',
+  },
+  scrollView: {
+    backgroundColor: 'pink',
+    marginHorizontal: 20,
   },
   onehabit : {
     borderWidth: 1,

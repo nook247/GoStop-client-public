@@ -1,6 +1,7 @@
 import { GETUSER, GetuserAction } from '../actions/getuseraction';
 import { COINCHANGE, HEALTHCHANGE, POINTCHANGE } from '../actions/characterinfoaction';
 import fakeserver from '../fakeserver';
+import { AsyncStorage } from 'react-native';
 
 export interface userState {
   id : string;
@@ -11,6 +12,7 @@ export interface userState {
   health : number;
   point : number;
   coin : number;
+  token : string;
 }
 
 const initialState : userState = {
@@ -22,9 +24,30 @@ const initialState : userState = {
   health : null,
   point : null,
   coin : null,
+  token : '',
 };
 
+// async function fetchInit (data){
+//   let token = '';
+//   await AsyncStorage.getItem('token', (err, result) => {
+//       token = result
+//   })
+//   let header = new Headers();
+//   header.append('Cookie', token)
+//   header.append('Content-Type', 'application/json')
+  
+//   const myInit = {
+//       method : 'PATCH',
+//       body: JSON.stringify(data),
+//       headers : header,
+//       Cookie : token,
+//   }
+//   return myInit;
+// }
+
+
 const getuserreducer = (state : userState = initialState, action : GetuserAction) : userState =>{
+
   switch (action.type){
     case GETUSER:
       return Object.assign({}, state, {
@@ -36,6 +59,7 @@ const getuserreducer = (state : userState = initialState, action : GetuserAction
         health : action.health,
         point : action.point,
         coin : action.coin,
+        token : action.token,
       });
     case POINTCHANGE:
 
@@ -56,13 +80,17 @@ const getuserreducer = (state : userState = initialState, action : GetuserAction
         health : changehealth,
         level : changelevel,
       };
+   
       fetch(`${fakeserver}/users/${state.id}`, {
         method : 'PATCH',
         body : JSON.stringify(pointchangedata),
         headers : {
           'Content-Type' : 'application/json',
+          'Cookie' : state.token,
         },
-      }).then((res) => {
+ 
+      })
+      .then((res) => {
         if (res.status === 200 || res.status === 201) { // 성공을 알리는 HTTP 상태 코드면
           res.json()
         .then(() => console.log('point patch 성공'));
@@ -82,6 +110,7 @@ const getuserreducer = (state : userState = initialState, action : GetuserAction
         body : JSON.stringify(coinchangedata),
         headers : {
           'Content-Type' : 'application/json',
+          'Cookie' : state.token,
         },
       }).then((res) => {
         if (res.status === 200 || res.status === 201) { // 성공을 알리는 HTTP 상태 코드면
@@ -116,6 +145,7 @@ const getuserreducer = (state : userState = initialState, action : GetuserAction
         body : JSON.stringify(healthchangedata),
         headers : {
           'Content-Type' : 'application/json',
+          'Cookie' : state.token,
         },
       }).then((res) => {
         if (res.status === 200 || res.status === 201) { // 성공을 알리는 HTTP 상태 코드면

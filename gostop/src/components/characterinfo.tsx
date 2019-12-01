@@ -17,10 +17,9 @@ class Characterinfo  extends React.Component<CharacterinfoProps, any> {
     super(props);
   }
 
-  public componentDidMount() {
-  }
-
   public render() {
+    const levelpoint = 200 + 50 * (this.props.level-1);
+    const pointbar = (this.props.pointsvalue / levelpoint) * 200
     return (
 
             <View style={styles.container}>
@@ -50,17 +49,22 @@ class Characterinfo  extends React.Component<CharacterinfoProps, any> {
                </View>
 
                     <View style = {styles.health}>
-                    <View style={{ flex:1 }}></View>
+                    
                 <Text style = {{ flex : 1, height :10, width : this.props.healthvalue || 0 ,
-                  backgroundColor : 'yellow', justifyContent:'flex-end' }}>health</Text>
+                  backgroundColor : 'yellow', justifyContent:'flex-end' }}> </Text>
+                <Text style = {{ flex : 1, height :10, 
+                   justifyContent:'flex-end' }}>health {this.props.healthvalue} / 200 </Text>
                     </View>
 
                 <View style = {styles.points}>
-                <View style={{ flex:1 }}></View>
-                <Text style = {{ flex : 1, height :10, width : this.props.pointsvalue || 0,
-                  backgroundColor : 'yellow', justifyContent:'flex-end' }}>points</Text>
-
+               
+                <Text style = {{ flex : 1, height :10, width : pointbar || 0,
+                  backgroundColor : 'yellow', justifyContent:'flex-end' }}></Text>
+                <Text style = {{ flex : 1, height :10, 
+                   justifyContent:'flex-end' }}>points {this.props.pointsvalue} / {levelpoint} </Text>
                     </View>
+
+                    
 
                     <View style = {styles.coins}>
                     <View style={{ flex:1 }}></View>
@@ -85,13 +89,7 @@ class Characterinfo  extends React.Component<CharacterinfoProps, any> {
 }
 
 const mapStateToProps = (state) => {
-  // console.log(state);
   return {
-    // name : state.changepointreducer.name,
-    // healthvalue : state.changepointreducer.healthvalue,
-    // pointsvalue : state.changepointreducer.pointsvalue,
-    // coinsvalue : state.changepointreducer.coinsvalue,
-    // level : state.changepointreducer.level,
     name : state.getuserreducer.name,
     healthvalue : state.getuserreducer.health,
     pointsvalue : state.getuserreducer.point,
