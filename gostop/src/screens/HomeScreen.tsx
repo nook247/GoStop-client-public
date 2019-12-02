@@ -4,10 +4,11 @@ import { createAppContainer, createDrawerNavigator, createMaterialTopTabNavigato
 import { createStackNavigator } from 'react-navigation-stack';
 import DrawerContainer from '../components/Drawer';
 import ItemshopScreen from './ItemshopScreen';
-import CharacterchangeScreen from './CharacterchangeScreen';;
+import CharacterchangeScreen from './CharacterchangeScreen'; ;
 import Signin from '../components/Signin';
 import Signup from '../components/Signup';
 import AuthLoadingScreen from './AuthLoadingScreen';
+import { connect } from 'react-redux'
 
 import Habits from '../components/habits';
 import Todos from '../components/todos';
@@ -15,38 +16,38 @@ import Rewards from '../components/rewards';
 
 import AddHabit from '../components/AddHabit';
 import AddTodos from '../components/AddTodos';
-// import AddReward from '../components/AddReward';
+import AddReward from '../components/AddReward';
 import ModifyHabit from '../components/ModifyHabit';
-// import ModifyTodos from '../components/ModifyTodos';
-// import ModifyReward from '../components/ModifyReward';
+import ModifyTodos from '../components/ModifyTodos';
+import ModifyReward from '../components/ModifyReward';
+import { Ionicons } from '@expo/vector-icons';
 
 
 const habitStack = createStackNavigator({
   Habits : { screen : Habits },
-  // AddHabit : { screen : AddHabit },
-  // ModifyHabit : { screen : ModifyHabit }
+  AddHabit : { screen : AddHabit },
+  ModifyHabit : { screen : ModifyHabit }
 },
-{headerMode: 'none'});
+                                        { headerMode: 'none' });
 
 const todosStack = createStackNavigator({
   Todos : { screen : Todos },
   AddTodos : { screen : AddTodos },
-
-  // ModifyTodos : { screen : ModifyTodos }
+  ModifyTodos : { screen : ModifyTodos }
 },
-{headerMode: 'none'});
+                                        { headerMode: 'none' });
 
 const rewardStack = createStackNavigator({
   Reward : { screen : Rewards },
-  // AddReward : { screen : AddReward },
-  // ModifyReward : { screen : ModifyReward }
+  AddReward : { screen : AddReward },
+  ModifyReward : { screen : ModifyReward }
 },
-{headerMode: 'none'});
+                                         { headerMode: 'none' });
 
 const AppTabNavigator = createMaterialTopTabNavigator({
-  habitStack : { screen : habitStack },
-  todosStack : { screen : todosStack },
-  rewardStack : { screen : rewardStack },
+  habits : { screen : habitStack },
+  todos : { screen : todosStack },
+  rewards : { screen : rewardStack },
   
 },                                                    {
   animationEnabled: true,
@@ -56,43 +57,54 @@ const AppTabNavigator = createMaterialTopTabNavigator({
     style: {
         ...Platform.select({
         android:{
-          backgroundColor:'#f4da6c',
+          backgroundColor:'#110133',
+          height : '5%',
         },
       }),
       },
-    iconStyle: { height: 15 },
-    activeTintColor: '#000',
+    // iconStyle: { height: 20 },
+    activeTintColor: '#ffdc34',
     // inactiveTintColor: '#d1cece',
     inactiveTintColor: 'white',
     upperCaseLabel: false,
     showLabel: true,
-    showIcon: true,
+    // showIcon: true,
   },
 });
-
-  // const drawerNavigator = createDrawerNavigator({
-  //   AppTabNavigator : { screen : AppTabNavigator },
-  //   ItemshopScreen : { screen : ItemshopScreen },
-  //   CharacterchangeScreen : { screen : CharacterchangeScreen },
-  //   AuthLoading: { screen : AuthLoadingScreen}
-  // },
-  //   { contentComponent : DrawerContainer },
-  // );
 
 const DrawerStack = createDrawerNavigator({
   AppTabNavigator : { screen : AppTabNavigator },
   ItemshopScreen : { screen : ItemshopScreen },
   CharacterchangeScreen : { screen : CharacterchangeScreen },
 },
-  {
+                                          {
     contentComponent: DrawerContainer,
     initialRouteName : 'AppTabNavigator',
-    navigationOptions : ({navigation}) =>({
-      headerLeft: <Button title = 'menu'
-      onPress={() => navigation.openDrawer()}></Button>,
-    })
+    navigationOptions : ({ navigation }) => ({
+      headerTitleStyle: { alignSelf: 'center', color : 'white' },
+      // title: 'Center Title',
+      title: 'username',
+      headerLeft:
 
+        <Ionicons name = 'md-menu' onPress={() => navigation.openDrawer()} size = {34} color = '#ffdc34' />,
+      headerStyle: {
+        backgroundColor: '#110133',
+      },
+    })
   })
+
+const mapStateToProps = (state) => {
+    return {
+      name : state.getuserreducer.name,
+      level : state.getuserreducer.level,
+    };
+  };
+  
+connect(mapStateToProps)(DrawerStack);
+
+
+
+
 
 const drawerNavigator = createStackNavigator({
   DrawerStack: { screen: DrawerStack },

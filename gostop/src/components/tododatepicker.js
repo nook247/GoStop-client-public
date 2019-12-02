@@ -99,7 +99,7 @@ export default connect(null, mapDispatchToProps)(TodoDatePicker);
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: "#4287f5",
+    backgroundColor: "#ffdc34",
     paddingVertical: 5,
     borderRadius: 3,
     alignItems: 'center',
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     width: 90
   },
   buttonText: {
-    color: "#FFFFFF",
+    color: "#110133",
     fontSize: 15,
   }
 })

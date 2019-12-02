@@ -5,6 +5,7 @@ import { coinchange } from '../actions/characterinfoaction';
 import fakeserver from '../fakeserver';
 import Characterinfo from './characterinfo';
 import savereward from '../actions/rewardaction';
+import { MaterialIcons, Entypo } from '@expo/vector-icons';
 
 export interface Reward {
   id : string;
@@ -77,18 +78,18 @@ class Rewards extends Component<any, rewardsStates> {
     const { navigate } = this.props.navigation;
     return (
             <View style = {styles.container}>
-              <View style ={{flex : 5}}>
+              <View style ={{ flex : 7 }}>
                 <Characterinfo/>
               </View>
 
-      <View style = { { flex : 1 } }>
-          <Button
-          title='Add reward'
-          onPress={() => navigate('AddReward')}
-          />
-        </View>
+              <View style = { { flex : 2, backgroundColor : 'white', justifyContent : 'flex-end', flexDirection : 'row' } }>
+                  <TouchableOpacity style={{ backgroundColor:'white', marginRight : 20 }}
+          onPress={() => this.props.navigation.navigate('AddReward')} >
+           <MaterialIcons name = 'playlist-add' size = {34} color = '#ffdc34' />
+          </TouchableOpacity>
 
-              <View style = {{ flex : 9 }}>
+        </View>
+              <View style = {{ flex : 20, backgroundColor : 'white' }}>
 
               <ScrollView style={styles.scrollView}>
                 
@@ -97,7 +98,7 @@ class Rewards extends Component<any, rewardsStates> {
 
 <View style = {styles.positive}>
 
-            <TouchableOpacity style={{ backgroundColor:'skyblue' }}
+            {/* <TouchableOpacity style={{ backgroundColor:'skyblue' }}
           onPress = {() => {
             this.props.navigation.navigate('ModifyReward', {
               title : item.title,
@@ -105,7 +106,7 @@ class Rewards extends Component<any, rewardsStates> {
           }}
           >
               <Text>수정</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             {/* <TouchableOpacity style={{ backgroundColor:'skyblue' }}
           onPress = {() => {
             console.log(this.props.habitarr);
@@ -127,16 +128,21 @@ class Rewards extends Component<any, rewardsStates> {
             
       </View>
 
-      <View style = {styles.habits}>
+      <View style = {styles.habits}
+              onTouchEnd = {() => {
+                this.props.navigation.navigate('ModifyReward', {
+                  title : item.title,
+                })
+              }} >
           <Text style = {styles.habittitle}>{item.title}</Text>
           <Text style = {styles.habitdesc}>{item.description}</Text>
 
       </View >
 
       <View style = {styles.negative}>
-      <TouchableOpacity style={{ backgroundColor:'gray' }}
+      <TouchableOpacity style={{ backgroundColor:'transparent' }}
       onPress = {() => { this.props.coinchange(-(item.coin)); }}>
-          <Text>--</Text>
+               <Entypo name = 'circle-with-minus' size = {36} color = 'white' />
         </TouchableOpacity>
       </View>
 
@@ -177,12 +183,14 @@ const styles = StyleSheet.create({
     width : '100%',
   },
   scrollView: {
-    backgroundColor: 'pink',
-    marginHorizontal: 20,
+
+    // marginHorizontal: 20,
   },
   onehabit : {
     borderWidth: 1,
-    borderColor: 'black',
+    borderColor: 'white',
+    borderRadius: 10,
+    backgroundColor : '#ffdc34',
     flexDirection : 'row',
     height : 70,
   },
@@ -198,9 +206,11 @@ const styles = StyleSheet.create({
   habittitle :{
     flex : 2,
     fontSize : 20,
+    color : '#110133',
   },
   habitdesc : {
     flex : 1,
     fontSize : 14,
+    color : '#110133',
   },
 });
