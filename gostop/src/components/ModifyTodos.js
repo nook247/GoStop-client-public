@@ -8,6 +8,10 @@ import { connect } from 'react-redux';
 import savetodos from '../actions/todosaction'
 import fakeserver from '../fakeserver'
 
+// 날짜
+import saveStartDate from '../actions/startdateaction'
+import saveEndDate from '../actions/enddateaction'
+
 class ModifyTodos extends Component {
     constructor(props) {
         super(props);
@@ -37,7 +41,7 @@ class ModifyTodos extends Component {
             element => element.title === this.props.navigation.state.params.title
         )
         this.dataToModify = dataToModify[0]
-
+        console.log('수정할 데이터 : ', dataToModify)
         let { title, description, difficulty, dateStart, dateEnd, completed } = dataToModify[0] 
 
         this._titleInput.setNativeProps({text: title})
@@ -108,14 +112,6 @@ class ModifyTodos extends Component {
         })
     }
 
-    setDate = (startOrEnd, date) => {
-        let todoChange = this.state.todo;
-        todoChange[startOrEnd] = date
-        this.setState({
-            todo: todoChange
-        })
-    }
-
     clearText = () => {
         this._titleInput.setNativeProps({text: ''});
         this._contentsInput.setNativeProps({text: ''})        
@@ -137,13 +133,15 @@ class ModifyTodos extends Component {
     }
 
     EditData = async() => {  // 수정 요망
-        let todo = this.state.todo;
+        // 날짜 먼저 설정
+        let StartDateStore = this.props.StartDate;
+        let EndDateStore = this.props.EndDate;
+        // console.log('시작 날짜 정보(AddTodos) : ', StartDateStore, typeof(StartDateStore), '---')        
+        // console.log('끝 날짜 정보(AddTodos)) : ', EndDateStore, typeof(EndDateStore), '---')
 
-        let startDateConverted = todo.dateStart.slice(0, 4) + '-' + todo.dateStart.slice(6, 8) + '-' + todo.dateStart.slice(10, 12)
-        let EndDateConverted = todo.dateStart.slice(0, 4) + '-' + todo.dateStart.slice(6, 8) + '-' + todo.dateStart.slice(10, 12)
-
-        todo.dateStart = startDateConverted;
-        todo.dateEnd = EndDateConverted;
+        let todo = this.state.todo;   
+        todo.dateStart = StartDateStore;
+        todo.dateEnd = EndDateStore;  
 
         let arr = this.props.todosarr
 
@@ -156,63 +154,60 @@ class ModifyTodos extends Component {
 
         this.props.savetodos([...arr])
 
-        let token = '';
-        await AsyncStorage.getItem('token', (err, result) => {
-            token = result
-        })
-        let header = new Headers();
-        header.append('Cookie', token)
-        header.append('Content-Type', 'application/json')
+        // let token = '';
+        // await AsyncStorage.getItem('token', (err, result) => {
+        //     token = result
+        // })
+        // let header = new Headers();
+        // header.append('Cookie', token)
+        // header.append('Content-Type', 'application/json')
 
-        const getInit = {
-            method : 'GET',
-            headers : header,
-            Cookie : token
-        }
+        // const getInit = {
+        //     method : 'GET',
+        //     headers : header,
+        //     Cookie : token
+        // }
 
-        if (this.todoIdToModify === undefined) {
-            fetch(`${fakeserver}/users/todos`, getInit)
-            .then((res) => {
-                if (res.status === 200 || res.status === 201) {
-                    res.json().then((data) => {
-                        let todoData = data.todos.filter(element => element.title === this.props.navigation.state.params.title)
-                        this.todoIdToModify = todoData[0]["_id"]
+        // if (this.todoIdToModify === undefined) {
+        //     fetch(`${fakeserver}/users/todos`, getInit)
+        //     .then((res) => {
+        //         if (res.status === 200 || res.status === 201) {
+        //             res.json().then((data) => {
+        //                 let todoData = data.todos.filter(element => element.title === this.props.navigation.state.params.title)
+        //                 this.todoIdToModify = todoData[0]["_id"]
 
-                        const myInit = {
-                            method : 'PATCH',
-                            body: JSON.stringify(todo),
-                            headers : header,
-                            Cookie : token
-                        }        
+        //                 const myInit = {
+        //                     method : 'PATCH',
+        //                     body: JSON.stringify(todo),
+        //                     headers : header,
+        //                     Cookie : token
+        //                 }        
                 
-                        fetch(`${fakeserver}/todos/${this.todoIdToModify}`, myInit)
-                        .then(res => res.json())
-                        .then(res => console.log('Success : ', JSON.stringify(res)))
-                        .catch(error => console.error('Error : ', error));
-                    })
+        //                 fetch(`${fakeserver}/todos/${this.todoIdToModify}`, myInit)
+        //                 .then(res => res.json())
+        //                 .then(res => console.log('Success : ', JSON.stringify(res)))
+        //                 .catch(error => console.error('Error : ', error));
+        //             })
 
-                }
-            })
+        //         }
+        //     })
         }
-        else {
-            const myInit = {
-                method : 'PATCH',
-                body: JSON.stringify(todo),
-                headers : header,
-                Cookie : token
-            }        
+        // else {
+        //     const myInit = {
+        //         method : 'PATCH',
+        //         body: JSON.stringify(todo),
+        //         headers : header,
+        //         Cookie : token
+        //     }        
     
-            fetch(`${fakeserver}/todos/${this.todoIdToModify}`, myInit)
-            .then(res => res.json())
-            .then(res => console.log('Success : ', JSON.stringify(res)))
-            .catch(error => console.error('Error : ', error));
-        }
-    }
+        //     fetch(`${fakeserver}/todos/${this.todoIdToModify}`, myInit)
+        //     .then(res => res.json())
+        //     .then(res => console.log('Success : ', JSON.stringify(res)))
+        //     .catch(error => console.error('Error : ', error));
+        // }
+    
 
     render() {        
-        const dateStart = this.state.todo["dateStart"];
-        const dateEnd = this.state.todo["dateEnd"];
-
         return (
             <View style={styles.mainContainer}>
 
@@ -319,10 +314,10 @@ class ModifyTodos extends Component {
                 </View>
 
                 <View>
-                    <DatePicker setDate={this.setDate} startOrEnd='dateStart' 
-                    forModify='FOR TEST'/>
-                    <DatePicker setDate={this.setDate} startOrEnd='dateEnd' 
-                    forModify={dateEnd}/>
+                    <DatePicker setDate={this.setDate} startOrEnd='Start' 
+                    forModify={this.props.StartDate}/>
+                    <DatePicker setDate={this.setDate} startOrEnd='End' 
+                    forModify={this.props.EndDate}/>
                 </View>
                 
                 <TouchableOpacity
@@ -352,7 +347,9 @@ class ModifyTodos extends Component {
 const mapStateToProps = (state) => {  
     // console.log('state 나와', state)
     return {
-      todosarr : state.todosreducer.todosarr
+      todosarr : state.todosreducer.todosarr,
+      StartDate : state.StartDateReducer.date,
+      EndDate : state.EndDateReducer.date
     }
 }  
 
@@ -361,6 +358,12 @@ const mapDispatchToProps = dispatch => {
       savetodos : (arr) => {
         dispatch(savetodos(arr));
       },
+      saveStartDate : (date) => {
+        dispatch(saveStartDate(date));
+      },
+      saveEndDate : (date) => {
+        dispatch(saveEndDate(date));
+      }
     };
 };
   
