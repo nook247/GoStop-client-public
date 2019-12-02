@@ -26,58 +26,49 @@ class Characterinfo  extends React.Component<CharacterinfoProps, any> {
 
             <View style={styles.body}>
               <View style={styles.left}>
-              <Image
-          style={styles.image}
-          source={{ uri:'https://png.pngtree.com/png-clipart/20190630/original/pngtree-handsome-cartoon-dog-image-cute-dog-png-image_4180965.jpg' }}/>
-           <Image
-          style={styles.image}
-          source={{ uri:'https://png.pngtree.com/png-clipart/20190630/original/pngtree-handsome-cartoon-dog-image-cute-dog-png-image_4180965.jpg' }}/>
-           <Image
-          style={styles.image}
-          source={{ uri:'https://png.pngtree.com/png-clipart/20190630/original/pngtree-handsome-cartoon-dog-image-cute-dog-png-image_4180965.jpg' }}/>
-          <View style={styles.level}><Text>{this.props.name}</Text></View>
-                  <View style={styles.level}>
-                      <Text style = {styles.levelText}>level{this.props.level}</Text>
-                  </View>
+                <Image
+                style={styles.image}
+                source={{ uri:'https://png.pngtree.com/png-clipart/20190630/original/pngtree-handsome-cartoon-dog-image-cute-dog-png-image_4180965.jpg' }}/>
+                <Image
+                style={styles.image}
+                source={{ uri:'https://png.pngtree.com/png-clipart/20190630/original/pngtree-handsome-cartoon-dog-image-cute-dog-png-image_4180965.jpg' }}/>
+                <Image
+                style={styles.image}
+                source={{ uri:'https://png.pngtree.com/png-clipart/20190630/original/pngtree-handsome-cartoon-dog-image-cute-dog-png-image_4180965.jpg' }}/>
+                <View style={styles.level}><Text>{this.props.name}</Text></View>
+                <View style={styles.level}><Text style = {styles.levelText}>level{this.props.level}</Text></View>
               </View>
+
               <View style={styles.right}>
                <View style={{ flex:1, width : 50, alignSelf : 'flex-end' }}>
-               <Button
-          title='kakaotalk' color = 'yellow'
-          onPress={() => console.log('share Button pressed')}
-        />
+                 <View>
+               <Text onPress={() => console.log('share Button pressed')} style = {{color : "#ffdc34"}}>
+                 kakao</Text></View>
                </View>
 
-                    <View style = {styles.health}>
-                    
-                <Text style = {{ flex : 1, height :10, width : this.props.healthvalue || 0 ,
-                  backgroundColor : 'yellow', justifyContent:'flex-end' }}> </Text>
-                <Text style = {{ flex : 1, height :10, 
-                   justifyContent:'flex-end' }}>health {this.props.healthvalue} / 200 </Text>
-                    </View>
+                <View style = {styles.health}>
+                
+                  <Text style = {{ flex : 1, width : this.props.healthvalue || 0 ,
+                    backgroundColor : '#c72c41', justifyContent:'flex-end' }}> </Text>
+                  <Text style = {{ flex : 2, height :10, color :  'white',
+                    justifyContent:'flex-end' }}>health {this.props.healthvalue} / 200 </Text>
+                </View>
 
                 <View style = {styles.points}>
-               
-                <Text style = {{ flex : 1, height :10, width : pointbar || 0,
-                  backgroundColor : 'yellow', justifyContent:'flex-end' }}></Text>
-                <Text style = {{ flex : 1, height :10, 
-                   justifyContent:'flex-end' }}>points {this.props.pointsvalue} / {levelpoint} </Text>
-                    </View>
+                  <Text style = {{ flex : 1,  width : pointbar || 0,
+                    backgroundColor : '#ffdc34', justifyContent:'flex-end' }}></Text>
+                  <Text style = {{ flex : 2, height :10, color :  'white',
+                    justifyContent:'flex-end' }}>points {this.props.pointsvalue} / {levelpoint} </Text>
+                </View>
 
-                    
-
-                    <View style = {styles.coins}>
-                    <View style={{ flex:1 }}></View>
-                    <Image
-                    style={{ width: 20, height: 20 }}
-                    source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
-
-                    <Text style = {{ flex : 1, height : 10,
-                    // width : this.props.coinsvalue || 0,
-                    //   backgroundColor : 'yellow',
-                      justifyContent:'flex-end' }} >{this.props.coinsvalue} coins</Text>
-
-                    </View>
+                <View style = {styles.coins}>
+                  <View style={{ flex:1, flexDirection : 'row'}}>
+                  <Image
+                  style={{ width: 20, height: 20 }}
+                  source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
+                  <Text style = {{ flex : 1, height : 20, color :  'white' }} >{this.props.coinsvalue}</Text>
+                  </View>
+                </View>
 
               </View>
             </View>
@@ -113,7 +104,9 @@ const styles = StyleSheet.create({
     flex: 1,
     borderWidth: 1,
     borderEndWidth : 1,
-    borderColor: 'red',
+    borderColor: '#ffdc34',
+    
+    backgroundColor : '#110133',
     flexDirection: 'column',
     width : '100%',
   },
@@ -199,13 +192,16 @@ const styles = StyleSheet.create({
     // },
   healthText : {
     flex : 1,
-    justifyContent : 'flex-end',
+    color : 'white',
+    // justifyContent : 'flex-end',
   },
   pointsText : {
     flex : 1,
+    color : 'white',
   },
   coinsText : {
     flex : 1,
+    color : 'white',
   },
 
 });

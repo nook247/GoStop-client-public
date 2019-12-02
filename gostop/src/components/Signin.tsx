@@ -55,6 +55,17 @@ export default class Signin extends Component<any, any> {
     })
     .catch((error) => console.log('fetch error', error))
   };
+
+  google_login = () =>{
+    const req = new Request(`${fakeserver}/auth/google`);
+    fetch(req).then((res) => {
+      if (res.status === 200 || res.status === 201) {
+        res.text().then(text => console.log(text));
+      } else {
+        console.error(res.statusText);
+      }
+    });
+  }
  
   render() {
     return (
@@ -85,7 +96,14 @@ export default class Signin extends Component<any, any> {
           style={styles.submitButton}
           onPress={() => this.login(this.state.email, this.state.password)}
         >
-          <Text style={styles.submitButtonText}>Submit</Text>
+          <Text style={styles.submitButtonText}>Login</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.submitButton}
+          onPress={() => this.google_login()}
+        >
+          <Text style={styles.submitButtonText}>Google Login</Text>
         </TouchableOpacity>
 
         <TouchableOpacity

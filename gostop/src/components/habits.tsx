@@ -6,6 +6,12 @@ import fakeserver from '../fakeserver';
 import Characterinfo from './characterinfo';
 import  savehabit  from '../actions/habitaction';
 import { getuser } from '../actions/getuseraction';
+// import Icon from 'react-native-ionicons';
+import AntDesign from '@expo/vector-icons/AntDesign'
+import {Ionicons} from "@expo/vector-icons";
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import Entypo from '@expo/vector-icons/Entypo';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 
 export interface Habit {
@@ -110,35 +116,32 @@ public componentDidMount() {
     const { navigate } = this.props.navigation;
     return (
             <View style = {styles.container}>
-              <View style ={{flex : 5}}>
+              <View style ={{ flex : 7 }}>
                 <Characterinfo/>
               </View>
 
-      <View style = { { flex : 1 } }>
-          <Button
-          title='Add habits'
-          onPress={() => navigate('AddHabit')}
-          />
+      <View style = { { flex : 2, backgroundColor : 'white', justifyContent : 'flex-end', flexDirection : 'row' } }>
+                  <TouchableOpacity style={{ backgroundColor:'white', marginRight : 20 }}
+          onPress={() => this.props.navigation.navigate('AddHabit')} >
+           <MaterialIcons name = 'playlist-add' size = {34} color = '#ffdc34' />
+          </TouchableOpacity>
+
         </View>
 
-              <View style = {{ flex : 9 }}>
-          <TouchableOpacity style={{ backgroundColor:'skyblue' }}
-          onPress={() =>
-          this.props.navigation.navigate('AddHabit')}>
-          </TouchableOpacity>
+              <View style = {{ flex : 20,  backgroundColor : 'white' }}>
 
           <ScrollView style={styles.scrollView}>
         {this.props.habitarr.map((item) => {
           return   <View style = {styles.onehabit} key = {item.title}>
 
           <View style = {styles.positive}>
-          <TouchableOpacity style={{ backgroundColor:'blue' }}
+          <TouchableOpacity style={{ backgroundColor:'transparent' }}
           onPress = {() => { this.props.pointchange(item.difficulty * 10);
             this.props.coinchange(item.difficulty * 10);
           }}>
-              <Text>++</Text>
+            <Entypo name = 'circle-with-plus' size = {36} color = 'white' />
             </TouchableOpacity>
-            <TouchableOpacity style={{ backgroundColor:'skyblue' }}
+            {/* <TouchableOpacity style={{ backgroundColor:'skyblue' }}
           onPress = {() => {
             this.props.navigation.navigate('ModifyHabit', {
               title : item.title,
@@ -146,8 +149,8 @@ public componentDidMount() {
           }}
           >
               <Text>수정</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={{ backgroundColor:'skyblue' }}
+            </TouchableOpacity>  */}
+            {/* <TouchableOpacity style={{ backgroundColor:'skyblue' }}
           onPress = {() => {
             console.log(this.props.habitarr);
             console.log(item.title)
@@ -164,26 +167,31 @@ public componentDidMount() {
           }}
           >
               <Text>삭제</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             
       </View>
 
-      <View style = {styles.habits}>
+      <View style = {styles.habits}
+              onTouchEnd = {() => {
+                this.props.navigation.navigate('ModifyHabit', {
+                  title : item.title,
+                });
+              }}
+      >
           <Text style = {styles.habittitle}>{item.title}</Text>
           <Text style = {styles.habitdesc}>{item.description}</Text>
 
       </View >
 
       <View style = {styles.negative}>
-      <TouchableOpacity style={{ backgroundColor:'gray' }}
+      <TouchableOpacity style={{ backgroundColor:'transparent' }}
       onPress = {() => { this.props.healthchange(item.difficulty * 10); }}>
-          <Text>--</Text>
+         <Entypo name = 'circle-with-minus' size = {36} color = 'white' />
         </TouchableOpacity>
       </View>
-      <View>
-        {/* <Text>알람여부{item.alarmId}</Text> */}
+      {/* <View>
         <Text>알람여부</Text>
-      </View>
+      </View> */}
 
       </View>;
 
@@ -225,16 +233,19 @@ const styles = StyleSheet.create({
   container: {
     borderWidth: 1,
     borderColor: 'black',
+    // backgroundColor : '#110133',
     flex: 1,
     width : '100%',
   },
   scrollView: {
-    backgroundColor: 'pink',
-    marginHorizontal: 20,
+    // backgroundColor: 'pink',
+    // marginHorizontal: 20,
   },
   onehabit : {
     borderWidth: 1,
-    borderColor: 'black',
+    borderColor: 'white',
+    borderRadius: 10,
+    backgroundColor : '#ffdc34',
     flexDirection : 'row',
     height : 70,
   },
@@ -250,9 +261,11 @@ const styles = StyleSheet.create({
   habittitle :{
     flex : 2,
     fontSize : 20,
+    color : '#110133',
   },
   habitdesc : {
     flex : 1,
     fontSize : 14,
+    color : '#110133',
   },
 });

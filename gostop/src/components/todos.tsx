@@ -6,6 +6,7 @@ import  TodoDatePicker  from './tododatepicker';
 import fakeserver from '../fakeserver';
 import Characterinfo from './characterinfo';
 import  savetodos  from '../actions/todosaction';
+import { MaterialIcons } from '@expo/vector-icons';
 
 export interface Todo {
   id : string;
@@ -167,16 +168,16 @@ public todos(item){
     }
   />
 
-<TouchableOpacity style={{ backgroundColor:'skyblue' }}
+{/* <TouchableOpacity style={{ backgroundColor:'#ffdc34' }}
     onPress = {() => {
       this.props.navigation.navigate('ModifyTodos', {
         title : item.title,
       })
     }}
     >
-        <Text>수정</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={{ backgroundColor:'skyblue' }}
+        <Text style = {{ color : '#110133' }}>수정</Text>
+      </TouchableOpacity> */}
+      {/* <TouchableOpacity style={{ backgroundColor:'#110133' }}
     onPress = {() => {
       console.log(this.props.todosarr);
       console.log(item.title)
@@ -210,19 +211,24 @@ public todos(item){
     }}
     >
         <Text>삭제</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       </View>
 
-      <View style = {styles.habits}>
+      <View style = {styles.habits} 
+        onTouchEnd = {() => {
+          this.props.navigation.navigate('ModifyTodos', {
+            title : item.title,
+          })
+        }} >
           <Text style = {styles.habittitle}>{item.title}</Text>
           <Text style = {styles.habitdesc}>{item.dateStart.slice(0, 10)}~{item.dateEnd.slice(0, 10)}</Text>
           <Text style = {styles.habitdesc}>{item.description}</Text>
 
       </View >
 
-      <View>
+      {/* <View>
       <CheckBox value = {item.alarm}/>
-      </View>
+      </View> */}
 
       </View>
 
@@ -235,36 +241,35 @@ public todos(item){
 
       <View style = {styles.container}>
 
-      <View style ={{ flex : 5 }}>
+      <View style ={{ flex : 7 }}>
           <Characterinfo/>
         </View>
 
-      <View style = { { flex : 1 } }>
-          <Button
-          title='Add todos'
-          onPress={() => navigate('AddTodos')}
-          />
-
-        <TouchableOpacity style = {{backgroundColor : 'yellow'}}
+      <View style = { { flex : 2, flexDirection : 'row', justifyContent : 'space-between', backgroundColor : 'white'} }>
+      <TouchableOpacity style = {{ backgroundColor : 'transparent' }}
           onPress = {() => {
-             console.log('전체보기'); 
+             console.log('전체보기');
             this.setState({
               totallist : true,
-            })
-          }}>   
-           <Text>전체 보기</Text>
+            });
+          }}>
+           <Text style = {{ alignSelf : 'center', color : '#110133', fontSize : 18 }}>View all</Text>
         </TouchableOpacity>
-
+      <TouchableOpacity style={{ backgroundColor:'transparent' }}
+          onPress={() =>
+          this.props.navigation.navigate('AddTodos')}>
+            <MaterialIcons name = 'playlist-add' size = {34} color = '#ffdc34' />
+          </TouchableOpacity>
 
       </View>
 
-      <View  style = {{ flex : 9 }}>
+      <View  style = {{ flex : 20, backgroundColor : 'white'}}>
 
           <View onTouchEnd = {() => {
             this.setState({
               totallist : false,
             })
-            console.log('serserser')}}
+            console.log('datepicker touch')}}
             onTouchCancel = {() =>{
               this.setState({
                 totallist : true,
@@ -329,32 +334,36 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     flex: 1,
     width : '100%',
+    backgroundColor : '#110133'
   },
   scrollView: {
-    backgroundColor: 'pink',
-    marginHorizontal: 20,
+    // marginHorizontal: 20,
   },
   onehabit : {
-    borderWidth: 1,
-    borderColor: 'black',
+    borderWidth: 2,
+    borderColor: 'white',
+    borderRadius: 10,
     flexDirection : 'row',
+    backgroundColor : '#ffdc34',
     height : 70,
   },
   positive: {
     flex: 1,
   },
-  negative: {
-    flex: 1,
-  },
+  // negative: {
+  //   flex: 1,
+  // },
   habits: {
-    flex: 6,
+    flex: 7,
   },
   habittitle :{
     flex : 2,
     fontSize : 20,
+    color : '#110133',
   },
   habitdesc : {
     flex : 1,
     fontSize : 14,
+    color : '#110133',
   },
 });
