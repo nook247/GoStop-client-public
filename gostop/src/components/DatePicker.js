@@ -1,14 +1,30 @@
 import React, { Component } from "react";
 import { TouchableOpacity, View, StyleSheet, Text } from "react-native";
 import DateTimePicker from "react-native-modal-datetime-picker";
- 
-export default class DatePicker extends Component {
+import { connect } from 'react-redux';
+
+// 날짜
+import saveStartDate from '../actions/startdateaction'
+import saveEndDate from '../actions/enddateaction'
+
+class DatePicker extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isDateTimePickerVisible: false,
       date : ''
     };
+  }
+
+  componentDidMount() {
+    if (this.props.forModify) {
+      let dateToConvert = new Date(this.props.forModify)
+      let dateToRender = this.DateConverter(dateToConvert)
+      
+      this.setState({
+        date: dateToRender.forRender
+      })
+    }
   }
  
   showDateTimePicker = () => {
@@ -19,51 +35,67 @@ export default class DatePicker extends Component {
     this.setState({ isDateTimePickerVisible: false });
   };
 
-  DateConverter = (dateArr) => {
+  DateConverter = (date) => {
+    let dateArr = date.toString().split(' ')
     let [dayOfWeek, month, day, year] = dateArr;
-    console.log('요일 : ', dayOfWeek)
-    console.log('월 : ', month)
-    console.log('일 : ', day)
-    console.log('년 : ', year)
 
     let dayOfWeekConvert = {
        'Mon' : '월요일', 'Tue' : '화요일', 'Wed' : '수요일', 'Thu' : '목요일', 
        'Fri' : '금요일', 'Sat' : '토요일', 'Sun' : '일요일'
       }
     let monthConvert = { 
-      'Jan' : '01월', 'Feb' : '02월', 'Mar' : '03월', 'Apr' : '04월', 'May' : '05월', 
-      'Jun' : '06월', 'Jul' : '07월', 'Aug' : '08월', 'Sep' : '09월', 'Oct' : '10월', 
-      'Nov' : '11월', 'Dec' : '12월'
+      'Jan' : '01', 'Feb' : '02', 'Mar' : '03', 'Apr' : '04', 'May' : '05', 
+      'Jun' : '06', 'Jul' : '07', 'Aug' : '08', 'Sep' : '09', 'Oct' : '10', 
+      'Nov' : '11', 'Dec' : '12'
     }
 
-    let str = year + '년 ' + monthConvert[month] + ' ' + day + '일 ' + dayOfWeekConvert[dayOfWeek];
+    let str1 = year + '년 ' + monthConvert[month] + '월 ' + day + '일 ' + dayOfWeekConvert[dayOfWeek];
+    let str2 = year + '-' + monthConvert[month] + '-' + day;
 
-    return str;
+    let dateObj = {
+      forRender: str1,
+      forSave: str2
+    }
+
+    return dateObj;
   }
  
   handleDatePicked = date => {
-    console.log("A date has been picked: ", date);
-    let dateArr = date.toString().split(' ')
+    //console.log("A date has been picked: ", date, typeof(date));
+    let dateConverted = this.DateConverter(date)
 
-    let dateConverted = this.DateConverter(dateArr)
+    this.setState({ date : dateConverted.forRender })
+
+    //let dateToInsert = new Date(date)
+    let dateToInsert = dateConverted.forSave
+    console.log('날짜 형식 변환 : ', dateToInsert)
+
+    if (this.props.startOrEnd === 'Start') {
+      this.props.saveStartDate(dateToInsert)
+      let StartDateStore = this.props.StartDate;
+      console.log('시작 날짜 정보(DatePicker) : ', StartDateStore)
+    }
+    else if (this.props.startOrEnd === 'End') {
+      this.props.saveEndDate(dateToInsert)
+      let EndDateStore = this.props.EndDate;
+      console.log('끝 날짜 정보(DatePicker) : ', EndDateStore)
+    }
     
-    
-    this.setState({ date : dateConverted })
     this.hideDateTimePicker();
   };
  
   render() {
     const date = this.state.date 
 
-    let today = new Date(); 
-    let year = today.getFullYear(); // 년도
-    let month = today.getMonth() + 1;  // 월
-    let date2 = today.getDate();  // 날짜
+    // let today = new Date(); 
+    // let year = today.getFullYear(); // 년도
+    // let month = today.getMonth() + 1;  // 월
+    // let date2 = today.getDate();  // 날짜
 
-    returntoday = year + '/' + month + '/' + date2
+    // returntoday = year + '/' + month + '/' + date2
     return (
       <View>
-        <Text>날짜 : {date || returntoday} </Text>
+        <Text>{this.props.startOrEnd === 'Start' ? '시작' : '완료' } 날짜 : {date} </Text>
         
 
         <TouchableOpacity
@@ -83,6 +115,25 @@ export default class DatePicker extends Component {
   }
 }
 
+const mapStateToProps = (state) => {
+  return {
+    StartDate : state.StartDateReducer.date,
+    EndDate : state.EndDateReducer.date
+  }
+}  
+
+const mapDispatchToProps = dispatch => {
+  return {      
+    saveStartDate : (date) => {
+      dispatch(saveStartDate(date));
+    },
+    saveEndDate : (date) => {
+      dispatch(saveEndDate(date));
+    }
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(DatePicker);
 
 const styles = StyleSheet.create({
   button: {

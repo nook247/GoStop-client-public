@@ -7,6 +7,10 @@ import { connect } from 'react-redux';
 import savetodos from '../actions/todosaction'
 import fakeserver from '../fakeserver'
 
+// 날짜
+import saveStartDate from '../actions/startdateaction'
+import saveEndDate from '../actions/enddateaction'
+
 class AddTodos extends Component {
     constructor(props) {
         super(props);
@@ -15,8 +19,8 @@ class AddTodos extends Component {
                 title: '',
                 description: '',
                 difficulty: '',  
-                dataStart: '',
-                dataEnd: '',         
+                dateStart: '',
+                dateEnd: '',         
                 completed: true
             },
             alarmTime : {
@@ -79,14 +83,6 @@ class AddTodos extends Component {
         })
     }
 
-    setDate = (startOrEnd, date) => {
-        let todoChange = this.state.todo;
-        todoChange[startOrEnd] = date
-        this.setState({
-            todo: todoChange
-        })
-    }
-
     clearText = () => {
         this._titleInput.setNativeProps({text: ''});
         this._contentsInput.setNativeProps({text: ''})        
@@ -95,8 +91,8 @@ class AddTodos extends Component {
                 title: '',
                 description: '',
                 difficulty: '',  
-                dataStart: '',
-                dataEnd: '',         
+                dateStart: '',
+                dateEnd: '',         
                 completed: true
             },
             alarmTime: {
@@ -108,30 +104,52 @@ class AddTodos extends Component {
     }
       
     sendData = async() => {   // 수정 요망
-        let todo = this.state.todo;        
-        let arr = this.props.todosarr
-        //console.log('원래 state : ', arr)
-        this.props.savetodos([...arr, todo])
+        // 날짜 먼저 설정
+        let StartDateStore = this.props.StartDate;
+        let EndDateStore = this.props.EndDate;
+        // console.log('시작 날짜 정보(AddTodos) : ', StartDateStore, typeof(StartDateStore), '---')        
+        // console.log('끝 날짜 정보(AddTodos)) : ', EndDateStore, typeof(EndDateStore), '---')
+
+        let todo = this.state.todo;   
+        todo.dateStart = StartDateStore;
+        todo.dateEnd = EndDateStore;  
         
-        let token = '';
-        await AsyncStorage.getItem('token', (err, result) => {
-            token = result
-        })
-        let header = new Headers();
-        header.append('Cookie', token)
-        header.append('Content-Type', 'application/json')
+        console.log('날짜가 추가된 todo : ', this.state.todo)
+        // let todo = {
+        //     title: 'TEST',
+        //     description: 'TEST',
+        //     difficulty: '3',  
+        //     dateStart: '2019-12-01',
+        //     dateEnd: '2019-12-30',         
+        //     completed: true
+        // }
 
-        const myInit = {
-            method : 'POST',
-            body: JSON.stringify(todo),
-            headers : header,
-            Cookie : token
-        }
+        
+        let todoArr = this.props.todosarr
+        console.log('원래 state : ', todoArr)
+        
+        this.props.savetodos([...todoArr, todo])
+        console.log('savetodo 잘 됫나? ', [...todoArr, todo])
 
-        fetch(`${fakeserver}/todos`, myInit)
-        .then(res => res.json())
-        .then(res => console.log('Success : ', JSON.stringify(res)))
-        .catch(error => console.error('Error : ', error));
+        // let token = '';
+        // await AsyncStorage.getItem('token', (err, result) => {
+        //     token = result
+        // })
+        // let header = new Headers();
+        // header.append('Cookie', token)
+        // header.append('Content-Type', 'application/json')
+
+        // const myInit = {
+        //     method : 'POST',
+        //     body: JSON.stringify(todo),
+        //     headers : header,
+        //     Cookie : token
+        // }
+
+        // fetch(`${fakeserver}/todos`, myInit)
+        // .then(res => res.json())
+        // .then(res => console.log('Success : ', JSON.stringify(res)))
+        // .catch(error => console.error('Error : ', error));
     }
 
     render() {
@@ -167,7 +185,7 @@ class AddTodos extends Component {
                                 description: text
                             }
                         })
-                        console.log(this.state)
+                        //console.log(this.state)
                     }}/>
                 </View>
 
@@ -244,8 +262,8 @@ class AddTodos extends Component {
                 </View>
 
                 <View>
-                    <DatePicker setDate={this.setDate} startOrEnd='dateStart'/>
-                    <DatePicker setDate={this.setDate} startOrEnd='dateEnd'/>
+                    <DatePicker startOrEnd='Start'/>
+                    <DatePicker startOrEnd='End'/>
                 </View>
                 
                 <TouchableOpacity
@@ -272,9 +290,11 @@ class AddTodos extends Component {
 //export default AddTodos;
 
 const mapStateToProps = (state) => {  
-    // console.log('state 나와', state)
+    //console.log('state 나와', state)
     return {
-      todosarr : state.todosreducer.todosarr
+      todosarr : state.todosreducer.todosarr,
+      StartDate : state.StartDateReducer.date,
+      EndDate : state.EndDateReducer.date
     }
 }  
 
@@ -284,6 +304,12 @@ const mapDispatchToProps = dispatch => {
       savetodos : (arr) => {
         dispatch(savetodos(arr));
       },
+      saveStartDate : (date) => {
+        dispatch(saveStartDate(date));
+      },
+      saveEndDate : (date) => {
+        dispatch(saveEndDate(date));
+      }
     };
 };
   

@@ -10,6 +10,9 @@ import habitreducer from './HabitReducer';
 import todosreducer from './TodosReducer';
 import rewardreducer from './RewardReducer';
 import datereducer from './DateReducer';
+// 추가
+import StartDateReducer from './StartDateReducer'
+import EndDateReducer from './EndDateReducer'
 
 export default combineReducers({
   changeReducer,
@@ -23,4 +26,8 @@ export default combineReducers({
   habitreducer,
   rewardreducer,
   datereducer,
+  StartDateReducer,
+  EndDateReducer
 });
+
+// StartDateReducer, EndDateReducer 추가로 combine
