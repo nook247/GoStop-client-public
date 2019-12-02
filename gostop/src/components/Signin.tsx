@@ -8,11 +8,8 @@ import {
   StyleSheet,
 } from 'react-native';
 import fakeserver from '../fakeserver';
-import { connect } from 'react-redux';
-import Habits from './habits'
-import { getuser } from '../actions/getuseraction';
 
-class Signin extends Component<any, any> {
+export default class Signin extends Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {
@@ -102,16 +99,6 @@ class Signin extends Component<any, any> {
     );
   }
 }
-
-const mapDispatchToProps = dispatch => {
-  return {
-    getuser : (id, email, name, userCode, level, health, point, coin) => {
-      dispatch(getuser(id, email, name, userCode, level, health, point, coin))
-    },
-  };
-};
-
-export default connect(null, mapDispatchToProps)(Signin);
 
 const styles = StyleSheet.create({
   container: {
