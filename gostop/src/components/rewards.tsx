@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View, AsyncStorage, ScrollView } from 'react-native';
+import { Button, Image, StyleSheet, Text, TouchableOpacity, View, AsyncStorage, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 import { coinchange } from '../actions/characterinfoaction';
 import fakeserver from '../fakeserver';
@@ -45,14 +45,15 @@ class Rewards extends Component<any, rewardsStates> {
         res.json()
         .then(data => {
 
-          // if(!data.rewards.length){
+          if(!data.rewards.length){
           //   let initState = {
           //     id : '',
           //     title : '제목을 입력하세요',
           //     desc : '설명을 입력하세요',
           //     coin : 10,
           //   }
-          // } else {
+          // this.props.savereward([initState]);
+          } else {
             const rewards = [];
             data.rewards.forEach( element => {
               const rewardobj = {
@@ -64,7 +65,7 @@ class Rewards extends Component<any, rewardsStates> {
               rewards.push(rewardobj);
             })
             this.props.savereward(rewards);
-       // }
+       }
       }
 
             );
@@ -135,14 +136,26 @@ class Rewards extends Component<any, rewardsStates> {
                 })
               }} >
           <Text style = {styles.habittitle}>{item.title}</Text>
+          
           <Text style = {styles.habitdesc}>{item.description}</Text>
 
       </View >
 
       <View style = {styles.negative}>
+        <View style = {{ flexDirection : 'row' }}>
+          <Text style = {styles.coin}>{item.coin}</Text>
+    
+        </View>
       <TouchableOpacity style={{ backgroundColor:'transparent' }}
-      onPress = {() => { this.props.coinchange(-(item.coin)); }}>
-               <Entypo name = 'circle-with-minus' size = {36} color = 'white' />
+      onPress = {() => { 
+        console.log('보상 구매했니?')
+        this.props.coinchange(-(item.coin)); }}
+      >
+                     <Image
+                      style={{ width: 36, height: 36 }}
+                      source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}
+                      
+                      />
         </TouchableOpacity>
       </View>
 
@@ -198,7 +211,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   negative: {
-    flex: 1,
+    flex: 3,
+    flexDirection : 'row',
+    justifyContent : 'flex-end',
+    alignItems : 'center',
+    marginRight : 10,
+
   },
   habits: {
     flex: 6,
@@ -213,4 +231,10 @@ const styles = StyleSheet.create({
     fontSize : 14,
     color : '#110133',
   },
+  coin : {
+    fontSize : 25,
+    marginRight : 3,
+    // borderColor : 'black',
+    // borderWidth : 1,
+  }
 });

@@ -12,6 +12,7 @@ import {Ionicons} from "@expo/vector-icons";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Entypo from '@expo/vector-icons/Entypo';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import Signin from './Signin';
 
 
 export interface Habit {
@@ -59,11 +60,14 @@ async getdata(){
       if (res.status === 200 || res.status === 201) {
         res.json()
         .then(async (data) => {
-          console.log('token---------', token)
           await this.props.getuser(data._id, data.email, data.name, data.userCode,data.level, data.health, data.point, data.coin, token);
         }
         )}}
         )
+        .catch((err) => {
+          console.log('get userinfo failed!');
+          this.props.navigation.navigate(Signin);
+        });
 
     fetch(`${fakeserver}/users/habits`, myInit)
     .then((res) => {
