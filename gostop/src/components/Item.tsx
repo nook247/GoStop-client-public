@@ -1,32 +1,16 @@
 import React, { Component } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View, TouchableHighlight } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { connect } from 'react-redux';
 import { imagechange, imagechange1, imagechange2 } from '../actions/';
 import Characterinfo from '../components/characterinfo';
-
-
 
 class Item extends Component<any, any, any> {
 
   constructor(props, context) {
     super(props, context);
 
-    // console.log(this.props.uri1);
-    // console.log('componets의 heads', this.props.heads)
-    // this.state = {
-    //   heads: this.props.heads,
-    //   tops:  this.props.tops,
-    //   pantss: this.props.pantss
-    // }
   }
 
-  // public componentDidMount() {
-  //     this.setState = {
-  //       heads: this.props.heads,
-  //       tops:  this.props.tops,
-  //       pantss: this.props.pantss
-  //     }
-  // }
   // public componentDidMount() {
   //   fetch(`{fakeserver}/items`).then((res) => {
   //     console.log(res);
@@ -92,43 +76,26 @@ class Item extends Component<any, any, any> {
             //     <Text style={{ fontSize: 15 }}>빨간색</Text>
             //   </TouchableOpacity>;
             // });
-            console.log('확인!!!', this.props.heads)
+
     return (
           <View style={s.contain}>
-            
-            <Characterinfo/>
-            
-            {/* {console.log(this.props.uri)} */}
-            <Image
-            style={s.basichead}
-            source={{ uri: this.props.uri }}/>
-            <Image
-            style={s.basictop}
-            source={{ uri: this.props.uri1 }}/>
-            <Image
-            style={s.basicpants}
-            source={{ uri: this.props.uri2 }}/>
+            <View style ={{ flex : 7 }}>
+                <Characterinfo/>
+              </View>
 
+          <View style ={{ flex : 23.5 }}>
           <Text style={s.head1}>머리</Text>
           <View style={s.container} >
 
-            {/* {this.props.heads.map((head, index) => {
-              // tslint:disable-next-line: no-unused-expression
-              return <Image key={index} style={s.pink} source={{uri: head}}/>
-            })} */}
-
             {this.props.heads.map((head, index) => {
               // tslint:disable-next-line: no-unused-expression
-              // console.log(index);
-              console.log('가지고옴', head);
-              return <TouchableOpacity style={s.red} key={index}
+              // console.log('가지고옴', head);
+              return <TouchableOpacity key={index}
               onPress = {() => { this.props.imagechange(head); }}>
                 {/* <Text style={{ fontSize: 15 }}> 착용 </Text> */}
-                <Image key={index} style={s.pink} source={{uri: head}}/>
+                <Image key={index} style={s.pink} source={{ uri: head }}/>
               </TouchableOpacity>;
             })}
-
-            
 
             {/* {heads} */}
             {/* <TouchableOpacity style={s.red}
@@ -152,12 +119,12 @@ class Item extends Component<any, any, any> {
               // tslint:disable-next-line: no-unused-expression
               // console.log(index);
               // console.log('가지고옴', top);
-              return <TouchableOpacity style={s.red} key={index}
+            return <TouchableOpacity key={index}
               onPress = {() => { this.props.imagechange1(top); }}>
                 {/* <Text style={{ fontSize: 15 }}> 착용 </Text> */}
-                <Image key={index} style={s.pink} source={{uri: top}}/>
+                <Image key={index} style={s.pink} source={{ uri: top }}/>
               </TouchableOpacity>;
-            })}
+          })}
 
           {/* <TouchableOpacity style={s.red}
             onPress = {() => { this.props.imagechange1(database.top[0].uri); }}>
@@ -180,12 +147,12 @@ class Item extends Component<any, any, any> {
               // tslint:disable-next-line: no-unused-expression
               // console.log(index);
               // console.log('가지고옴', pants);
-              return <TouchableOpacity style={s.red} key={index}
+            return <TouchableOpacity key={index}
               onPress = {() => { this.props.imagechange2(pants); }}>
                 {/* <Text style={{ fontSize: 15 }}> 착용 </Text> */}
-                <Image key={index} style={s.pink} source={{uri: pants}}/>
+                <Image key={index} style={s.pink} source={{ uri: pants }}/>
               </TouchableOpacity>;
-            })}
+          })}
 
           {/* <TouchableOpacity style={s.red}
             onPress = {() => { this.props.imagechange2(database.pants[0].uri); }}>
@@ -213,7 +180,7 @@ class Item extends Component<any, any, any> {
             onPress = {() => { this.props.imagechange3(database.pet[2].uri); }}>
               <Text style={{ fontSize: 15 }}>파랑몬</Text>
             </TouchableOpacity> */}
-
+          </View>
           </View>
     );
   }
@@ -224,22 +191,24 @@ const s = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'black',
     // backgroundColor : '#110133',
-    // flex: 1,
-    // width : '100%',
+    flex: 1,
+    width : '100%',
 
   },
   container: {
     marginTop: 5,
     marginBottom: 15,
     flexDirection: 'row',
+    alignItems: 'center',
   },
   pink: {
-    marginLeft: 15,
+    marginLeft: 25,
     backgroundColor: 'white',
     padding: 20,
     height: 30,
     width: 50,
     resizeMode:'contain',
+    alignItems: 'center',
   },
   red: {
     marginLeft: 10,
@@ -249,35 +218,13 @@ const s = StyleSheet.create({
   },
   head: {
     marginLeft: 25,
-    marginTop: 40,
+    marginTop: 20,
   },
   head1: {
     marginLeft: 25,
-    marginTop: 80,
+    marginTop: 70,
   },
-  basichead: {
-    marginTop: '2%',
-    marginLeft: '7.95%',
-    marginBottom: '-5%',
-    height:'10%',
-    width:'10%',
-    resizeMode:'contain',
-  },
-  basictop: {
-    marginLeft: '7.5%',
-    marginTop: '1%',
-    height:'10%',
-    width:'11%',
-    resizeMode:'contain',
-  },
-  basicpants: {
-    marginLeft: '9%',
-    marginBottom: '-3%',
-    marginTop: '-4%',
-    height:'7%',
-    width:'8%',
-    resizeMode:'contain',
-  },
+
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -290,15 +237,13 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 function mapStateToProps(state) {
-  console.log('머리',state.additem.heads)
-  console.log('상의', state.additem1.tops)
   return {
     uri: state.changeReducer.uri,
     uri1: state.changeReducer1.uri1,
     uri2: state.changeReducer2.uri2,
     heads: state.additem.heads,
     tops: state.additem1.tops,
-    pantss: state.additem2.pantss
+    pantss: state.additem2.pantss,
 
   };
 }

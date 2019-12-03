@@ -6,7 +6,7 @@ import additem1 from './AddTop';
 // tslint:disable-next-line: ordered-imports
 import changepointreducer from './ChangePointReducer';
 // tslint:disable-next-line: ordered-imports
-import datereducer from './DateReducer';
+
 // tslint:disable-next-line: ordered-imports
 import getuserreducer from './GetuserReducer';
 import habitreducer from './HabitReducer';
