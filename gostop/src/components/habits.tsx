@@ -124,88 +124,57 @@ public componentDidMount() {
                 <Characterinfo/>
               </View>
 
-      <View style = { { flex : 2, backgroundColor : 'white', justifyContent : 'flex-end', flexDirection : 'row' } }>
-                  <TouchableOpacity style={{ backgroundColor:'white', marginRight : 20 }}
-          onPress={() => this.props.navigation.navigate('AddHabit')} >
-           <MaterialIcons name = 'playlist-add' size = {34} color = '#ffdc34' />
-          </TouchableOpacity>
-
-        </View>
 
               <View style = {{ flex : 20,  backgroundColor : 'white' }}>
 
-          <ScrollView style={styles.scrollView}>
-        {this.props.habitarr.map((item) => {
-          return   <View style = {styles.onehabit} key = {item.title}>
+                  <ScrollView style={styles.scrollView}>
+                {this.props.habitarr.map((item, index) => {
+                  return   <View style = {styles.onehabit} key = {index}>
 
-          <View style = {styles.positive}>
-          <TouchableOpacity style={{ backgroundColor:'transparent' }}
-          onPress = {() => { this.props.pointchange(item.difficulty * 10);
-            this.props.coinchange(item.difficulty * 10);
-          }}>
-            <Entypo name = 'circle-with-plus' size = {36} color = 'white' />
-            </TouchableOpacity>
-            {/* <TouchableOpacity style={{ backgroundColor:'skyblue' }}
-          onPress = {() => {
-            this.props.navigation.navigate('ModifyHabit', {
-              title : item.title,
-            })
-          }}
-          >
-              <Text>수정</Text>
-            </TouchableOpacity>  */}
-            {/* <TouchableOpacity style={{ backgroundColor:'skyblue' }}
-          onPress = {() => {
-            console.log(this.props.habitarr);
-            console.log(item.title)
-            for(let i=0; i<this.props.habitarr.length; i++){
-              if(this.props.habitarr[i].title === item.title){
-                this.props.habitarr.splice(i,1);
-                const newhabitarr = this.props.habitarr;
-                this.props.savehabit(newhabitarr)
-                console.log('newhabitarr',newhabitarr)
-                this.props.navigation.navigate('Habits')
-              }
-            } 
-            
-          }}
-          >
-              <Text>삭제</Text>
-            </TouchableOpacity> */}
-            
+                  <View style = {styles.positive}>
+                  <TouchableOpacity style={{ backgroundColor:'transparent' }}
+                  onPress = {() => { this.props.pointchange(item.difficulty * 10);
+                    this.props.coinchange(item.difficulty * 10);
+                  }}>
+                    <Entypo name = 'circle-with-plus' size = {36} color = 'white' />
+                    </TouchableOpacity>
+                    
+              </View>
+
+              <View style = {styles.habits}
+                      onTouchEnd = {() => {
+                        this.props.navigation.navigate('ModifyHabit', {
+                          title : item.title,
+                        });
+                      }}
+              >
+                  <Text style = {styles.habittitle}>{item.title}</Text>
+                  <Text style = {styles.habitdesc}>{item.description}</Text>
+
+              </View >
+
+              <View style = {styles.negative}>
+              <TouchableOpacity style={{ backgroundColor:'transparent' }}
+              onPress = {() => { this.props.healthchange(item.difficulty * 10); }}>
+                <Entypo name = 'circle-with-minus' size = {36} color = 'white' />
+                </TouchableOpacity>
+              </View>
+              </View>;
+
+                })
+            }
+            </ScrollView>
+
       </View>
 
-      <View style = {styles.habits}
-              onTouchEnd = {() => {
-                this.props.navigation.navigate('ModifyHabit', {
-                  title : item.title,
-                });
-              }}
-      >
-          <Text style = {styles.habittitle}>{item.title}</Text>
-          <Text style = {styles.habitdesc}>{item.description}</Text>
-
-      </View >
-
-      <View style = {styles.negative}>
-      <TouchableOpacity style={{ backgroundColor:'transparent' }}
-      onPress = {() => { this.props.healthchange(item.difficulty * 10); }}>
-         <Entypo name = 'circle-with-minus' size = {36} color = 'white' />
-        </TouchableOpacity>
+      <View style = {styles.addcontainer}>
+          <TouchableOpacity style={styles.addBtn}
+              onPress={() => this.props.navigation.navigate('AddHabit')} >
+            <MaterialIcons name = 'playlist-add' size = {52} color = '#110133' />
+          </TouchableOpacity>
       </View>
-      {/* <View>
-        <Text>알람여부</Text>
-      </View> */}
 
-      </View>;
-
-        })
-    }
-    </ScrollView>
-
-</View>
-
-            </View>
+  </View>
     );
   }
 }
@@ -235,35 +204,37 @@ export default connect(mapStateToProps, mapDispatchToProps)(Habits);
 
 const styles = StyleSheet.create({
   container: {
-    borderWidth: 1,
-    borderColor: 'black',
-    // backgroundColor : '#110133',
     flex: 1,
     width : '100%',
   },
   scrollView: {
-    // backgroundColor: 'pink',
-    // marginHorizontal: 20,
   },
   onehabit : {
-    borderWidth: 1,
-    borderColor: 'white',
-    borderRadius: 10,
-    backgroundColor : '#ffdc34',
     flexDirection : 'row',
-    height : 70,
+    // height : 70,
+    // width : '100%',
+    borderBottomColor : '#F4F4F5',
+    borderBottomWidth : 1,
   },
   positive: {
     flex: 1,
+    backgroundColor : '#ffdc34',
+    justifyContent : 'center',
+    alignItems : 'center',
   },
   negative: {
     flex: 1,
+    backgroundColor : '#ffdc34',
+    justifyContent : 'center',
+    alignItems : 'center',
   },
   habits: {
     flex: 6,
+    paddingHorizontal : 17,
+    paddingVertical : 10,
   },
   habittitle :{
-    flex : 2,
+    flex : 1,
     fontSize : 20,
     color : '#110133',
   },
@@ -271,5 +242,20 @@ const styles = StyleSheet.create({
     flex : 1,
     fontSize : 14,
     color : '#110133',
+  },
+  addcontainer : {
+    flex : 2,
+    backgroundColor : 'white',
+    justifyContent : 'flex-end',
+    alignItems : 'center',
+    flexDirection : 'row',
+    margin : 20,
+  },
+  addBtn : {
+    backgroundColor:'white',
+    marginRight : 15,
+    borderRadius : 10,
+    borderWidth : 1,
+    borderColor : '#110133',
   },
 });
