@@ -4,10 +4,10 @@ export interface imageState {
 }
 const initialState2 : imageState = {
   // tslint:disable-next-line: max-line-length
-  uri2: 'http://pngimg.com/uploads/socks/socks_PNG8244.png',
+  uri2: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/bottm1.png',
 };
 
-import * as types from '../Actions/types';
+import * as types from '../actions/types';
 
 export default function uri2(state : imageState = initialState2, action) {
   if (action.type === types.IMAGE_CHANGE2) {
