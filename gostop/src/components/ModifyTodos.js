@@ -2,28 +2,62 @@ import React, { Component } from "react";
 import { TextInput, Text, StyleSheet, View, Button, TouchableOpacity,
 TouchableHighlight, AsyncStorage } from "react-native";
 import { readBuilderProgram } from "typescript";
+import DatePicker from './DatePicker';
 import TimePicker from "react-native-24h-timepicker";
 import { connect } from 'react-redux';
-import savehabit from '../actions/habitaction'
+import savetodos from '../actions/todosaction'
 import fakeserver from '../fakeserver'
 
-class AddHabit extends Component {
+// 날짜
+import saveStartDate from '../actions/startdateaction'
+import saveEndDate from '../actions/enddateaction'
+
+class ModifyTodos extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            habit: {
+            todo: {
                 title: '',
                 description: '',
-                difficulty: '',            
-                completed: true,
-                positive: true
+                difficulty: '',  
+                dateStart: '',
+                dateEnd: '',         
+                completed: true
             },
             alarmTime : {
                 status: false,
                 time: '',
                 dayOfWeek: ''
             }
-        }      
+        }    
+        this.todoIdToModify;
+        this.title;
+        this.dataToModify;
+    }
+
+    componentDidMount() {
+        this.title = this.props.navigation.state.params.title
+        let dataToModify = this.props.todosarr.filter(
+            element => element.title === this.props.navigation.state.params.title
+        )
+        this.dataToModify = dataToModify[0]
+        console.log('수정할 데이터 : ', dataToModify)
+        let { title, description, difficulty, dateStart, dateEnd, completed } = dataToModify[0] 
+
+        this._titleInput.setNativeProps({text: title})
+        this._contentsInput.setNativeProps({text: description})
+
+        this.setState({
+            todo: {
+                title,
+                description,                
+                difficulty,
+                dateStart,
+                dateEnd,
+                completed
+            }
+        })   
+        this.todoIdToModify = dataToModify[0]["_id"]  
     }
 
     onCancel() {
@@ -57,7 +91,6 @@ class AddHabit extends Component {
                             dayOfWeek: day
                         }
                         })
-                        //console.log(this.state.alarmTime) 
                     }} >
                 <Text style={styles.textStyle}>{day}</Text>
             </TouchableHighlight>
@@ -68,7 +101,6 @@ class AddHabit extends Component {
     setAlarmTime = (time, dayOfWeek) => {
         this.state.alarmTime.time = time
         this.state.alarmTime.dayOfWeek = dayOfWeek
-        //console.log(this.state.alarmTime)
     }
 
     alarmOn = () => {
@@ -78,19 +110,19 @@ class AddHabit extends Component {
                 status: true
             }
         })
-        //console.log('ALARM SETTING : ', this.state.alarmTime)
     }
 
     clearText = () => {
         this._titleInput.setNativeProps({text: ''});
         this._contentsInput.setNativeProps({text: ''})        
         this.setState({
-            habit: {
+            todo: {
                 title: '',
                 description: '',
-                alarmId: this.state.habit.alarmId,
-                difficulty: '',
-                positive: true
+                difficulty: '',  
+                dateStart: '',
+                dateEnd: '',         
+                completed: true
             },
             alarmTime: {
                 status: false,
@@ -99,35 +131,83 @@ class AddHabit extends Component {
             }
         })
     }
-      
-    sendData = async() => {   // 수정 요망
-        let habit = this.state.habit;        
-        let arr = this.props.habitarr
-        //console.log('원래 state : ', arr)
-        this.props.savehabit([...arr, habit])
-        
-        let token = '';
-        await AsyncStorage.getItem('token', (err, result) => {
-            token = result
-        })
-        let header = new Headers();
-        header.append('Cookie', token)
-        header.append('Content-Type', 'application/json')
 
-        const myInit = {
-            method : 'POST',
-            body: JSON.stringify(habit),
-            headers : header,
-            Cookie : token
+    EditData = async() => {  // 수정 요망
+        // 날짜 먼저 설정
+        let StartDateStore = this.props.StartDate;
+        let EndDateStore = this.props.EndDate;
+        // console.log('시작 날짜 정보(AddTodos) : ', StartDateStore, typeof(StartDateStore), '---')        
+        // console.log('끝 날짜 정보(AddTodos)) : ', EndDateStore, typeof(EndDateStore), '---')
+
+        let todo = this.state.todo;   
+        todo.dateStart = StartDateStore;
+        todo.dateEnd = EndDateStore;  
+
+        let arr = this.props.todosarr
+
+        for (let i=0; i<arr.length; i++) {
+            if (arr[i]["title"] === this.title) {
+                arr[i] = todo;
+                break;
+            }
         }
 
-        fetch(`${fakeserver}/habits`, myInit)
-        .then(res => res.json())
-        .then(res => console.log('Success : ', JSON.stringify(res)))
-        .catch(error => console.error('Error : ', error));
-    }
+        this.props.savetodos([...arr])
 
-    render() {
+        // let token = '';
+        // await AsyncStorage.getItem('token', (err, result) => {
+        //     token = result
+        // })
+        // let header = new Headers();
+        // header.append('Cookie', token)
+        // header.append('Content-Type', 'application/json')
+
+        // const getInit = {
+        //     method : 'GET',
+        //     headers : header,
+        //     Cookie : token
+        // }
+
+        // if (this.todoIdToModify === undefined) {
+        //     fetch(`${fakeserver}/users/todos`, getInit)
+        //     .then((res) => {
+        //         if (res.status === 200 || res.status === 201) {
+        //             res.json().then((data) => {
+        //                 let todoData = data.todos.filter(element => element.title === this.props.navigation.state.params.title)
+        //                 this.todoIdToModify = todoData[0]["_id"]
+
+        //                 const myInit = {
+        //                     method : 'PATCH',
+        //                     body: JSON.stringify(todo),
+        //                     headers : header,
+        //                     Cookie : token
+        //                 }        
+                
+        //                 fetch(`${fakeserver}/todos/${this.todoIdToModify}`, myInit)
+        //                 .then(res => res.json())
+        //                 .then(res => console.log('Success : ', JSON.stringify(res)))
+        //                 .catch(error => console.error('Error : ', error));
+        //             })
+
+        //         }
+        //     })
+        }
+        // else {
+        //     const myInit = {
+        //         method : 'PATCH',
+        //         body: JSON.stringify(todo),
+        //         headers : header,
+        //         Cookie : token
+        //     }        
+    
+        //     fetch(`${fakeserver}/todos/${this.todoIdToModify}`, myInit)
+        //     .then(res => res.json())
+        //     .then(res => console.log('Success : ', JSON.stringify(res)))
+        //     .catch(error => console.error('Error : ', error));
+        // }
+    
+
+    render() {        
         return (
             <View style={styles.mainContainer}>
 
@@ -135,12 +215,12 @@ class AddHabit extends Component {
                 
                 <View style={styles.InputContainer}>            
                     <Text>제목 : </Text>
-                    <TextInput style={styles.Input} placeholder='Habit'
+                    <TextInput style={styles.Input} placeholder='Todo'
                     ref={component => this._titleInput = component}                    
                     onChangeText={(text) =>                         
                         { this.setState({
-                            habit: {
-                                ...this.state.habit,
+                            todo: {
+                                ...this.state.todo,
                                 title: text
                             }
                         })
@@ -153,8 +233,8 @@ class AddHabit extends Component {
                     ref={component => this._contentsInput = component}       
                     onChangeText={(text) => 
                         { this.setState({
-                            habit: {
-                                ...this.state.habit,
+                            todo: {
+                                ...this.state.todo,
                                 description: text
                             }
                         })
@@ -165,11 +245,11 @@ class AddHabit extends Component {
                     <Text>난이도 : </Text>
                     <TouchableHighlight
                     style={
-                        this.state.habit.difficulty === 1 ? 
+                        this.state.todo.difficulty === 1 ? 
                         styles.buttonSelected :styles.buttonStyle} activeOpacity={0.5}
                     onPress={() => { this.setState({
-                        habit: {
-                            ...this.state.habit,
+                        todo: {
+                            ...this.state.todo,
                             difficulty: 1
                         }
                     })
@@ -179,11 +259,11 @@ class AddHabit extends Component {
 
                     <TouchableHighlight
                     style={
-                        this.state.habit.difficulty === 2 ? 
+                        this.state.todo.difficulty === 2 ? 
                         styles.buttonSelected :styles.buttonStyle} activeOpacity={0.5}
                     onPress={() => { this.setState({
-                        habit: {
-                            ...this.state.habit,
+                        todo: {
+                            ...this.state.todo,
                             difficulty: 2
                         }
                     }) 
@@ -193,11 +273,11 @@ class AddHabit extends Component {
 
                     <TouchableHighlight
                     style={
-                        this.state.habit.difficulty === 3 ? 
+                        this.state.todo.difficulty === 3 ? 
                         styles.buttonSelected :styles.buttonStyle} activeOpacity={0.5}
                     onPress={() => { this.setState({
-                        habit: {
-                            ...this.state.habit,
+                        todo: {
+                            ...this.state.todo,
                             difficulty: 3
                         }
                     })
@@ -232,16 +312,23 @@ class AddHabit extends Component {
                   }
                   />
                 </View>
+
+                <View>
+                    <DatePicker setDate={this.setDate} startOrEnd='Start' 
+                    forModify={this.props.StartDate}/>
+                    <DatePicker setDate={this.setDate} startOrEnd='End' 
+                    forModify={this.props.EndDate}/>
+                </View>
                 
                 <TouchableOpacity
                     style={styles.addButton} activeOpacity={0.5}
                     onPress={() => {
-                        this.sendData();
-                        alert("추가되었습니다")
-                        this.props.navigation.navigate('Habits')  // 메인 페이지로 이동
+                        this.EditData();
+                        alert("수정되었습니다")
+                        this.props.navigation.navigate('Todos')  // 메인 페이지로 이동
                     }} >
-                    <Text style={styles.textStyle}>추가</Text>
-                </TouchableOpacity>  
+                    <Text style={styles.textStyle}>수정</Text>                    
+                </TouchableOpacity> 
 
                 <TouchableOpacity style={styles.addButton} activeOpacity={0.5}
                 onPress={this.clearText}>
@@ -254,26 +341,33 @@ class AddHabit extends Component {
     }
 }
 
-//export default AddHabit;
+//export default AddTodos;
 
 // 데이터 불러오기
 const mapStateToProps = (state) => {  
-    //console.log('state 나와', state)
+    // console.log('state 나와', state)
     return {
-      habitarr : state.habitreducer.habitarr
+      todosarr : state.todosreducer.todosarr,
+      StartDate : state.StartDateReducer.date,
+      EndDate : state.EndDateReducer.date
     }
 }  
 
-// 데이터 수정하기
 const mapDispatchToProps = dispatch => {
     return {      
-      savehabit : (arr) => {
-        dispatch(savehabit(arr));
+      savetodos : (arr) => {
+        dispatch(savetodos(arr));
       },
+      saveStartDate : (date) => {
+        dispatch(saveStartDate(date));
+      },
+      saveEndDate : (date) => {
+        dispatch(saveEndDate(date));
+      }
     };
 };
   
-export default connect(mapStateToProps, mapDispatchToProps)(AddHabit);
+export default connect(mapStateToProps, mapDispatchToProps)(ModifyTodos);
 
 const styles = StyleSheet.create({
     mainContainer: {
@@ -335,38 +429,38 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
         //justifyContent: 'space-around'
         //paddingTop: 100
-    },
-    DayButtonContainer: {        
-    flexDirection: 'row',        
-    },
-    DayButtonStyle: {
-        marginLeft: 5,
-        paddingLeft: 5,
-        paddingRight: 5,
-        backgroundColor: "#fcba03",
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: "#fff"
-    },
-    DayButtonSelected: {
-        marginLeft: 5,
-        paddingLeft: 5,
-        paddingRight: 5,
-        backgroundColor: "#ff5500",
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: "#fff"
-    },
-    button: {
-    backgroundColor: "#4EB151",
-    paddingVertical: 5,
-    borderRadius: 3,
-    alignItems: 'center',
-    alignSelf: 'flex-end',
-    width: 90
-    },
-    buttonText: {
-    color: "#FFFFFF",
-    fontSize: 15,
-    }
+      },
+      DayButtonContainer: {        
+        flexDirection: 'row',        
+      },
+      DayButtonStyle: {
+          marginLeft: 5,
+          paddingLeft: 5,
+          paddingRight: 5,
+          backgroundColor: "#fcba03",
+          borderRadius: 10,
+          borderWidth: 1,
+          borderColor: "#fff"
+      },
+      DayButtonSelected: {
+          marginLeft: 5,
+          paddingLeft: 5,
+          paddingRight: 5,
+          backgroundColor: "#ff5500",
+          borderRadius: 10,
+          borderWidth: 1,
+          borderColor: "#fff"
+      },
+      button: {
+        backgroundColor: "#4EB151",
+        paddingVertical: 5,
+        borderRadius: 3,
+        alignItems: 'center',
+        alignSelf: 'flex-end',
+        width: 90
+      },
+      buttonText: {
+        color: "#FFFFFF",
+        fontSize: 15,
+      }
 })

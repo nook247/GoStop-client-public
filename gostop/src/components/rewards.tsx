@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View, AsyncStorage } from 'react-native';
+import { Button, Image, StyleSheet, Text, TouchableOpacity, View, AsyncStorage, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 import { coinchange } from '../actions/characterinfoaction';
 import fakeserver from '../fakeserver';
 import Characterinfo from './characterinfo';
 import savereward from '../actions/rewardaction';
+import { MaterialIcons, Entypo } from '@expo/vector-icons';
 
 export interface Reward {
   id : string;
@@ -44,14 +45,15 @@ class Rewards extends Component<any, rewardsStates> {
         res.json()
         .then(data => {
 
-          // if(!data.rewards.length){
+          if(!data.rewards.length){
           //   let initState = {
           //     id : '',
           //     title : '제목을 입력하세요',
           //     desc : '설명을 입력하세요',
           //     coin : 10,
           //   }
-          // } else {
+          // this.props.savereward([initState]);
+          } else {
             const rewards = [];
             data.rewards.forEach( element => {
               const rewardobj = {
@@ -63,7 +65,7 @@ class Rewards extends Component<any, rewardsStates> {
               rewards.push(rewardobj);
             })
             this.props.savereward(rewards);
-       // }
+       }
       }
 
             );
@@ -77,24 +79,27 @@ class Rewards extends Component<any, rewardsStates> {
     const { navigate } = this.props.navigation;
     return (
             <View style = {styles.container}>
-              <View style ={{flex : 5}}>
+              <View style ={{ flex : 7 }}>
                 <Characterinfo/>
               </View>
 
-      <View style = { { flex : 1 } }>
-          <Button
-          title='Add reward'
-          onPress={() => navigate('AddReward')}
-          />
-        </View>
+              <View style = { { flex : 2, backgroundColor : 'white', justifyContent : 'flex-end', flexDirection : 'row' } }>
+                  <TouchableOpacity style={{ backgroundColor:'white', marginRight : 20 }}
+          onPress={() => this.props.navigation.navigate('AddReward')} >
+           <MaterialIcons name = 'playlist-add' size = {34} color = '#ffdc34' />
+          </TouchableOpacity>
 
-              <View style = {{ flex : 9 }}>
+        </View>
+              <View style = {{ flex : 20, backgroundColor : 'white' }}>
+
+              <ScrollView style={styles.scrollView}>
+                
         {this.props.rewardarr.map((item) => {
           return   <View style = {styles.onehabit} key = {item.title}>
 
 <View style = {styles.positive}>
 
-            <TouchableOpacity style={{ backgroundColor:'skyblue' }}
+            {/* <TouchableOpacity style={{ backgroundColor:'skyblue' }}
           onPress = {() => {
             this.props.navigation.navigate('ModifyReward', {
               title : item.title,
@@ -102,7 +107,7 @@ class Rewards extends Component<any, rewardsStates> {
           }}
           >
               <Text>수정</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             {/* <TouchableOpacity style={{ backgroundColor:'skyblue' }}
           onPress = {() => {
             console.log(this.props.habitarr);
@@ -124,16 +129,33 @@ class Rewards extends Component<any, rewardsStates> {
             
       </View>
 
-      <View style = {styles.habits}>
+      <View style = {styles.habits}
+              onTouchEnd = {() => {
+                this.props.navigation.navigate('ModifyReward', {
+                  title : item.title,
+                })
+              }} >
           <Text style = {styles.habittitle}>{item.title}</Text>
+          
           <Text style = {styles.habitdesc}>{item.description}</Text>
 
       </View >
 
       <View style = {styles.negative}>
-      <TouchableOpacity style={{ backgroundColor:'gray' }}
-      onPress = {() => { this.props.coinchange(-(item.coin)); }}>
-          <Text>--</Text>
+        <View style = {{ flexDirection : 'row' }}>
+          <Text style = {styles.coin}>{item.coin}</Text>
+    
+        </View>
+      <TouchableOpacity style={{ backgroundColor:'transparent' }}
+      onPress = {() => { 
+        console.log('보상 구매했니?')
+        this.props.coinchange(-(item.coin)); }}
+      >
+                     <Image
+                      style={{ width: 36, height: 36 }}
+                      source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}
+                      
+                      />
         </TouchableOpacity>
       </View>
 
@@ -141,6 +163,8 @@ class Rewards extends Component<any, rewardsStates> {
 
         })
     }
+
+</ScrollView>
     </View>
             </View>
     );
@@ -171,9 +195,15 @@ const styles = StyleSheet.create({
     flex: 1,
     width : '100%',
   },
+  scrollView: {
+
+    // marginHorizontal: 20,
+  },
   onehabit : {
     borderWidth: 1,
-    borderColor: 'black',
+    borderColor: 'white',
+    borderRadius: 10,
+    backgroundColor : '#ffdc34',
     flexDirection : 'row',
     height : 70,
   },
@@ -181,7 +211,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   negative: {
-    flex: 1,
+    flex: 3,
+    flexDirection : 'row',
+    justifyContent : 'flex-end',
+    alignItems : 'center',
+    marginRight : 10,
+
   },
   habits: {
     flex: 6,
@@ -189,9 +224,17 @@ const styles = StyleSheet.create({
   habittitle :{
     flex : 2,
     fontSize : 20,
+    color : '#110133',
   },
   habitdesc : {
     flex : 1,
     fontSize : 14,
+    color : '#110133',
   },
+  coin : {
+    fontSize : 25,
+    marginRight : 3,
+    // borderColor : 'black',
+    // borderWidth : 1,
+  }
 });

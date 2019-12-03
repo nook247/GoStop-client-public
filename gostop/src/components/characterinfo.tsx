@@ -17,63 +17,58 @@ class Characterinfo  extends React.Component<CharacterinfoProps, any> {
     super(props);
   }
 
-  public componentDidMount() {
-  }
-
   public render() {
+    const levelpoint = 200 + 50 * (this.props.level-1);
+    const pointbar = (this.props.pointsvalue / levelpoint) * 200
     return (
 
             <View style={styles.container}>
 
             <View style={styles.body}>
               <View style={styles.left}>
-              <Image
-          style={styles.image}
-          source={{ uri:'https://png.pngtree.com/png-clipart/20190630/original/pngtree-handsome-cartoon-dog-image-cute-dog-png-image_4180965.jpg' }}/>
-           <Image
-          style={styles.image}
-          source={{ uri:'https://png.pngtree.com/png-clipart/20190630/original/pngtree-handsome-cartoon-dog-image-cute-dog-png-image_4180965.jpg' }}/>
-           <Image
-          style={styles.image}
-          source={{ uri:'https://png.pngtree.com/png-clipart/20190630/original/pngtree-handsome-cartoon-dog-image-cute-dog-png-image_4180965.jpg' }}/>
-          <View style={styles.level}><Text>{this.props.name}</Text></View>
-                  <View style={styles.level}>
-                      <Text style = {styles.levelText}>level{this.props.level}</Text>
-                  </View>
+                <Image
+                style={styles.image}
+                source={{ uri:'https://png.pngtree.com/png-clipart/20190630/original/pngtree-handsome-cartoon-dog-image-cute-dog-png-image_4180965.jpg' }}/>
+                <Image
+                style={styles.image}
+                source={{ uri:'https://png.pngtree.com/png-clipart/20190630/original/pngtree-handsome-cartoon-dog-image-cute-dog-png-image_4180965.jpg' }}/>
+                <Image
+                style={styles.image}
+                source={{ uri:'https://png.pngtree.com/png-clipart/20190630/original/pngtree-handsome-cartoon-dog-image-cute-dog-png-image_4180965.jpg' }}/>
+                <View style={styles.level}><Text>{this.props.name}</Text></View>
+                <View style={styles.level}><Text>level{this.props.level}</Text></View>
               </View>
+
               <View style={styles.right}>
                <View style={{ flex:1, width : 50, alignSelf : 'flex-end' }}>
-               <Button
-          title='kakaotalk' color = 'yellow'
-          onPress={() => console.log('share Button pressed')}
-        />
+                 <View>
+               <Text onPress={() => console.log('share Button pressed')} style = {{ color : '#ffdc34' }}>
+                 kakao</Text></View>
                </View>
 
-                    <View style = {styles.health}>
-                    <View style={{ flex:1 }}></View>
-                <Text style = {{ flex : 1, height :10, width : this.props.healthvalue || 0 ,
-                  backgroundColor : 'yellow', justifyContent:'flex-end' }}>health</Text>
-                    </View>
+                <View style = {styles.health}>
+                
+                  <Text style = {{ flex : 1, width : this.props.healthvalue || 0 ,
+                    backgroundColor : '#c72c41', justifyContent:'flex-end' }}> </Text>
+                  <Text style = {{ flex : 2, height :10, color :  'white',
+                    justifyContent:'flex-end' }}>health {this.props.healthvalue} / 200 </Text>
+                </View>
 
                 <View style = {styles.points}>
-                <View style={{ flex:1 }}></View>
-                <Text style = {{ flex : 1, height :10, width : this.props.pointsvalue || 0,
-                  backgroundColor : 'yellow', justifyContent:'flex-end' }}>points</Text>
+                  <Text style = {{ flex : 1,  width : pointbar || 0,
+                    backgroundColor : '#ffdc34', justifyContent:'flex-end' }}></Text>
+                  <Text style = {{ flex : 2, height :10, color :  'white',
+                    justifyContent:'flex-end' }}>points {this.props.pointsvalue} / {levelpoint} </Text>
+                </View>
 
-                    </View>
-
-                    <View style = {styles.coins}>
-                    <View style={{ flex:1 }}></View>
-                    <Image
-                    style={{ width: 20, height: 20 }}
-                    source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
-
-                    <Text style = {{ flex : 1, height : 10,
-                    // width : this.props.coinsvalue || 0,
-                    //   backgroundColor : 'yellow',
-                      justifyContent:'flex-end' }} >{this.props.coinsvalue} coins</Text>
-
-                    </View>
+                <View style = {styles.coins}>
+                  <View style={{ flex:1, flexDirection : 'row'}}>
+                  <Image
+                  style={{ width: 20, height: 20 }}
+                  source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
+                  <Text style = {{ flex : 1, height : 20, color :  'white' }} >{this.props.coinsvalue}</Text>
+                  </View>
+                </View>
 
               </View>
             </View>
@@ -85,13 +80,7 @@ class Characterinfo  extends React.Component<CharacterinfoProps, any> {
 }
 
 const mapStateToProps = (state) => {
-  // console.log(state);
   return {
-    // name : state.changepointreducer.name,
-    // healthvalue : state.changepointreducer.healthvalue,
-    // pointsvalue : state.changepointreducer.pointsvalue,
-    // coinsvalue : state.changepointreducer.coinsvalue,
-    // level : state.changepointreducer.level,
     name : state.getuserreducer.name,
     healthvalue : state.getuserreducer.health,
     pointsvalue : state.getuserreducer.point,
@@ -115,7 +104,9 @@ const styles = StyleSheet.create({
     flex: 1,
     borderWidth: 1,
     borderEndWidth : 1,
-    borderColor: 'red',
+    borderColor: '#ffdc34',
+    
+    backgroundColor : '#110133',
     flexDirection: 'column',
     width : '100%',
   },
@@ -147,13 +138,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'black',
     flex : 1,
-    marginTop : 10,
+    marginTop : 5,
     justifyContent: 'center',
     alignItems: 'center',
 
   },
   levelText : {
-    fontSize : 20,
+    // fontSize : 10,
 
   },
   right: {
@@ -201,13 +192,16 @@ const styles = StyleSheet.create({
     // },
   healthText : {
     flex : 1,
-    justifyContent : 'flex-end',
+    color : 'white',
+    // justifyContent : 'flex-end',
   },
   pointsText : {
     flex : 1,
+    color : 'white',
   },
   coinsText : {
     flex : 1,
+    color : 'white',
   },
 
 });

@@ -1,11 +1,18 @@
 import React, { Component } from 'react';
-import { AsyncStorage, StyleSheet, Text, TouchableOpacity, View, Button } from 'react-native';
+import { AsyncStorage, StyleSheet, Text, TouchableOpacity, View, Button, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 import { coinchange, healthchange, pointchange } from '../actions/characterinfoaction';
 import fakeserver from '../fakeserver';
 import Characterinfo from './characterinfo';
 import  savehabit  from '../actions/habitaction';
 import { getuser } from '../actions/getuseraction';
+// import Icon from 'react-native-ionicons';
+import AntDesign from '@expo/vector-icons/AntDesign'
+import {Ionicons} from "@expo/vector-icons";
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import Entypo from '@expo/vector-icons/Entypo';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import Signin from './Signin';
 
 
 export interface Habit {
@@ -33,12 +40,6 @@ class Habits extends Component<any, habitsStates> {
     super(props);
   }
 
- 
-
-  public componentDidMount() {
-
-    this.getdata();
-  }
 
 async getdata(){
     let token = '';
@@ -59,32 +60,31 @@ async getdata(){
       if (res.status === 200 || res.status === 201) {
         res.json()
         .then(async (data) => {
-          console.log('이게 받아온 user data야', data);
-          await this.props.getuser(data._id, data.email, data.name, data.userCode,data.level, data.health, data.point, data.coin);
-
-          console.log('userinfo store에 저장');
+          await this.props.getuser(data._id, data.email, data.name, data.userCode,data.level, data.health, data.point, data.coin, token);
         }
         )}}
         )
+        .catch((err) => {
+          console.log('get userinfo failed!');
+          this.props.navigation.navigate(Signin);
+        });
 
     fetch(`${fakeserver}/users/habits`, myInit)
     .then((res) => {
       if (res.status === 200 || res.status === 201) { 
         res.json()
         .then( (data) => {
-          // console.log('습관 데이터 ::', data)
           if (!data.habits.length) {
-            let initState = {
-              id : '',
-              title : '제목을 입력하세요',
-              description : '설명을 입력하세요',
-              // alarmId : '',
-              difficulty : 3,
-              positive : true
-            };
-            this.props.savehabit([initState]);
+            // let initState = {
+            //   id : '',
+            //   title : '제목을 입력하세요',
+            //   description : '설명을 입력하세요',
+            //   // alarmId : '',
+            //   difficulty : 3,
+            //   positive : true
+            // };
+            // this.props.savehabit([initState]);
           } else {
-            // console.log('data.habits 이거야!!!', data.habits);
             const habits = [];
             data.habits.forEach( element => {
               const habitobj = {
@@ -97,7 +97,6 @@ async getdata(){
               }
               habits.push(habitobj);
             })
-            // console.log('가공한 habits 이거야!!', habits)
             this.props.savehabit(habits);
 
           }
@@ -111,39 +110,42 @@ async getdata(){
 
 }
 
+public componentDidMount() {
+
+  this.getdata();
+}
+
   public render() {
 
     const { navigate } = this.props.navigation;
     return (
             <View style = {styles.container}>
-              <View style ={{flex : 5}}>
+              <View style ={{ flex : 7 }}>
                 <Characterinfo/>
               </View>
 
-      <View style = { { flex : 1 } }>
-          <Button
-          title='Add habits'
-          onPress={() => navigate('AddHabit')}
-          />
+      <View style = { { flex : 2, backgroundColor : 'white', justifyContent : 'flex-end', flexDirection : 'row' } }>
+                  <TouchableOpacity style={{ backgroundColor:'white', marginRight : 20 }}
+          onPress={() => this.props.navigation.navigate('AddHabit')} >
+           <MaterialIcons name = 'playlist-add' size = {34} color = '#ffdc34' />
+          </TouchableOpacity>
+
         </View>
 
-              <View style = {{ flex : 9 }}>
-          <TouchableOpacity style={{ backgroundColor:'skyblue' }}
-          onPress={() =>
-          this.props.navigation.navigate('AddHabit')}>
-          </TouchableOpacity>
- 
+              <View style = {{ flex : 20,  backgroundColor : 'white' }}>
+
+          <ScrollView style={styles.scrollView}>
         {this.props.habitarr.map((item) => {
           return   <View style = {styles.onehabit} key = {item.title}>
 
           <View style = {styles.positive}>
-          <TouchableOpacity style={{ backgroundColor:'blue' }}
+          <TouchableOpacity style={{ backgroundColor:'transparent' }}
           onPress = {() => { this.props.pointchange(item.difficulty * 10);
             this.props.coinchange(item.difficulty * 10);
           }}>
-              <Text>++</Text>
+            <Entypo name = 'circle-with-plus' size = {36} color = 'white' />
             </TouchableOpacity>
-            <TouchableOpacity style={{ backgroundColor:'skyblue' }}
+            {/* <TouchableOpacity style={{ backgroundColor:'skyblue' }}
           onPress = {() => {
             this.props.navigation.navigate('ModifyHabit', {
               title : item.title,
@@ -151,7 +153,7 @@ async getdata(){
           }}
           >
               <Text>수정</Text>
-            </TouchableOpacity>
+            </TouchableOpacity>  */}
             {/* <TouchableOpacity style={{ backgroundColor:'skyblue' }}
           onPress = {() => {
             console.log(this.props.habitarr);
@@ -173,27 +175,33 @@ async getdata(){
             
       </View>
 
-      <View style = {styles.habits}>
+      <View style = {styles.habits}
+              onTouchEnd = {() => {
+                this.props.navigation.navigate('ModifyHabit', {
+                  title : item.title,
+                });
+              }}
+      >
           <Text style = {styles.habittitle}>{item.title}</Text>
           <Text style = {styles.habitdesc}>{item.description}</Text>
 
       </View >
 
       <View style = {styles.negative}>
-      <TouchableOpacity style={{ backgroundColor:'gray' }}
+      <TouchableOpacity style={{ backgroundColor:'transparent' }}
       onPress = {() => { this.props.healthchange(item.difficulty * 10); }}>
-          <Text>--</Text>
+         <Entypo name = 'circle-with-minus' size = {36} color = 'white' />
         </TouchableOpacity>
       </View>
-      <View>
-        {/* <Text>알람여부{item.alarmId}</Text> */}
+      {/* <View>
         <Text>알람여부</Text>
-      </View>
+      </View> */}
 
       </View>;
 
         })
     }
+    </ScrollView>
 
 </View>
 
@@ -217,8 +225,8 @@ const mapDispatchToProps = dispatch => {
     savehabit : (arr) => {
       dispatch(savehabit(arr));
     },
-    getuser : (id, email, name, userCode, level, health, point, coin) => {
-      dispatch(getuser(id, email, name, userCode, level, health, point, coin))
+    getuser : (id, email, name, userCode, level, health, point, coin, token) => {
+      dispatch(getuser(id, email, name, userCode, level, health, point, coin, token))
     },
   };
 };
@@ -229,12 +237,19 @@ const styles = StyleSheet.create({
   container: {
     borderWidth: 1,
     borderColor: 'black',
+    // backgroundColor : '#110133',
     flex: 1,
     width : '100%',
   },
+  scrollView: {
+    // backgroundColor: 'pink',
+    // marginHorizontal: 20,
+  },
   onehabit : {
     borderWidth: 1,
-    borderColor: 'black',
+    borderColor: 'white',
+    borderRadius: 10,
+    backgroundColor : '#ffdc34',
     flexDirection : 'row',
     height : 70,
   },
@@ -250,9 +265,11 @@ const styles = StyleSheet.create({
   habittitle :{
     flex : 2,
     fontSize : 20,
+    color : '#110133',
   },
   habitdesc : {
     flex : 1,
     fontSize : 14,
+    color : '#110133',
   },
 });

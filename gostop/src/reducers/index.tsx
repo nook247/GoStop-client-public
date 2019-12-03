@@ -17,6 +17,10 @@ import passhabitreducer from './PasshabitReducer';
 // tslint:disable-next-line: ordered-imports
 import rewardreducer from './RewardReducer';
 import todosreducer from './TodosReducer';
+import datereducer from './DateReducer';
+import StartDateReducer from './StartDateReducer'
+import EndDateReducer from './EndDateReducer'
+
 
 export default combineReducers({
   changeReducer,
@@ -32,4 +36,9 @@ export default combineReducers({
   additem,
   additem1,
   additem2,
+  StartDateReducer,
+  EndDateReducer
+
 });
+
+// StartDateReducer, EndDateReducer 추가로 combine
