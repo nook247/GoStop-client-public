@@ -6,7 +6,7 @@ import Characterinfo from '../components/characterinfo';
 
 
 
-class Main extends Component<any, any, any> {
+class Item extends Component<any, any, any> {
 
   constructor(props, context) {
     super(props, context);
@@ -303,4 +303,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Main);
+export default connect(mapStateToProps, mapDispatchToProps)(Item);

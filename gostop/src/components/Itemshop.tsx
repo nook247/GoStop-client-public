@@ -9,7 +9,7 @@ import fakeserver from '../fakeserver';
 // tslint:disable-next-line: prefer-const
 let database;
 
-class Main extends Component<any, any> {
+class Itemshop extends Component<any, any> {
 
   // tslint:disable-next-line: member-access
   constructor(props, context) {
@@ -306,4 +306,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Main);
+export default connect(mapStateToProps, mapDispatchToProps)(Itemshop);
