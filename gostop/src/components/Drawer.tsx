@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, Text, View, Alert, AsyncStorage, Button } from 'react-native';
 import { } from 'react-navigation';
 import fakeserver from '../fakeserver';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, SimpleLineIcons, FontAwesome } from '@expo/vector-icons';
 
 export default class DrawerContainer extends React.Component<any, any> {
   // static navigationOptions = {
@@ -27,12 +27,12 @@ export default class DrawerContainer extends React.Component<any, any> {
         <Text
           onPress={() => navigation.navigate('AppTabNavigator')}
           style={styles.uglyDrawerItem}>
-          mainpage
+          Tasks
         </Text>
         <Text
           onPress={() => navigation.navigate('Itemshop')}
           style={styles.uglyDrawerItem}>
-          Itemshop
+            Itemshop
         </Text>
         <Text
           onPress={() => navigation.navigate('Item')}
@@ -68,13 +68,10 @@ export default class DrawerContainer extends React.Component<any, any> {
               {cancelable: false},
             );
 
-
-
-
           }
           }
-          style={styles.uglyDrawerItem}>
-          Logout
+          style={styles.uglyDrawerItem}>Logout
+         {/* <SimpleLineIcons name = 'logout' size = {36} color = '#110133' /> */}
         </Text>
       </View>
     )
@@ -91,11 +88,12 @@ const styles = StyleSheet.create({
   uglyDrawerItem: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#E73536',
+    color: '#110133',
     padding: 15,
     margin: 5,
     borderRadius: 2,
-    borderColor: '#E73536',
+    // borderColor: '#E73536',
+    borderColor : '#110133',
     borderWidth: 1,
     textAlign: 'center'
   }
