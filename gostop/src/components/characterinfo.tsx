@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Image, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import { connect } from 'react-redux';
 import { fetchCharacterInfo } from '../actions/characterinfoaction';
 
@@ -9,6 +9,9 @@ interface CharacterinfoProps {
   healthvalue : number;
   pointsvalue : number;
   coinsvalue : number;
+  head : string;
+  top : string;
+  bottom : string;
   getcharacterinfo(name : string, health : number, point : number, coin : number, level : number): void;
 }
 
@@ -28,14 +31,14 @@ class Characterinfo  extends React.Component<CharacterinfoProps, any> {
               <View style={styles.left}>
                 <Image
                 style={styles.image}
-                source={{ uri:'https://png.pngtree.com/png-clipart/20190630/original/pngtree-handsome-cartoon-dog-image-cute-dog-png-image_4180965.jpg' }}/>
+                source={{ uri: this.props.head }}/>
                 <Image
                 style={styles.image}
-                source={{ uri:'https://png.pngtree.com/png-clipart/20190630/original/pngtree-handsome-cartoon-dog-image-cute-dog-png-image_4180965.jpg' }}/>
+                source={{ uri: this.props.top }}/>
                 <Image
-                style={styles.image}
-                source={{ uri:'https://png.pngtree.com/png-clipart/20190630/original/pngtree-handsome-cartoon-dog-image-cute-dog-png-image_4180965.jpg' }}/>
-                <View style={styles.level}><Text>{this.props.name}</Text></View>
+                style={styles.pantimg}
+                source={{ uri: this.props.bottom }}/>
+                {/* <View style={styles.name}><Text>{this.props.name}</Text></View> */}
                 <View style={styles.level}><Text>level{this.props.level}</Text></View>
               </View>
 
@@ -86,7 +89,9 @@ const mapStateToProps = (state) => {
     pointsvalue : state.getuserreducer.point,
     coinsvalue : state.getuserreducer.coin,
     level : state.getuserreducer.level,
-
+    head : state.changeReducer.uri,
+    top : state.changeReducer1.uri1,
+    bottom : state.changeReducer2.uri2,
   };
 
 };
@@ -105,7 +110,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderEndWidth : 1,
     borderColor: '#ffdc34',
-    
     backgroundColor : '#110133',
     flexDirection: 'column',
     width : '100%',
@@ -122,23 +126,36 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     flex: 1,
     backgroundColor: 'white',
-    marginRight : 10,
   },
   image : {
-    borderWidth: 1,
-    borderColor: 'black',
+    // borderWidth: 1,
+    // borderColor: 'black',
     flex : 3,
     width: '100%',
-    height: 100,
+
     resizeMode:'contain',
-    backgroundColor : 'transparent',
+  },
+  pantimg : {
+    flex : 2,
+    width : '100%',
+    resizeMode: 'contain',
+    alignSelf : 'center',
 
   },
+  name : {
+    borderWidth: 1,
+    borderColor: 'black',
+    flex : 1,
+    // marginTop : 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
   level : {
     borderWidth: 1,
     borderColor: 'black',
     flex : 1,
-    marginTop : 5,
+    // marginTop : 5,
     justifyContent: 'center',
     alignItems: 'center',
 
