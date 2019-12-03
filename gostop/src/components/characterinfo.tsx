@@ -36,13 +36,13 @@ class Characterinfo  extends React.Component<CharacterinfoProps, any> {
                 style={styles.image}
                 source={{ uri:'https://png.pngtree.com/png-clipart/20190630/original/pngtree-handsome-cartoon-dog-image-cute-dog-png-image_4180965.jpg' }}/>
                 <View style={styles.level}><Text>{this.props.name}</Text></View>
-                <View style={styles.level}><Text style = {styles.levelText}>level{this.props.level}</Text></View>
+                <View style={styles.level}><Text>level{this.props.level}</Text></View>
               </View>
 
               <View style={styles.right}>
                <View style={{ flex:1, width : 50, alignSelf : 'flex-end' }}>
                  <View>
-               <Text onPress={() => console.log('share Button pressed')} style = {{color : "#ffdc34"}}>
+               <Text onPress={() => console.log('share Button pressed')} style = {{ color : '#ffdc34' }}>
                  kakao</Text></View>
                </View>
 
@@ -138,13 +138,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'black',
     flex : 1,
-    marginTop : 10,
+    marginTop : 5,
     justifyContent: 'center',
     alignItems: 'center',
 
   },
   levelText : {
-    fontSize : 20,
+    // fontSize : 10,
 
   },
   right: {
