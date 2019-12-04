@@ -7,29 +7,33 @@ import Characterinfo from '../components/characterinfo';
 import fakeserver from '../fakeserver';
 
 // tslint:disable-next-line: prefer-const
-let database;
 
 class Itemshop extends Component<any, any> {
 
   // tslint:disable-next-line: member-access
   constructor(props, context) {
     super(props, context);
+
+    this.state = {
+      database: [],
+    };
   }
 
-  // public componentDidMount() {
-  //   fetch(`${fakeserver}/items`).then((res) => {
-  //     if (res.status === 200 || res.status === 201) {
-  //       // tslint:disable-next-line: ter-arrow-parens
-  //       res.json().then(data => {
-  //         database = data;
-  //         // console.log(database[1]);
-  //       });
-        
-  //     }else {
-  //       console.error(res.statusText);
-  //     }
-  //   }).catch(err => console.error(err));
-  // }
+  public componentDidMount() {
+    fetch(`${fakeserver}/items`).then((res) => {
+      if (res.status === 200 || res.status === 201) {
+        // tslint:disable-next-line: ter-arrow-parens
+        res.json().then(data => {
+          this.setState({
+            database: data,
+          });
+          console.log(this.state.database);
+        });
+      }else {
+        console.error(res.statusText);
+      }
+    }).catch(err => console.error(err));
+  }
   // public sendHead = (newuri) => {
   //   // tslint:disable-next-line: prefer-const
   //   // tslint:disable-next-line: no-unused-expression
@@ -75,7 +79,7 @@ class Itemshop extends Component<any, any> {
   public render() {
     return (
           <View style={s.contain}>
-              <View style ={{ flex : 5 }}>
+              <View style ={{ flex : 7 }}>
                 <Characterinfo/>
               </View>
 
@@ -89,155 +93,253 @@ class Itemshop extends Component<any, any> {
             style={{ marginLeft: '8%', height:'11%', width:'22%', resizeMode:'contain' }}
             source={{ uri: this.props.uri2 }}/>
              */}
+             <View style ={{ flex : 23.5 }}>
           <Text style={s.head1}>머리</Text>
           <View style={s.container}>
 
-          {/* {database.map((head, index) => {
+          {/* {this.state.database.map((head, index) => {
               // tslint:disable-next-line: no-unused-expression
               // console.log(index);
-              return <Image style={s.pink} source={{ uri: head.itemImg }} key={index}/>
-            })} */}
-
-              <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/head2.png' }}/>
-              <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/head3.png' }}/>
-              <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/head4.png' }}/>
-              <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/head5.png' }}/>
+            return <Image style={s.pink} source={{ uri: head.itemImg }} key={index}/>
+          })} */}
+          <View style={s.container1}>
+            <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/head6.png' }}/>
+            <TouchableOpacity
+              // tslint:disable-next-line: brace-style
+              onPress = {() => { this.props.coinchange(-50),
+              // tslint:disable-next-line: brace-style
+              this.props.additem('https://totalitems.s3.ap-northeast-2.amazonaws.com/head6.png'); } }>
+              <View style={s.buymain}>
+              <Image
+              style={s.buy} source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
+              <Text>X50</Text>
+              </View>
+            </TouchableOpacity>
           </View>
 
-          <View style={s.container}>
-          <TouchableOpacity style={s.green}
-
-          // // tslint:disable-next-line: brace-style
-          // onPress = {() => { this.props.coinchange(-5),
-          // // tslint:disable-next-line: brace-style
-          // this.sendHead('https://totalitems.s3.ap-northeast-2.amazonaws.com/head2.png'); } }>
-          //     <Text style={{ fontSize: 15 }}>구매</Text>
-
+          <View style={s.container1}>
+            <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/head7.png' }}/>
+            <TouchableOpacity
               // tslint:disable-next-line: brace-style
-          onPress = {() => { this.props.coinchange(-50),
-          // tslint:disable-next-line: brace-style
-          this.props.additem('https://totalitems.s3.ap-northeast-2.amazonaws.com/head2.png'); } }>
-              <Text style={{ fontSize: 14 }}>구매</Text>
+              onPress = {() => { this.props.coinchange(-70),
+              // tslint:disable-next-line: brace-style
+              this.props.additem('https://totalitems.s3.ap-northeast-2.amazonaws.com/head7.png'); } }>
+              <View style={s.buymain}>
+              <Image
+              style={s.buy} source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
+              <Text>X70</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
 
-            </TouchableOpacity>
-            <TouchableOpacity style={s.green}
-          // tslint:disable-next-line: brace-style
-          onPress = {() => { this.props.coinchange(-70),
-          // tslint:disable-next-line: brace-style
-          this.props.additem('https://totalitems.s3.ap-northeast-2.amazonaws.com/head3.png'); } }>
-              <Text style={{ fontSize: 14 }}>구매</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={s.green}
-          // tslint:disable-next-line: brace-style
-          onPress = {() => { this.props.coinchange(-90),
-          // tslint:disable-next-line: brace-style
-          this.props.additem('https://totalitems.s3.ap-northeast-2.amazonaws.com/head4.png'); } }>
-              <Text style={{ fontSize: 14 }}>구매</Text>
-            </TouchableOpacity>
+          <View style={s.container1}>
+            <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/head8.png' }}/>
 
-          <TouchableOpacity style={s.green}
-          // tslint:disable-next-line: brace-style
-          onPress = {() => { this.props.coinchange(-110),
-          // tslint:disable-next-line: brace-style
-          this.props.additem('https://totalitems.s3.ap-northeast-2.amazonaws.com/head5.png'); } }>
-              <Text style={{ fontSize: 14 }}>구매</Text>
+            <TouchableOpacity
+              // tslint:disable-next-line: brace-style
+              onPress = {() => { this.props.coinchange(-90),
+              // tslint:disable-next-line: brace-style
+              this.props.additem('https://totalitems.s3.ap-northeast-2.amazonaws.com/head8.png'); } }>
+              <View style={s.buymain}>
+              <Image
+              style={s.buy} source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
+              <Text>X90</Text>
+              </View>
             </TouchableOpacity>
+          </View>
+
+          <View style={s.container1}>
+            <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/head9.png' }}/>
+              <TouchableOpacity
+              // tslint:disable-next-line: brace-style
+              onPress = {() => { this.props.coinchange(-110),
+              // tslint:disable-next-line: brace-style
+              this.props.additem('https://totalitems.s3.ap-northeast-2.amazonaws.com/head9.png'); } }>
+              <View style={s.buymain}>
+              <Image
+              style={s.buy} source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
+              <Text>X110</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+
+          <View style={s.container1}>
+            <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/head10.png' }}/>
+              <TouchableOpacity
+              // tslint:disable-next-line: brace-style
+              onPress = {() => { this.props.coinchange(-130),
+              // tslint:disable-next-line: brace-style
+              this.props.additem('https://totalitems.s3.ap-northeast-2.amazonaws.com/head10.png'); } }>
+              <View style={s.buymain}>
+              <Image
+              style={s.buy} source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
+              <Text>X130</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+
           </View>
 
           <Text style={s.head}>상의</Text>
           <View style={s.container}>
-              <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/top2.png' }}/>
-              <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/top3.png' }}/>
-              <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/top4.png' }}/>
-              <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/top5.png' }}/>
-              <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/top6.png' }}/>
-          </View>
 
-          <View style={s.container}>
-          <TouchableOpacity style={s.green}
-          // tslint:disable-next-line: brace-style
-          onPress = {() => { this.props.coinchange(-50),
-          // tslint:disable-next-line: brace-style
-          this.props.additem1('https://totalitems.s3.ap-northeast-2.amazonaws.com/top2.png'); } }>
-              <Text style={{ fontSize: 14 }}>구매</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={s.green}
-          // tslint:disable-next-line: brace-style
-          onPress = {() => { this.props.coinchange(-70),
-          // tslint:disable-next-line: brace-style
-          this.props.additem1('https://totalitems.s3.ap-northeast-2.amazonaws.com/top3.png'); } }>
-              <Text style={{ fontSize: 14 }}>구매</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={s.green}
-          // tslint:disable-next-line: brace-style
-          onPress = {() => { this.props.coinchange(-90),
-          // tslint:disable-next-line: brace-style
-          this.props.additem1('https://totalitems.s3.ap-northeast-2.amazonaws.com/top4.png'); } }>
-              <Text style={{ fontSize: 14 }}>구매</Text>
-            </TouchableOpacity>
-          <TouchableOpacity style={s.green}
-          // tslint:disable-next-line: brace-style
-          onPress = {() => { this.props.coinchange(-110),
-          // tslint:disable-next-line: brace-style
-          this.props.additem1('https://totalitems.s3.ap-northeast-2.amazonaws.com/top5.png'); } }>
-              <Text style={{ fontSize: 14 }}>구매</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={s.green}
-          // tslint:disable-next-line: brace-style
-          onPress = {() => { this.props.coinchange(-130),
-          // tslint:disable-next-line: brace-style
-          this.props.additem1('https://totalitems.s3.ap-northeast-2.amazonaws.com/top6.png'); } }>
-              <Text style={{ fontSize: 14 }}>구매</Text>
-            </TouchableOpacity>
+              <View style={s.container1}>
+                <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/top2.png' }}/>
+                <TouchableOpacity
+                  // tslint:disable-next-line: brace-style
+                  onPress = {() => { this.props.coinchange(-50),
+                  // tslint:disable-next-line: brace-style
+                  this.props.additem1('https://totalitems.s3.ap-northeast-2.amazonaws.com/top2.png'); } }>
+                  <View style={s.buymain}>
+                  <Image
+                  style={s.buy} source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
+                  <Text>X50</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+
+              <View style={s.container1}>
+                <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/top3.png' }}/>
+                <TouchableOpacity
+                  // tslint:disable-next-line: brace-style
+                  onPress = {() => { this.props.coinchange(-70),
+                  // tslint:disable-next-line: brace-style
+                  this.props.additem1('https://totalitems.s3.ap-northeast-2.amazonaws.com/top3.png'); } }>
+                  <View style={s.buymain}>
+                  <Image
+                  style={s.buy} source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
+                  <Text>X70</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+
+              <View style={s.container1}>
+                <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/top4.png' }}/>
+                <TouchableOpacity
+                  // tslint:disable-next-line: brace-style
+                  onPress = {() => { this.props.coinchange(-90),
+                  // tslint:disable-next-line: brace-style
+                  this.props.additem1('https://totalitems.s3.ap-northeast-2.amazonaws.com/top4.png'); } }>
+                  <View style={s.buymain}>
+                  <Image
+                  style={s.buy} source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
+                  <Text>X90</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+
+              <View style={s.container1}>
+                <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/top5.png' }}/>
+                <TouchableOpacity
+                  // tslint:disable-next-line: brace-style
+                  onPress = {() => { this.props.coinchange(-110),
+                  // tslint:disable-next-line: brace-style
+                  this.props.additem1('https://totalitems.s3.ap-northeast-2.amazonaws.com/top5.png'); } }>
+                  <View style={s.buymain}>
+                  <Image
+                  style={s.buy} source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
+                  <Text>X110</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+
+              <View style={s.container1}>
+                <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/top6.png' }}/>
+                <TouchableOpacity
+                  // tslint:disable-next-line: brace-style
+                  onPress = {() => { this.props.coinchange(-130),
+                  // tslint:disable-next-line: brace-style
+                  this.props.additem1('https://totalitems.s3.ap-northeast-2.amazonaws.com/top6.png'); } }>
+                  <View style={s.buymain}>
+                  <Image
+                  style={s.buy} source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
+                  <Text>X130</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+
           </View>
 
           <Text style={s.head}>하의</Text>
           <View style={s.container}>
-              <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/bottm2.png' }}/>
+
+            <View style={s.container1}>
+             <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/bottm2.png' }}/>
+              <TouchableOpacity
+                // tslint:disable-next-line: brace-style
+                onPress = {() => { this.props.coinchange(-50),
+                // tslint:disable-next-line: brace-style
+                this.props.additem2('https://totalitems.s3.ap-northeast-2.amazonaws.com/bottm2.png'); } }>
+                <View style={s.buymain}>
+                  <Image
+                  style={s.buy} source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
+                  <Text>X50</Text>
+                  </View>
+              </TouchableOpacity>
+            </View>
+
+            <View style={s.container1}>
               <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/bottm3.png' }}/>
+                <TouchableOpacity
+                  // tslint:disable-next-line: brace-style
+                  onPress = {() => { this.props.coinchange(-70),
+                  // tslint:disable-next-line: brace-style
+                  this.props.additem2('https://totalitems.s3.ap-northeast-2.amazonaws.com/bottm3.png'); } }>
+                  <View style={s.buymain}>
+                  <Image
+                  style={s.buy} source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
+                  <Text>X70</Text>
+                  </View>
+                </TouchableOpacity>
+            </View>
+
+            <View style={s.container1}>
               <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/bottom4.png' }}/>
+                <TouchableOpacity
+                  // tslint:disable-next-line: brace-style
+                  onPress = {() => { this.props.coinchange(-90),
+                  // tslint:disable-next-line: brace-style
+                  this.props.additem2('https://totalitems.s3.ap-northeast-2.amazonaws.com/bottom4.png'); } }>
+                  <View style={s.buymain}>
+                  <Image
+                  style={s.buy} source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
+                  <Text>X90</Text>
+                  </View>
+                </TouchableOpacity>
+            </View>
+
+            <View style={s.container1}>
               <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/bottom5.png' }}/>
+                <TouchableOpacity
+                  // tslint:disable-next-line: brace-style
+                  onPress = {() => { this.props.coinchange(-110),
+                  // tslint:disable-next-line: brace-style
+                  this.props.additem2('https://totalitems.s3.ap-northeast-2.amazonaws.com/bottom5.png'); } }>
+                  <View style={s.buymain}>
+                  <Image
+                  style={s.buy} source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
+                  <Text>X110</Text>
+                  </View>
+                </TouchableOpacity>
+            </View>
+
+            <View style={s.container1}>
               <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/bottom6.png' }}/>
-          </View>
+                <TouchableOpacity
+                // tslint:disable-next-line: brace-style
+                onPress = {() => { this.props.coinchange(-130),
+                // tslint:disable-next-line: brace-style
+                this.props.additem2('https://totalitems.s3.ap-northeast-2.amazonaws.com/bottom6.png'); } }>
+                <View style={s.buymain}>
+              <Image
+              style={s.buy} source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
+              <Text>X130</Text>
+              </View>
+                </TouchableOpacity>
+            </View>
 
-          <View style={s.container}>
-          <TouchableOpacity style={s.green}
-          // tslint:disable-next-line: brace-style
-          onPress = {() => { this.props.coinchange(-5),
-          // tslint:disable-next-line: brace-style
-          this.props.additem2('https://totalitems.s3.ap-northeast-2.amazonaws.com/bottm2.png'); } }>
-              <Text style={{ fontSize: 14 }}>구매</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={s.green}
-          // tslint:disable-next-line: brace-style
-          onPress = {() => { this.props.coinchange(-10),
-          // tslint:disable-next-line: brace-style
-          this.props.additem2('https://totalitems.s3.ap-northeast-2.amazonaws.com/bottm3.png'); } }>
-              <Text style={{ fontSize: 14 }}>구매</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={s.green}
-          // tslint:disable-next-line: brace-style
-          onPress = {() => { this.props.coinchange(-15),
-          // tslint:disable-next-line: brace-style
-          this.props.additem2('https://totalitems.s3.ap-northeast-2.amazonaws.com/bottom4.png'); } }>
-              <Text style={{ fontSize: 14 }}>구매</Text>
-            </TouchableOpacity>
-          <TouchableOpacity style={s.green}
-          // tslint:disable-next-line: brace-style
-          onPress = {() => { this.props.coinchange(-20),
-          // tslint:disable-next-line: brace-style
-          this.props.additem2('https://totalitems.s3.ap-northeast-2.amazonaws.com/bottom5.png'); } }>
-              <Text style={{ fontSize: 14 }}>구매</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={s.green}
-          // tslint:disable-next-line: brace-style
-          onPress = {() => { this.props.coinchange(-20),
-          // tslint:disable-next-line: brace-style
-          this.props.additem2('https://totalitems.s3.ap-northeast-2.amazonaws.com/bottom6.png'); } }>
-              <Text style={{ fontSize: 14 }}>구매</Text>
-            </TouchableOpacity>
           </View>
-
+          </View>
           </View>
     );
   }
@@ -256,20 +358,34 @@ const s = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  pink: {
+  container1: {
     marginLeft: 25,
+    marginTop: 5,
+    marginBottom: 15,
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  pink: {
     backgroundColor: 'white',
     padding: 20,
     height: 30,
-    width: 50,
     resizeMode:'contain',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  green: {
-    marginLeft: 35,
-    backgroundColor: 'green',
-    padding: 5,
-    borderRadius: 10,
-    marginTop: -15,
+  buymain: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 9,
+    justifyContent: 'center',
+  },
+  buy: {
+    resizeMode:'contain',
+    width: 20,
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   head: {
     marginLeft: 25,
@@ -288,9 +404,9 @@ const mapDispatchToProps = (dispatch) => {
     imagechange1 : (uri1: any) => dispatch(imagechange1(uri1)),
     imagechange2 : (uri2: any) => dispatch(imagechange2(uri2)),
     coinchange : value => dispatch(coinchange(value)),
-    additem : (uri3: any) => dispatch(additem(uri3)),
-    additem1 : (uri4: any) => dispatch(additem1(uri4)),
-    additem2 : (uri5: any) => dispatch(additem2(uri5)),
+    additem : (heads: any) => dispatch(additem(heads)),
+    additem1 : (tops: any) => dispatch(additem1(tops)),
+    additem2 : (pantss: any) => dispatch(additem2(pantss)),
   };
 };
 
@@ -300,9 +416,10 @@ function mapStateToProps(state) {
     uri1: state.changeReducer1.uri1,
     uri2: state.changeReducer2.uri2,
     coinsvalue : state.changepointreducer.coinsvalue,
-    uri3: state.additem.uri3,
-    uri4: state.additem1.uri4,
-    uri5: state.additem2.uri5,
+    heads: state.additem.heads,
+    tops: state.additem1.tops,
+    pantss: state.additem2.pantss,
+    hascoinsvalue : state.getuserreducer.coin,
   };
 }
 
