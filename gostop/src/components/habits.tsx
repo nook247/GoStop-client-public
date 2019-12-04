@@ -102,15 +102,15 @@ class Habits extends Component<any, habitsStates> {
           res.json()
           .then((data) => {
             if (!data.habits.length) {
-              // let initState = {
-              //   id : '',
-              //   title : '제목을 입력하세요',
-              //   description : '설명을 입력하세요',
-              //   // alarmId : '',
-              //   difficulty : 3,
-              //   positive : true
-              // };
-              // this.props.savehabit([initState]);
+              let initState = {
+                id : '',
+                title : '제목을 입력하세요',
+                description : '설명을 입력하세요',
+                // alarmId : 'aaa',
+                difficulty : 1,
+                positive : true,
+              };
+              this.props.savehabit([initState]);
             } else {
               const habits = [];
               data.habits.forEach((element) => {
@@ -138,8 +138,9 @@ class Habits extends Component<any, habitsStates> {
   }
 
   public async componentDidMount() {
-    this.getrefreshtoken();
     this.getdata();
+    this.getrefreshtoken();
+    
     // AsyncStorage.removeItem('token');
     // this.props.navigation.navigate('AuthLoading');
   }

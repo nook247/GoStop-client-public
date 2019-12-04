@@ -33,13 +33,14 @@ class TodoDatePicker extends Component {
        'Fri' : '금요일', 'Sat' : '토요일', 'Sun' : '일요일'
       }
     let monthConvert = { 
-      'Jan' : '01월', 'Feb' : '02월', 'Mar' : '03월', 'Apr' : '04월', 'May' : '05월', 
-      'Jun' : '06월', 'Jul' : '07월', 'Aug' : '08월', 'Sep' : '09월', 'Oct' : '10월', 
-      'Nov' : '11월', 'Dec' : '12월'
+      'Jan' : '01', 'Feb' : '02', 'Mar' : '03', 'Apr' : '04', 'May' : '05', 
+      'Jun' : '06', 'Jul' : '07', 'Aug' : '08', 'Sep' : '09', 'Oct' : '10', 
+      'Nov' : '11', 'Dec' : '12'
     }
 
     // let str = year + '년 ' + monthConvert[month] + ' ' + day + '일 ' + dayOfWeekConvert[dayOfWeek];
-    let str = year + '년 ' + monthConvert[month] + ' ' + day + '일 ' 
+    // let str = year + '년 ' + monthConvert[month] + ' ' + day + '일 ' 
+     let str = year + '/' + monthConvert[month] + '/' + day 
 
     return str;
   }
@@ -58,7 +59,7 @@ class TodoDatePicker extends Component {
  
   render() {
     const date = this.state.date 
-    const initialdate = date.slice(0,4) + '년 ' + date.slice(5,7) + '월 ' + date.slice(8,10) + '일'
+    // const initialdate = date.slice(0,4) + '년 ' + date.slice(5,7) + '월 ' + date.slice(8,10) + '일'
     // const initialdate = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate()
 
     let today = new Date(); 
@@ -68,23 +69,22 @@ class TodoDatePicker extends Component {
 
     returntoday = year + '/' + month + '/' + date2
     return (
-      <View >
-        <Text style = {{ marginLeft : 17 }}> {date || returntoday} </Text>
-        
-
+      <View style = {{ alignItems : 'flex-end',    justifyContent : 'center'}}>
+     
         <TouchableOpacity
             onPress={this.showDateTimePicker}
             style={styles.button}
         >
           <Text style={styles.buttonText}>날짜 선택</Text>
-        </TouchableOpacity>
-        <DateTimePicker
+                <DateTimePicker
           isVisible={this.state.isDateTimePickerVisible}
           onConfirm={this.handleDatePicked}
           onCancel={this.hideDateTimePicker}
         />
+        </TouchableOpacity>
 
-
+        <Text style = {styles.dateText}> {date || returntoday} </Text>
+  
       </View>
     );
   }
@@ -103,15 +103,21 @@ export default connect(null, mapDispatchToProps)(TodoDatePicker);
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: "#ffdc34",
+    backgroundColor: "transparent",
     paddingVertical: 5,
     borderRadius: 2,
     alignItems: 'center',
-    alignSelf: 'flex-end',
+    // borderColor : 'black',
+    // borderWidth : 1,
+    // alignSelf: 'flex-end',
     width: 90
   },
   buttonText: {
     color: "#110133",
-    fontSize: 15,
+    fontSize: 14,
+  },
+  dateText : {
+    paddingRight : 10,
+    paddingBottom : 10,
   }
 })

@@ -83,15 +83,17 @@ class Todos extends Component<any, TodosStates> {
         .then(data => {
 
           if(!data.todos.length){
-          //   let initState = {
-          //     id : '',
-          //     title : '제목을 입력하세요',
-          //     desc : '설명을 입력하세요',
-          //     alarm : true,
-          //     completed : true,
-          //     difficulty : 3,
-          //   }
-          // this.props.savetodos([initState]);
+            let initState = {
+            id : '',
+            title : '제목을 입력하세요',
+            description : '설명을 입력하세요',
+            // alarmId : 'alamId',
+            difficulty : 1,
+            dateStart : '2000-01-01',
+            dateEnd : '2999-12-31',
+            completed : false,
+            }
+          this.props.savetodos([initState]);
           } else {
             const todos = [];
             data.todos.forEach( element => {
@@ -202,19 +204,19 @@ public todos(item, index){
           <Characterinfo/>
         </View>
 
-      <View style = { { flex : 2, flexDirection : 'row', backgroundColor : '#ffdc34', paddingHorizontal : 17, justifyContent : 'space-between' } }>
+      <View style = { { flex : 2, flexDirection : 'row', backgroundColor : '#ffdc34', justifyContent : 'space-between',
+          borderBottomColor : '#F4F4F5', borderBottomWidth : 1,  alignItems : 'center' } }>
       <Text style={styles.buttonText} onPress = {() => {
               this.setState({
               totallist : true,
             });
-            }}>전체목록</Text>
-        <Text style = {styles.doneText}> 완료 {this.state.completecount}건 미완료 {this.props.todosarr.length - this.state.completecount} 건</Text>
+            }}>전체 목록</Text>
+        <Text style = {styles.doneText}> 완료 {this.state.completecount}건 미완료 {this.props.todosarr.length - this.state.completecount}건</Text>
 
 <View style = {styles.date} onTouchEnd = {() => {
             this.setState({
               totallist : false,
             });
-            console.log('datepicker touch');
           }}
             onTouchCancel = {() => {
               this.setState({
@@ -246,8 +248,7 @@ public todos(item, index){
 
         }
     })}
-            <View style = {{ flex : 10, backgroundColor : 'transparent', height : 100 }}>
-        </View>
+            <View style = {{ flex : 10, backgroundColor : 'transparent', height : 100 }}></View>
       </ScrollView>
 
       </View>
@@ -293,19 +294,21 @@ const styles = StyleSheet.create({
     width : '100%',
   },
   doneText : {
-    // flex : 3,
+    flex : 4,
     color: '#110133',
     fontSize : 15,
     fontWeight : 'bold',
+    marginHorizontal : 17,
   },
   buttonText: {
-    // flex : 2,
+    flex : 1,
     color: '#110133',
-    fontSize: 20,
+    fontSize: 15,
     fontWeight : 'bold',
+    paddingLeft : 10,
   },
   date : {
-    // flex : 1,
+    flex : 3,
   },
   scrollView: {
   },
