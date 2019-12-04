@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, AsyncStorage } from "react-native";
+import { View, Text, AsyncStorage } from "react-native";
 import { readBuilderProgram } from "typescript";
 import { connect } from 'react-redux';
 import savereward from '../actions/rewardaction'
@@ -56,14 +56,22 @@ class AddReward extends Component {
         }
 
         fetch(`${fakeserver}/rewards`, myInit)
-        .then(res => res.json())
-        .then(res => console.log('Success : ', JSON.stringify(res)))
+        .then(res => console.log(res))
         .catch(error => console.error('Error : ', error));
     }
     
     render() {
         return (
             <View style={styles.mainContainer}>
+
+                <View style={{flexDirection: 'row', backgroundColor: '#110133',
+                paddingLeft: 10}}>
+                    <Text style={{fontSize: 20,
+                        fontWeight: 'bold', color: 'white'}}>Title</Text>
+                    <AddOrModifyButton addOrModify='add'
+                    func={this.sendData} category='Reward'
+                    navigation={this.props.navigation}/>
+                </View>
 
                 <ContentsSection 
                     titleDefaultValue={this.state.title}
@@ -74,7 +82,7 @@ class AddReward extends Component {
                         { this.setState({ description: text })
                     }}
                     TextAreaDefaultValue={this.state.description}
-                    category={'Reward'}
+                    category='Reward'
                 />
 
                 <CoinSection coin={this.state.coin}
@@ -83,13 +91,8 @@ class AddReward extends Component {
                     }} 
                 />
 
-                <View style={styles.ButtonContainer}>
-                    <AddOrModifyButton addOrModify='add'
-                    func={this.sendData} category='Reward'
-                    navigation={this.props.navigation}/>
-
-                    <ResetButton clearText={this.clearText} /> 
-                    
+                <View>
+                    <ResetButton clearText={this.clearText} />                     
                 </View>
 
             </View>
