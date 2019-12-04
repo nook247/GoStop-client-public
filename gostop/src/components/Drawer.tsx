@@ -58,9 +58,10 @@ export default class DrawerContainer extends React.Component<any, any> {
                       'Content-Type' : 'application/json',
                     },
                   })
-                  .then((res) => {
+                  .then(async (res) => {
                     console.log(res);
-                    AsyncStorage.removeItem('token');
+                    await AsyncStorage.removeItem('token');
+                    await AsyncStorage.removeItem('refreshtoken');
                     navigation.navigate('AuthLoading') })
                 }
                 }
