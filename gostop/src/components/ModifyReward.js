@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, AsyncStorage } from "react-native";
+import { View, Text, AsyncStorage } from "react-native";
 import { readBuilderProgram } from "typescript";
 import { connect } from 'react-redux';
 import savereward from '../actions/rewardaction'
@@ -97,8 +97,7 @@ class ModifyReward extends Component {
                         }        
                 
                         fetch(`${fakeserver}/rewards/${this.rewardIdToModify}`, myInit)
-                        .then(res => res.json())
-                        .then(res => console.log('Success : ', JSON.stringify(res)))
+                        .then(res => console.log(res))
                         .catch(error => console.error('Error : ', error));
                     })
 
@@ -114,8 +113,7 @@ class ModifyReward extends Component {
             }        
     
             fetch(`${fakeserver}/rewards/${this.rewardIdToModify}`, myInit)
-            .then(res => res.json())
-            .then(res => console.log('Success : ', JSON.stringify(res)))
+            .then(res => console.log(res))
             .catch(error => console.error('Error : ', error));
         }
     }
@@ -123,6 +121,15 @@ class ModifyReward extends Component {
     render() {
         return (
             <View style={styles.mainContainer}>
+
+                <View style={{flexDirection: 'row', backgroundColor: '#110133',
+                    paddingLeft: 10}}>
+                    <Text style={{fontSize: 20,
+                        fontWeight: 'bold', color: 'white'}}>Title</Text>
+                    <AddOrModifyButton addOrModify='modify'
+                    func={this.EditData} category='Reward'
+                    navigation={this.props.navigation}/>
+                </View>
 
                 <ContentsSection 
                     titleDefaultValue={this.state.title}
@@ -133,7 +140,7 @@ class ModifyReward extends Component {
                         { this.setState({ description: text })
                     }}
                     TextAreaDefaultValue={this.state.description}
-                    category={'Reward'}
+                    category='Reward'
                 />
 
                 <CoinSection coin={this.state.coin}
@@ -142,11 +149,7 @@ class ModifyReward extends Component {
                     }} 
                 />
 
-                <View style={styles.ButtonContainer}>
-                    <AddOrModifyButton addOrModify='modify'
-                    func={this.EditData} category='Reward'
-                    navigation={this.props.navigation}/>
-
+                <View>
                     <ResetButton clearText={this.clearText} />  
                     
                     <DeleteButton EditData={this.EditData} category='Reward'

@@ -3,6 +3,7 @@ import { Text, View, TouchableOpacity,
 TouchableHighlight, AsyncStorage } from "react-native";
 import { readBuilderProgram } from "typescript";
 import TimePicker from "react-native-24h-timepicker";
+import { ScrollView } from "react-native-gesture-handler";
 import { connect } from 'react-redux';
 import savehabit from '../actions/habitaction'
 import fakeserver from '../fakeserver'
@@ -175,9 +176,8 @@ class ModifyHabit extends Component {
                         }        
                 
                         fetch(`${fakeserver}/habits/${this.habitIdToModify}`, myInit)
-                        .then(res => res.json())
-                        .then(res => console.log('Success : ', JSON.stringify(res)))
-                        .catch(error => console.error('Error : ', error));
+                        .then(res => console.log(res))
+                        .catch(error => console.error(error));
                     })
 
                 }
@@ -192,8 +192,7 @@ class ModifyHabit extends Component {
             }        
     
             fetch(`${fakeserver}/habits/${this.habitIdToModify}`, myInit)
-            .then(res => res.json())
-            .then(res => console.log('Success : ', JSON.stringify(res)))
+            .then(res => console.log(res))
             .catch(error => console.error('Error : ', error));
         }
     }
@@ -201,6 +200,16 @@ class ModifyHabit extends Component {
     render() {
         return (
             <View style={styles.mainContainer}>
+            <ScrollView>
+
+                <View style={{flexDirection: 'row', backgroundColor: '#110133',
+                    paddingLeft: 10}}>
+                    <Text style={{fontSize: 20,
+                        fontWeight: 'bold', color: 'white'}}>Title</Text>
+                    <AddOrModifyButton addOrModify='modify'
+                    func={this.EditData} category='Habits'
+                    navigation={this.props.navigation}/>
+                </View>
                 
                 <ContentsSection 
                 titleDefaultValue={this.state.habit.title}
@@ -234,23 +243,26 @@ class ModifyHabit extends Component {
 
                 <View style={styles.componentsContainer}>  
 
+                    <Text style={styles.titleStyle}>Alarm</Text>
+
                     <View style={{
-                        ...styles.ButtonContainer, justifyContent: 'space-between'
+                        ...styles.ButtonContainer, 
+                        marginTop: 10, justifyContent: 'space-between'
                     }}>
-                        <Text style={styles.titleStyle}>Alarm : {this.state.alarmTime.time}</Text>   
+                        <Text style={styles.subtitleStyle}>Time : {this.state.alarmTime.time}</Text>   
 
                         <TouchableOpacity
                             onPress={() => this.TimePicker.open()}
                             style={styles.alarmButton}
                             activeOpacity={0.5}
                         >
-                            <Text style={styles.buttonText}>Set Alarm</Text>
+                            <Text style={styles.buttonText}>Set Time</Text>
                         </TouchableOpacity>
                     </View>
                     
-                    <View style={styles.ButtonContainer}>
-                        <Text style={styles.titleStyle}>요일 :</Text>
-                        {this.lapsList()}
+                    <View>
+                        <Text style={styles.subtitleStyle}>요일</Text>
+                        <View style={styles.ButtonContainer}>{this.lapsList()}</View>
                     </View>
 
                     <TimePicker
@@ -265,17 +277,14 @@ class ModifyHabit extends Component {
                     />
                 </View>
 
-                <View style={styles.ButtonContainer}>
-                    <AddOrModifyButton addOrModify='modify'
-                    func={this.EditData} category='Habits'
-                    navigation={this.props.navigation}/>
-
+                <View>
                     <ResetButton clearText={this.clearText} />
 
                     <DeleteButton EditData={this.EditData} category='Habits'
                     navigation={this.props.navigation} />
                 </View>
-                
+
+            </ScrollView>
             </View>
         )
     }

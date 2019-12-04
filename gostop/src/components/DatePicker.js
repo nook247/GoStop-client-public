@@ -61,11 +61,11 @@ class DatePicker extends Component {
       <View style={styles.componentsContainer}>
 
         {startOrEnd === 'Start' ? 
-        <Text style={styles.titleStyle}>시작 날짜 : 
+        <Text style={styles.subtitleStyle}>시작 날짜 : 
          {forModify === false ? 
         this.props.StartDate.toString() : this.props.StartDate.toString() || this.props.forModify}</Text> :
         
-        <Text style={styles.titleStyle}>완료 날짜 : 
+        <Text style={styles.subtitleStyle}>완료 날짜 : 
          {forModify === false ? 
         this.props.EndDate.toString() : this.props.EndDate.toString() || this.props.forModify}</Text>
         }
@@ -73,7 +73,8 @@ class DatePicker extends Component {
         <TouchableOpacity
             onPress={this.showDateTimePicker}
             style={{
-              ...styles.buttonStyle, marginRight: 0}}
+              padding:5, borderRadius: 2, display: 'flex', 
+              alignItems:'center', backgroundColor:'#C3C0C7'}}
         >
           <Text style={styles.buttonText}>날짜 선택</Text>
         </TouchableOpacity>

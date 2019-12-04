@@ -192,8 +192,7 @@ class ModifyTodos extends Component {
                         }        
                 
                         fetch(`${fakeserver}/todos/${this.todoIdToModify}`, myInit)
-                        .then(res => res.json())
-                        .then(res => console.log('Success : ', JSON.stringify(res)))
+                        .then(res => console.log(res))
                         .catch(error => console.error('Error : ', error));
                     })
 
@@ -209,8 +208,7 @@ class ModifyTodos extends Component {
             }        
     
             fetch(`${fakeserver}/todos/${this.todoIdToModify}`, myInit)
-            .then(res => res.json())
-            .then(res => console.log('Success : ', JSON.stringify(res)))
+            .then(res => console.log(res))
             .catch(error => console.error('Error : ', error));
         }
     }
@@ -219,6 +217,15 @@ class ModifyTodos extends Component {
         return (
             <View style={styles.mainContainer}>
             <ScrollView>
+
+                <View style={{flexDirection: 'row', backgroundColor: '#110133',
+                paddingLeft: 10}}>
+                    <Text style={{fontSize: 20,
+                        fontWeight: 'bold', color: 'white'}}>Title</Text>
+                    <AddOrModifyButton addOrModify='modify'
+                    func={this.EditData} category='Todos'
+                    navigation={this.props.navigation}/>
+                </View>
                 
                 <ContentsSection 
                     titleDefaultValue={this.state.todo.title}
@@ -233,7 +240,7 @@ class ModifyTodos extends Component {
                         })
                     }}
                     TextAreaDefaultValue={this.state.todo.description}
-                    category={'Todos'}
+                    category='Todos'
                 />  
 
                 <DifficultySection difficulty={this.state.todo.difficulty}
@@ -243,25 +250,28 @@ class ModifyTodos extends Component {
                     }} 
                 />
 
-                <View style={styles.componentsContainer}>                
+                <View style={styles.componentsContainer}>     
+                
+                    <Text style={styles.titleStyle}>Alarm</Text>
+
                     <View style={{
                         ...styles.ButtonContainer,
-                        justifyContent: 'space-between'
+                        marginTop:10, justifyContent: 'space-between'
                     }}>
-                    <Text style={styles.titleStyle}>Alarm : {this.state.alarmTime.time}</Text>   
+                    <Text style={styles.subtitleStyle}>Time : {this.state.alarmTime.time}</Text>   
 
                     <TouchableOpacity
                         onPress={() => this.TimePicker.open()}
                         style={styles.alarmButton}
                         activeOpacity={0.5}
                     >
-                        <Text style={styles.buttonText}>Set Alarm</Text>
+                        <Text style={styles.buttonText}>Set Time</Text>
                     </TouchableOpacity>
                     </View>
                     
-                    <View style={styles.ButtonContainer}>
-                        <Text style={styles.titleStyle}>요일 :</Text>
-                        {this.lapsList()}
+                    <View>
+                        <Text style={{fontSize:17, fontWeight: 'normal', marginBottom: 10}}>요일 :</Text>
+                        <View style={styles.ButtonContainer}>{this.lapsList()}</View>
                     </View>
 
                     <TimePicker
@@ -276,18 +286,15 @@ class ModifyTodos extends Component {
                     />
                 </View>
 
-                <View>
+                <View style={styles.componentsContainer}>
+                    <Text style={styles.titleStyle}>Date</Text>
                     <DatePicker setDate={this.setDate} startOrEnd='Start' 
                     forModify={this.state.todo.dateStart.toString().slice(0,10)}/>
                     <DatePicker setDate={this.setDate} startOrEnd='End' 
                     forModify={this.state.todo.dateEnd.toString().slice(0,10)}/>
                 </View>
                 
-                <View style={styles.ButtonContainer}>
-                    <AddOrModifyButton addOrModify='modify'
-                    func={this.EditData} category='Todos'
-                    navigation={this.props.navigation}/>
-
+                <View>
                     <ResetButton clearText={this.clearText} />
 
                     <DeleteButton EditData={this.EditData} category='Todos'

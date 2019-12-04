@@ -137,8 +137,7 @@ class AddTodos extends Component {
         }
 
         fetch(`${fakeserver}/todos`, myInit)
-        .then(res => res.json())
-        .then(res => console.log('Success : ', JSON.stringify(res)))
+        .then(res => console.log(res))
         .catch(error => console.error('Error : ', error));
     }
 
@@ -146,6 +145,15 @@ class AddTodos extends Component {
         return (
             <View style={styles.mainContainer}>
             <ScrollView>
+
+                <View style={{flexDirection: 'row', backgroundColor: '#110133',
+                paddingLeft: 10}}>
+                    <Text style={{fontSize: 20,
+                        fontWeight: 'bold', color: 'white'}}>Title</Text>
+                    <AddOrModifyButton addOrModify='add'
+                    func={this.sendData} category='Todos'
+                    navigation={this.props.navigation}/>
+                </View>
                 
                 <ContentsSection 
                     titleDefaultValue={this.state.todo.title}
@@ -170,25 +178,28 @@ class AddTodos extends Component {
                     }} 
                 />
 
-                <View style={styles.componentsContainer}>                                
+                <View style={styles.componentsContainer}>         
+                
+                    <Text style={styles.titleStyle}>Alarm</Text>
+                
                     <View style={{
                         ...styles.ButtonContainer,
-                        justifyContent: 'space-between'
+                        marginTop:10, justifyContent: 'space-between'
                     }}>
-                    <Text style={styles.titleStyle}>Alarm : {this.state.alarmTime.time}</Text>   
+                        <Text style={styles.subtitleStyle}>Time : {this.state.alarmTime.time}</Text>    
 
-                    <TouchableOpacity
-                        onPress={() => this.TimePicker.open()}
-                        style={styles.alarmButton}
-                        activeOpacity={0.5}
-                    >
-                        <Text style={styles.buttonText}>Set Alarm</Text>
-                    </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => this.TimePicker.open()}
+                            style={styles.alarmButton}
+                            activeOpacity={0.5}
+                        >
+                            <Text style={styles.buttonText}>Set Time</Text>
+                        </TouchableOpacity>
                     </View>
                     
-                    <View style={styles.ButtonContainer}>
-                        <Text style={styles.titleStyle}>요일 :</Text>
-                        {this.lapsList()}
+                    <View>
+                        <Text style={{fontSize:17, fontWeight: 'normal', marginBottom: 10}}>요일 :</Text>
+                        <View style={styles.ButtonContainer}>{this.lapsList()}</View>
                     </View>
 
                     <TimePicker
@@ -203,16 +214,13 @@ class AddTodos extends Component {
                     />
                 </View>
 
-                <View>
+                <View style={styles.componentsContainer}>
+                    <Text style={styles.titleStyle}>Date</Text>
                     <DatePicker startOrEnd='Start' forModify={false}/>
                     <DatePicker startOrEnd='End' forModify={false}/>
                 </View>
                 
-                <View style={styles.ButtonContainer}>
-                    <AddOrModifyButton addOrModify='add'
-                    func={this.sendData} category='Todos'
-                    navigation={this.props.navigation}/>
-
+                <View>
                     <ResetButton clearText={this.clearText} />
                 </View>
                 
