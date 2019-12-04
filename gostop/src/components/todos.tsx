@@ -135,8 +135,8 @@ class Todos extends Component<any, TodosStates> {
     return resultdate;
   }
 
-public todos(item){ 
-  return  <View style = {styles.onehabit} key = {item.description}>
+public todos(item, index){ 
+  return  <View style = {styles.onehabit} key = {index}>
 
   <View style = {styles.positive}>
   <CheckBox
@@ -168,50 +168,6 @@ public todos(item){
     }
   />
 
-{/* <TouchableOpacity style={{ backgroundColor:'#ffdc34' }}
-    onPress = {() => {
-      this.props.navigation.navigate('ModifyTodos', {
-        title : item.title,
-      })
-    }}
-    >
-        <Text style = {{ color : '#110133' }}>수정</Text>
-      </TouchableOpacity> */}
-      {/* <TouchableOpacity style={{ backgroundColor:'#110133' }}
-    onPress = {() => {
-      console.log(this.props.todosarr);
-      console.log(item.title)
-      for(let i=0; i<this.props.todosarr.length; i++){
-        if(this.props.todosarr[i].title === item.title){
-          this.props.todosarr.splice(i,1);
-          const newtodosarr = this.props.todosarr;
-          this.props.savetodos(newtodosarr);
-          console.log('newtodosarr',newtodosarr);
-
-          Alert.alert(
-            '삭제하시겠습니까?',
-            '',
-            [
-              {
-                text: '삭제',
-                onPress: () => console.log('Cancel Pressed'),
-                style: 'cancel',
-              },
-              {text: '취소', onPress: () => {
-                this.props.navigation.navigate('Habits')
-              }
-              }
-            ],
-            {cancelable: false},
-          );
-          this.props.navigation.navigate('Todos')
-        }
-      }
-
-    }}
-    >
-        <Text>삭제</Text>
-      </TouchableOpacity> */}
       </View>
 
       <View style = {styles.habits} 
@@ -221,17 +177,11 @@ public todos(item){
           })
         }} >
           <Text style = {styles.habittitle}>{item.title}</Text>
-          <Text style = {styles.habitdesc}>{item.dateStart.slice(0, 10)}~{item.dateEnd.slice(0, 10)}</Text>
+          <Text style = {styles.tododate}>{item.dateStart.slice(0, 10)}~{item.dateEnd.slice(0, 10)}</Text>
           <Text style = {styles.habitdesc}>{item.description}</Text>
 
       </View >
-
-      {/* <View>
-      <CheckBox value = {item.alarm}/>
-      </View> */}
-
       </View>
-
   }
 
   public render() {
@@ -245,21 +195,15 @@ public todos(item){
           <Characterinfo/>
         </View>
 
-      <View style = { { flex : 2, flexDirection : 'row', justifyContent : 'space-between', backgroundColor : 'white'} }>
-      <TouchableOpacity style = {{ backgroundColor : 'transparent' }}
+      <View style = { { flex : 2, justifyContent : 'space-between', backgroundColor : 'white' } }>
+       <TouchableOpacity style = {{ backgroundColor : 'transparent' }}
           onPress = {() => {
-             console.log('전체보기');
             this.setState({
               totallist : true,
             });
           }}>
-           <Text style = {{ alignSelf : 'center', color : '#110133', fontSize : 18 }}>View all</Text>
-        </TouchableOpacity>
-      <TouchableOpacity style={{ backgroundColor:'transparent' }}
-          onPress={() =>
-          this.props.navigation.navigate('AddTodos')}>
-            <MaterialIcons name = 'playlist-add' size = {34} color = '#ffdc34' />
-          </TouchableOpacity>
+            <Text style = {{ alignSelf : 'center', color : '#110133', fontSize : 18 }}>전체보기</Text>
+         </TouchableOpacity>
 
       </View>
 
@@ -268,12 +212,13 @@ public todos(item){
           <View onTouchEnd = {() => {
             this.setState({
               totallist : false,
-            })
-            console.log('datepicker touch')}}
-            onTouchCancel = {() =>{
+            });
+            console.log('datepicker touch');
+          }}
+            onTouchCancel = {() => {
               this.setState({
                 totallist : true,
-              })
+              });
             }}
             >
             <TodoDatePicker />
@@ -281,15 +226,15 @@ public todos(item){
 
           <ScrollView style={styles.scrollView}>
 
-        {this.props.todosarr.map((item) => {
+        {this.props.todosarr.map((item, index) => {
           let start = this.calculus(item.dateStart);
           let end = this.calculus(item.dateEnd);
           if(this.state.totallist){
-            return this.todos(item);
+            return this.todos(item, index);
           } 
          else {
             if (this.props.date >= start && this.props.date <= end) {
-              return this.todos(item);
+              return this.todos(item, index);
             
           }
 
@@ -301,6 +246,13 @@ public todos(item){
         <Text> 완료 {this.state.completecount}건, 미완료 {this.props.todosarr.length - this.state.completecount} 건</Text>
       </View>
 
+      </View>
+
+      <View style = {styles.addcontainer}>
+          <TouchableOpacity style={styles.addBtn}
+              onPress={() => this.props.navigation.navigate('AddTodos')} >
+            <MaterialIcons name = 'playlist-add' size = {52} color = '#110133' />
+          </TouchableOpacity>
       </View>
 
       </View>
@@ -330,40 +282,63 @@ export default connect(mapStateToProps, mapDispatchToProps)(Todos);
 
 const styles = StyleSheet.create({
   container: {
-    borderWidth: 1,
-    borderColor: 'black',
     flex: 1,
     width : '100%',
-    backgroundColor : '#110133'
   },
   scrollView: {
-    // marginHorizontal: 20,
   },
   onehabit : {
-    borderWidth: 2,
-    borderColor: 'white',
-    borderRadius: 10,
     flexDirection : 'row',
-    backgroundColor : '#ffdc34',
-    height : 70,
+    // height : 70,
+    // width : '100%',
+    borderBottomColor : '#F4F4F5',
+    borderBottomWidth : 1,
   },
   positive: {
     flex: 1,
+    backgroundColor : '#ffdc34',
+    justifyContent : 'center',
+    alignItems : 'center',
   },
-  // negative: {
-  //   flex: 1,
-  // },
+  negative: {
+    flex: 1,
+    backgroundColor : '#ffdc34',
+    justifyContent : 'center',
+    alignItems : 'center',
+  },
   habits: {
-    flex: 7,
+    flex: 6,
+    paddingHorizontal : 17,
+    paddingVertical : 10,
   },
   habittitle :{
-    flex : 2,
+    flex : 1,
     fontSize : 20,
     color : '#110133',
+  },
+  tododate : {
+    flex : 1,
+    fontSize : 14,
+    color : 'silver',
   },
   habitdesc : {
     flex : 1,
     fontSize : 14,
     color : '#110133',
+  },
+  addcontainer : {
+    flex : 2,
+    backgroundColor : 'white',
+    justifyContent : 'flex-end',
+    alignItems : 'center',
+    flexDirection : 'row',
+    margin : 20,
+  },
+  addBtn : {
+    backgroundColor:'white',
+    marginRight : 15,
+    borderRadius : 10,
+    borderWidth : 1,
+    borderColor : '#110133',
   },
 });

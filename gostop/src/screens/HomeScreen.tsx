@@ -8,7 +8,6 @@ import CharacterchangeScreen from './CharacterchangeScreen'; ;
 import Signin from '../components/Signin';
 import Signup from '../components/Signup';
 import AuthLoadingScreen from './AuthLoadingScreen';
-
 import Habits from '../components/habits';
 import Todos from '../components/todos';
 import Rewards from '../components/rewards';
@@ -18,7 +17,6 @@ import AddReward from '../components/AddReward';
 import ModifyHabit from '../components/ModifyHabit';
 import ModifyTodos from '../components/ModifyTodos';
 import ModifyReward from '../components/ModifyReward';
-
 import { Ionicons } from '@expo/vector-icons';
 import Item from '../components/Item';
 import Itemshop from '../components/Itemshop';
@@ -64,16 +62,19 @@ const AppTabNavigator = createMaterialTopTabNavigator({
       ...Platform.select({
         android:{
           backgroundColor:'#110133',
-          height : '5%',
+          height : '7%',
         },
       }),
+    },
+    labelStyle: {
+      fontSize: 15,
     },
     // iconStyle: { height: 20 },
     activeTintColor: '#ffdc34',
     // inactiveTintColor: '#d1cece',
     inactiveTintColor: 'white',
     upperCaseLabel: false,
-    showLabel: true,
+    // showLabel: true,
     // showIcon: true,
   },
 });
@@ -88,17 +89,23 @@ const DrawerStack = createDrawerNavigator(
     contentComponent: DrawerContainer,
     initialRouteName : 'AppTabNavigator',
     navigationOptions : ({ navigation }) => ({
-      headerTitleStyle: { alignSelf: 'center', color : 'white' },
-  // title: 'Center Title',
-      title: 'username',
+      headerTitleStyle: { alignSelf: 'center', color : 'white', fontSize : 20, },
+      title: 'DO THE NEXT RIGHT THING!',
       headerLeft:
-
-        <Ionicons name = 'md-menu' onPress={() => navigation.openDrawer()} size = {34} color = '#ffdc34' />,
+      <View style = {styles.menu}>
+        <Ionicons name = 'md-menu' onPress={() => navigation.toggleDrawer()} size = {34} color = '#ffdc34' />
+        </View>,
       headerStyle: {
         backgroundColor: '#110133',
       },
     }),
   });
+
+const styles = StyleSheet.create({
+  menu: {
+    marginLeft : 17,
+  },
+});
 
 const drawerNavigator = createStackNavigator({
   DrawerStack: { screen: DrawerStack },
