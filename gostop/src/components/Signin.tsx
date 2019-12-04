@@ -50,13 +50,16 @@ export default class Signin extends Component<any, signinState> {
       },
     }).then((res) => {
       const cookie = res.headers['map']['set-cookie'];
-      console.log('쿠키니?', cookie);
-      console.log('this.props.navigation', this.props.navigation)
+      console.log('쿠키니? 이게 원래 받은 토큰!!!', cookie);
 
       AsyncStorage.setItem('token', cookie);
       if (res.status === 200 || res.status === 201) {
         res.json()
-      .then(() =>  {
+      .then((data) =>  {
+        console.log('로그인 시에 받아온 데이터에 refresh token 있니?----------', data)
+        const refreshtoken = data["refreshToken"];
+        console.log('refreshtoken---------------', refreshtoken);
+        AsyncStorage.setItem('refreshtoken', refreshtoken);
         this.props.navigation.navigate('Habits');
       });
       }

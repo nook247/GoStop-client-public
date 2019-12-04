@@ -33,12 +33,13 @@ class TodoDatePicker extends Component {
        'Fri' : '금요일', 'Sat' : '토요일', 'Sun' : '일요일'
       }
     let monthConvert = { 
-      'Jan' : '1월', 'Feb' : '2월', 'Mar' : '3월', 'Apr' : '4월', 'May' : '5월', 
-      'Jun' : '6월', 'Jul' : '7월', 'Aug' : '8월', 'Sep' : '9월', 'Oct' : '10월', 
+      'Jan' : '01월', 'Feb' : '02월', 'Mar' : '03월', 'Apr' : '04월', 'May' : '05월', 
+      'Jun' : '06월', 'Jul' : '07월', 'Aug' : '08월', 'Sep' : '09월', 'Oct' : '10월', 
       'Nov' : '11월', 'Dec' : '12월'
     }
 
-    let str = year + '년 ' + monthConvert[month] + ' ' + day + '일 ' + dayOfWeekConvert[dayOfWeek];
+    // let str = year + '년 ' + monthConvert[month] + ' ' + day + '일 ' + dayOfWeekConvert[dayOfWeek];
+    let str = year + '년 ' + monthConvert[month] + ' ' + day + '일 ' 
 
     return str;
   }
@@ -57,6 +58,8 @@ class TodoDatePicker extends Component {
  
   render() {
     const date = this.state.date 
+    const initialdate = date.slice(0,4) + '년 ' + date.slice(5,7) + '월 ' + date.slice(8,10) + '일'
+    // const initialdate = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate()
 
     let today = new Date(); 
     let year = today.getFullYear(); // 년도
@@ -65,8 +68,8 @@ class TodoDatePicker extends Component {
 
     returntoday = year + '/' + month + '/' + date2
     return (
-      <View>
-        <Text>날짜 : {date || returntoday} </Text>
+      <View >
+        <Text style = {{ marginLeft : 17 }}> {date || returntoday} </Text>
         
 
         <TouchableOpacity
@@ -75,12 +78,13 @@ class TodoDatePicker extends Component {
         >
           <Text style={styles.buttonText}>날짜 선택</Text>
         </TouchableOpacity>
-
         <DateTimePicker
           isVisible={this.state.isDateTimePickerVisible}
           onConfirm={this.handleDatePicked}
           onCancel={this.hideDateTimePicker}
         />
+
+
       </View>
     );
   }
@@ -101,7 +105,7 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: "#ffdc34",
     paddingVertical: 5,
-    borderRadius: 3,
+    borderRadius: 2,
     alignItems: 'center',
     alignSelf: 'flex-end',
     width: 90
