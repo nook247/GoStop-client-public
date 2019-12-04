@@ -1,4 +1,4 @@
-import { COINCHANGE, FETCH_CHARACTERINFO, FETCH_HABITSINFO, HabitsAction, HEALTHCHANGE, POINTCHANGE, SET_DIFF } from '../actions/characterinfoaction';
+import { COINCHANGE, FETCH_CHARACTERINFO, FETCH_HABITSINFO, HabitsAction, HEALTHCHANGE, POINTCHANGE} from '../actions/characterinfoaction';
 import fakeserver from '../fakeserver';
 
 export interface HabitsState {
