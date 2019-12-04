@@ -6,14 +6,12 @@ import additem1 from './AddTop';
 // tslint:disable-next-line: ordered-imports
 import changepointreducer from './ChangePointReducer';
 // tslint:disable-next-line: ordered-imports
-
 // tslint:disable-next-line: ordered-imports
 import getuserreducer from './GetuserReducer';
 import habitreducer from './HabitReducer';
 import changeReducer from './Itemchange';
 import changeReducer1 from './Itemchange1';
 import changeReducer2 from './Itemchange2';
-import passhabitreducer from './PasshabitReducer';
 // tslint:disable-next-line: ordered-imports
 import rewardreducer from './RewardReducer';
 import todosreducer from './TodosReducer';
@@ -28,7 +26,6 @@ export default combineReducers({
   changeReducer2,
   changepointreducer,
   todosreducer,
-  passhabitreducer,
   getuserreducer,
   habitreducer,
   rewardreducer,
