@@ -58,7 +58,7 @@ class Habits extends Component<any, habitsStates> {
         res.json()
         .then(async (data) => {
           await this.props.getuser(data._id, data.email, data.name, data.userCode, data.level, data.health, data.point, data.coin, newcookie);
-          AsyncStorage.setItem('token', newcookie);
+          await AsyncStorage.setItem('token', newcookie);
         });
       }
     })
@@ -138,8 +138,9 @@ class Habits extends Component<any, habitsStates> {
   }
 
   public async componentDidMount() {
-    this.getdata();
     this.getrefreshtoken();
+    this.getdata();
+   
     
     // AsyncStorage.removeItem('token');
     // this.props.navigation.navigate('AuthLoading');
