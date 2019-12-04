@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import { additem, additem1, additem2, imagechange, imagechange1, imagechange2 } from '../actions/';
 import { coinchange } from '../actions/characterinfoaction';
@@ -34,6 +34,7 @@ class Itemshop extends Component<any, any> {
       }
     }).catch(err => console.error(err));
   }
+
   // public sendHead = (newuri) => {
   //   // tslint:disable-next-line: prefer-const
   //   // tslint:disable-next-line: no-unused-expression
@@ -102,7 +103,58 @@ class Itemshop extends Component<any, any> {
               // console.log(index);
             return <Image style={s.pink} source={{ uri: head.itemImg }} key={index}/>
           })} */}
-          <View style={s.container1}>
+
+          {this.state.database.map((head, index) => {
+            if (head.category === 'head') {
+              return <View style={s.container1} key={index}>
+              <Image style={s.pink} source={{ uri: head.itemImg }}/>
+              <TouchableOpacity
+                // tslint:disable-next-line: brace-style
+                onPress = {() => {
+                  Alert.alert(
+                    '구매하시겠습니까?',
+                    '',
+                    [
+                      {
+                        text: 'Cancel',
+                        onPress: () => console.log('Cancel Pressed'),
+                        style: 'cancel',
+                      },
+                      {text: 'OK', onPress: () => {
+                        if (head.price < this.props.hascoinsvalue) {
+                          this.props.coinchange(-head.price),
+                          // tslint:disable-next-line: brace-style
+                          this.props.additem(head.itemImg);
+                        }
+                        // tslint:disable-next-line: brace-style
+                        else {
+                          Alert.alert(
+                            '코인이 부족합니다.',
+                            '',
+                            [
+                              { text: 'OK', onPress: () => { console.log('OK Pressed'); } },
+                            ],
+                          );
+                        }
+                      },
+                      },
+                    ],
+                    { cancelable: false },
+
+                  // tslint:disable-next-line: brace-style
+                  ); } }>
+                <View style={s.buymain}>
+                <Image
+                style={s.buy} source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
+                <Text>X{head.price}</Text>
+                </View>
+              </TouchableOpacity>
+            </View>;
+            }
+          })}
+
+
+          {/* <View style={s.container1}>
             <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/head6.png' }}/>
             <TouchableOpacity
               // tslint:disable-next-line: brace-style
@@ -176,14 +228,63 @@ class Itemshop extends Component<any, any> {
               <Text>X130</Text>
               </View>
             </TouchableOpacity>
-          </View>
+          </View> */}
 
           </View>
 
           <Text style={s.head}>상의</Text>
           <View style={s.container}>
 
-              <View style={s.container1}>
+          {this.state.database.map((top, index) => {
+            if (top.category === 'top') {
+              return <View style={s.container1} key={index}>
+              <Image style={s.pink} source={{ uri: top.itemImg }}/>
+              <TouchableOpacity
+                // tslint:disable-next-line: brace-style
+                onPress = {() => {
+                  Alert.alert(
+                    '구매하시겠습니까?',
+                    '',
+                    [
+                      {
+                        text: 'Cancel',
+                        onPress: () => console.log('Cancel Pressed'),
+                        style: 'cancel',
+                      },
+                      {text: 'OK', onPress: () => {
+                        if (top.price < this.props.hascoinsvalue) {
+                          this.props.coinchange(-top.price),
+                          // tslint:disable-next-line: brace-style
+                          this.props.additem1(top.itemImg);
+                        }
+                        // tslint:disable-next-line: brace-style
+                        else {
+                          Alert.alert(
+                            '코인이 부족합니다.',
+                            '',
+                            [
+                              { text: 'OK', onPress: () => { console.log('OK Pressed'); } },
+                            ],
+                          );
+                        }
+                      },
+                      },
+                    ],
+                    { cancelable: false },
+
+                  // tslint:disable-next-line: brace-style
+                  ); } }>
+                <View style={s.buymain}>
+                <Image
+                style={s.buy} source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
+                <Text>X{top.price}</Text>
+                </View>
+              </TouchableOpacity>
+            </View>;
+            }
+          })}
+
+              {/* <View style={s.container1}>
                 <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/top2.png' }}/>
                 <TouchableOpacity
                   // tslint:disable-next-line: brace-style
@@ -256,14 +357,63 @@ class Itemshop extends Component<any, any> {
                   <Text>X130</Text>
                   </View>
                 </TouchableOpacity>
-              </View>
+              </View> */}
 
           </View>
 
           <Text style={s.head}>하의</Text>
           <View style={s.container}>
 
-            <View style={s.container1}>
+          {this.state.database.map((bottom, index) => {
+            if (bottom.category === 'bottom') {
+              return <View style={s.container1} key={index}>
+              <Image style={s.pink} source={{ uri: bottom.itemImg }}/>
+              <TouchableOpacity
+                // tslint:disable-next-line: brace-style
+                onPress = {() => {
+                  Alert.alert(
+                    '구매하시겠습니까?',
+                    '',
+                    [
+                      {
+                        text: 'Cancel',
+                        onPress: () => console.log('Cancel Pressed'),
+                        style: 'cancel',
+                      },
+                      {text: 'OK', onPress: () => {
+                        if (bottom.price < this.props.hascoinsvalue) {
+                          this.props.coinchange(-bottom.price),
+                          // tslint:disable-next-line: brace-style
+                          this.props.additem2(bottom.itemImg);
+                        }
+                        // tslint:disable-next-line: brace-style
+                        else {
+                          Alert.alert(
+                            '코인이 부족합니다.',
+                            '',
+                            [
+                              { text: 'OK', onPress: () => { console.log('OK Pressed'); } },
+                            ],
+                          );
+                        }
+                      },
+                      },
+                    ],
+                    { cancelable: false },
+
+                  // tslint:disable-next-line: brace-style
+                  ); } }>
+                <View style={s.buymain}>
+                <Image
+                style={s.buy} source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
+                <Text>X{bottom.price}</Text>
+                </View>
+              </TouchableOpacity>
+            </View>;
+            }
+          })}
+
+            {/* <View style={s.container1}>
              <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/bottm2.png' }}/>
               <TouchableOpacity
                 // tslint:disable-next-line: brace-style
@@ -336,7 +486,7 @@ class Itemshop extends Component<any, any> {
               <Text>X130</Text>
               </View>
                 </TouchableOpacity>
-            </View>
+            </View> */}
 
           </View>
           </View>
@@ -367,7 +517,6 @@ const s = StyleSheet.create({
     justifyContent: 'center',
   },
   pink: {
-    backgroundColor: 'white',
     padding: 20,
     height: 30,
     resizeMode:'contain',
