@@ -1,15 +1,21 @@
 import React, { Component } from "react";
-import { TextInput, Text, StyleSheet, View, Button, TouchableOpacity,
+import { Text, View, TouchableOpacity,
 TouchableHighlight, AsyncStorage } from "react-native";
+import { readBuilderProgram } from "typescript";
 import DatePicker from './DatePicker';
 import TimePicker from "react-native-24h-timepicker";
+import { ScrollView } from "react-native-gesture-handler";
 import { connect } from 'react-redux';
 import savetodos from '../actions/todosaction'
 import fakeserver from '../fakeserver'
-
-// 날짜
 import saveStartDate from '../actions/startdateaction'
 import saveEndDate from '../actions/enddateaction'
+import styles from './cssStyles'
+
+import AddOrModifyButton from './commonComponents/AddOrModifyButton'
+import ResetButton from './commonComponents/ResetButton'
+import DifficultySection from './commonComponents/DifficultySection'
+import ContentsSection from "./commonComponents/ContentsSection";
 
 class AddTodos extends Component {
     constructor(props) {
@@ -29,6 +35,7 @@ class AddTodos extends Component {
                 dayOfWeek: ''
             }
         }
+        this.dateReset = false;
     }
 
     onCancel() {
@@ -54,7 +61,7 @@ class AddTodos extends Component {
             <TouchableHighlight key={index}
                 style={
                     this.state.alarmTime.dayOfWeek === day ? 
-                    styles.DayButtonSelected :styles.DayButtonStyle} activeOpacity={0.5}
+                    styles.buttonSelected :styles.buttonStyle} activeOpacity={0.5}
                     onPress={() => { 
                         this.setState({
                         alarmTime: {
@@ -63,7 +70,7 @@ class AddTodos extends Component {
                         }
                         })
                     }} >
-                <Text style={styles.textStyle}>{day}</Text>
+                <Text style={styles.buttonText}>{day}</Text>
             </TouchableHighlight>
             )
         })    
@@ -83,9 +90,7 @@ class AddTodos extends Component {
         })
     }
 
-    clearText = () => {
-        this._titleInput.setNativeProps({text: ''});
-        this._contentsInput.setNativeProps({text: ''})        
+    clearText = () => {  
         this.setState({
             todo: {
                 title: '',
@@ -101,196 +106,124 @@ class AddTodos extends Component {
                 dayOfWeek: ''
             }
         })
+        this.props.saveStartDate('')
+        this.props.saveEndDate('')
     }
       
-    sendData = async() => {   // 수정 요망
-        // 날짜 먼저 설정
+    sendData = async() => {   
         let StartDateStore = this.props.StartDate;
         let EndDateStore = this.props.EndDate;
-        // console.log('시작 날짜 정보(AddTodos) : ', StartDateStore, typeof(StartDateStore), '---')        
-        // console.log('끝 날짜 정보(AddTodos)) : ', EndDateStore, typeof(EndDateStore), '---')
 
         let todo = this.state.todo;   
         todo.dateStart = StartDateStore;
         todo.dateEnd = EndDateStore;  
         
-        console.log('날짜가 추가된 todo : ', this.state.todo)
-        // let todo = {
-        //     title: 'TEST',
-        //     description: 'TEST',
-        //     difficulty: '3',  
-        //     dateStart: '2019-12-01',
-        //     dateEnd: '2019-12-30',         
-        //     completed: true
-        // }
-
-        
-        let todoArr = this.props.todosarr
-        console.log('원래 state : ', todoArr)
-        
+        let todoArr = this.props.todosarr        
         this.props.savetodos([...todoArr, todo])
-        console.log('savetodo 잘 됫나? ', [...todoArr, todo])
 
-        // let token = '';
-        // await AsyncStorage.getItem('token', (err, result) => {
-        //     token = result
-        // })
-        // let header = new Headers();
-        // header.append('Cookie', token)
-        // header.append('Content-Type', 'application/json')
+        let token = '';
+        await AsyncStorage.getItem('token', (err, result) => {
+            token = result
+        })
+        let header = new Headers();
+        header.append('Cookie', token)
+        header.append('Content-Type', 'application/json')
 
-        // const myInit = {
-        //     method : 'POST',
-        //     body: JSON.stringify(todo),
-        //     headers : header,
-        //     Cookie : token
-        // }
+        const myInit = {
+            method : 'POST',
+            body: JSON.stringify(todo),
+            headers : header,
+            Cookie : token
+        }
 
-        // fetch(`${fakeserver}/todos`, myInit)
-        // .then(res => res.json())
-        // .then(res => console.log('Success : ', JSON.stringify(res)))
-        // .catch(error => console.error('Error : ', error));
+        fetch(`${fakeserver}/todos`, myInit)
+        .then(res => res.json())
+        .then(res => console.log('Success : ', JSON.stringify(res)))
+        .catch(error => console.error('Error : ', error));
     }
 
     render() {
         return (
-
             <View style={styles.mainContainer}>
-
-                <View style={styles.subContainer}>
+            <ScrollView>
                 
-                <View style={styles.InputContainer}>            
-                    <Text>제목 : </Text>
-                    <TextInput style={styles.Input} placeholder='Todo'
-                    ref={component => this._titleInput = component}                    
-                    onChangeText={(text) =>                         
+                <ContentsSection 
+                    titleDefaultValue={this.state.todo.title}
+                    onChangeTitle={(text) =>                         
                         { this.setState({
-                            todo: {
-                                ...this.state.todo,
-                                title: text
-                            }
+                            todo: { ...this.state.todo, title: text }
                         })
-    
-                    }}/>
-                </View>
-                
-                <View style={styles.InputContainer}>
-                    <Text>내용 : </Text>
-                    <TextInput style={styles.Input} placeholder='Contents'
-                    ref={component => this._contentsInput = component}       
-                    onChangeText={(text) => 
-                        { this.setState({
-                            todo: {
-                                ...this.state.todo,
-                                description: text
-                            }
-                        })
-                        //console.log(this.state)
-                    }}/>
-                </View>
-
-                <View style={styles.ButtonContainer}>
-                    <Text>난이도 : </Text>
-                    <TouchableHighlight
-                    style={
-                        this.state.todo.difficulty === 1 ? 
-                        styles.buttonSelected :styles.buttonStyle} activeOpacity={0.5}
-                    onPress={() => { this.setState({
-                        todo: {
-                            ...this.state.todo,
-                            difficulty: 1
-                        }
-                    })
-                    }} >
-                    <Text style={styles.textStyle}>1</Text>
-                    </TouchableHighlight>
-
-                    <TouchableHighlight
-                    style={
-                        this.state.todo.difficulty === 2 ? 
-                        styles.buttonSelected :styles.buttonStyle} activeOpacity={0.5}
-                    onPress={() => { this.setState({
-                        todo: {
-                            ...this.state.todo,
-                            difficulty: 2
-                        }
-                    }) 
-                    }} >
-                    <Text style={styles.textStyle}>2</Text>
-                    </TouchableHighlight>
-
-                    <TouchableHighlight
-                    style={
-                        this.state.todo.difficulty === 3 ? 
-                        styles.buttonSelected :styles.buttonStyle} activeOpacity={0.5}
-                    onPress={() => { this.setState({
-                        todo: {
-                            ...this.state.todo,
-                            difficulty: 3
-                        }
-                    })
-                    }} >
-                    <Text style={styles.textStyle}>3</Text>
-                    </TouchableHighlight>            
-                </View>
-
-                <View style={styles.container}>       
-                  <Text style={styles.text}>알림 : {this.state.alarmTime.time}</Text>   
-
-                  <View style={styles.DayButtonContainer}>
-                    {this.lapsList()}
-                  </View>
-                  
-                  <TouchableOpacity
-                    onPress={() => this.TimePicker.open()}
-                    style={styles.button}
-                  >
-                    <Text style={styles.buttonText}>알림 설정</Text>
-                  </TouchableOpacity>
-
-                  <TimePicker
-                    ref={ref => {
-                      this.TimePicker = ref;
                     }}
-                    onCancel={() => this.onCancel()}
-                    onConfirm={(hour, minute) => {
-                      this.onConfirm(hour, minute);
-                      this.alarmOn();
-                    }
-                  }
-                  />
+                    onChangeContents={(text) =>                         
+                        { this.setState({
+                            todo: { ...this.state.todo, description: text }
+                        })
+                    }}
+                    TextAreaDefaultValue={this.state.todo.description}
+                    category={'Todos'}
+                />               
+
+                <DifficultySection difficulty={this.state.todo.difficulty}
+                    onPressFunction={(diff) => { this.setState({
+                        todo: { ...this.state.todo, difficulty: diff }
+                        })
+                    }} 
+                />
+
+                <View style={styles.componentsContainer}>                                
+                    <View style={{
+                        ...styles.ButtonContainer,
+                        justifyContent: 'space-between'
+                    }}>
+                    <Text style={styles.titleStyle}>Alarm : {this.state.alarmTime.time}</Text>   
+
+                    <TouchableOpacity
+                        onPress={() => this.TimePicker.open()}
+                        style={styles.alarmButton}
+                        activeOpacity={0.5}
+                    >
+                        <Text style={styles.buttonText}>Set Alarm</Text>
+                    </TouchableOpacity>
+                    </View>
+                    
+                    <View style={styles.ButtonContainer}>
+                        <Text style={styles.titleStyle}>요일 :</Text>
+                        {this.lapsList()}
+                    </View>
+
+                    <TimePicker
+                        ref={ref => {
+                            this.TimePicker = ref;
+                        }}
+                        onCancel={() => this.onCancel()}
+                        onConfirm={(hour, minute) => {
+                            this.onConfirm(hour, minute);
+                            this.alarmOn();
+                        }}
+                    />
                 </View>
 
                 <View>
-                    <DatePicker startOrEnd='Start'/>
-                    <DatePicker startOrEnd='End'/>
+                    <DatePicker startOrEnd='Start' forModify={false}/>
+                    <DatePicker startOrEnd='End' forModify={false}/>
                 </View>
                 
-                <TouchableOpacity
-                    style={styles.addButton} activeOpacity={0.5}
-                    onPress={() => {
-                        this.sendData();
-                        alert("추가되었습니다")
-                        this.props.navigation.navigate('Todos')  // 메인 페이지로 이동
-                    }} >
-                    <Text style={styles.textStyle}>추가</Text>
-                </TouchableOpacity>  
+                <View style={styles.ButtonContainer}>
+                    <AddOrModifyButton addOrModify='add'
+                    func={this.sendData} category='Todos'
+                    navigation={this.props.navigation}/>
 
-                <TouchableOpacity style={styles.addButton} activeOpacity={0.5}
-                onPress={this.clearText}>
-                    <Text>초기화</Text>
-                </TouchableOpacity>
-
-            </View>
+                    <ResetButton clearText={this.clearText} />
+                </View>
+                
+            </ScrollView>
             </View>
         )
     }
 }
 
-//export default AddTodos;
-
+// store 조회
 const mapStateToProps = (state) => {  
-    //console.log('state 나와', state)
     return {
       todosarr : state.todosreducer.todosarr,
       StartDate : state.StartDateReducer.date,
@@ -298,7 +231,7 @@ const mapStateToProps = (state) => {
     }
 }  
 
-// 데이터 수정하기
+// store 변경
 const mapDispatchToProps = dispatch => {
     return {      
       savetodos : (arr) => {
@@ -314,100 +247,3 @@ const mapDispatchToProps = dispatch => {
 };
   
 export default connect(mapStateToProps, mapDispatchToProps)(AddTodos);
-
-
-const styles = StyleSheet.create({
-    mainContainer: {
-        flex:1,
-        margin: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderColor: 'blue',
-        borderWidth:2
-    },
-    subContainer: {
-        borderColor: 'black',
-        borderWidth:2
-    },
-    InputContainer: {
-        flexDirection: 'row',
-        marginTop: 10
-    },
-    Input: {
-        width: 200,
-        height: 30,
-        borderColor: 'gray',
-        borderWidth: 1
-    },
-    ButtonContainer: {        
-        flexDirection: 'row',        
-    },
-    buttonStyle: {
-        marginLeft: 20,
-        paddingLeft: 10,
-        paddingRight: 10,
-        backgroundColor: "#fcba03",
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: "#fff"
-    },
-    buttonSelected: {
-        marginLeft: 20,
-        paddingLeft: 10,
-        paddingRight: 10,
-        backgroundColor: "#ff5500",
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: "#fff"
-    },
-    addButton: {
-        padding: 5,
-        backgroundColor: "#fcba03",
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: "#fff",
-        alignItems: 'center',
-        width: 60
-    },
-    container: {
-        //flex: 1,
-        //alignItems: "center",
-        //flexDirection: 'row',
-        backgroundColor: "#fff",
-        //justifyContent: 'space-around'
-        //paddingTop: 100
-    },
-    DayButtonContainer: {        
-    flexDirection: 'row',        
-    },
-    DayButtonStyle: {
-        marginLeft: 5,
-        paddingLeft: 5,
-        paddingRight: 5,
-        backgroundColor: "#fcba03",
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: "#fff"
-    },
-    DayButtonSelected: {
-        marginLeft: 5,
-        paddingLeft: 5,
-        paddingRight: 5,
-        backgroundColor: "#ff5500",
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: "#fff"
-    },
-    button: {
-    backgroundColor: "#4EB151",
-    paddingVertical: 5,
-    borderRadius: 3,
-    alignItems: 'center',
-    alignSelf: 'flex-end',
-    width: 90
-    },
-    buttonText: {
-    color: "#FFFFFF",
-    fontSize: 15,
-    }
-})
