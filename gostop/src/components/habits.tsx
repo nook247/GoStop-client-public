@@ -138,8 +138,9 @@ class Habits extends Component<any, habitsStates> {
   }
 
   public async componentDidMount() {
-    this.getdata();
     this.getrefreshtoken();
+    this.getdata();
+   
     
     // AsyncStorage.removeItem('token');
     // this.props.navigation.navigate('AuthLoading');
