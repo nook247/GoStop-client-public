@@ -27,25 +27,6 @@ const initialState : userState = {
   token : '',
 };
 
-// async function fetchInit (data){
-//   let token = '';
-//   await AsyncStorage.getItem('token', (err, result) => {
-//       token = result
-//   })
-//   let header = new Headers();
-//   header.append('Cookie', token)
-//   header.append('Content-Type', 'application/json')
-  
-//   const myInit = {
-//       method : 'PATCH',
-//       body: JSON.stringify(data),
-//       headers : header,
-//       Cookie : token,
-//   }
-//   return myInit;
-// }
-
-
 const getuserreducer = (state : userState = initialState, action : GetuserAction) : userState =>{
 
   switch (action.type){

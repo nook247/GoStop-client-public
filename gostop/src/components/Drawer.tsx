@@ -1,53 +1,24 @@
-// import { ScrollView, SafeAreaView, DrawerItems } from "react-navigation";
-// import { TouchableOpacity, View, Text, Image, StyleSheet } from "react-native";
-
-// const LogoutButton = (props) => (
-//     <ScrollView contentContainerStyle={{flex: 1,  flexDirection: 'column', justifyContent: 'space-between' }}>
-//       <SafeAreaView forceInset={{ top: 'always', horizontal: 'never' }}>
-//         <DrawerItems {...props} />
-//       </SafeAreaView>
-//       <TouchableOpacity>
-//         <View style={styles.item}>
-//           <View style={styles.iconContainer}>
-//             <Image source={{uri:'https://cdn.icon-icons.com/icons2/520/PNG/512/Logout_icon-icons.com_52027.png'}}
-//              style={styles.icon}></Image>
-//           </View>
-//           <Text style={styles.label}>Logout</Text>
-//         </View>
-//       </TouchableOpacity>
-//     </ScrollView>
-
-//   );
-
-//   export default LogoutButton;
-  
-//   const styles = StyleSheet.create({
-//     item: {
-//       flexDirection: 'row',
-//       alignItems: 'center',
-//     },
-//     label: {
-//       margin: 16,
-//       fontWeight: 'bold',
-//       color: 'rgba(0, 0, 0, .87)',
-//     },
-//     iconContainer: {
-//       marginHorizontal: 16,
-//       width: 24,
-//       alignItems: 'center',
-//     },
-//     icon: {
-//       width: 24,
-//       height: 24,
-//     }
-//   });
-
 import React from 'react'
 import { StyleSheet, Text, View, Alert, AsyncStorage, Button } from 'react-native';
 import { } from 'react-navigation';
 import fakeserver from '../fakeserver';
+import { Ionicons, SimpleLineIcons, FontAwesome } from '@expo/vector-icons';
 
 export default class DrawerContainer extends React.Component<any, any> {
+  // static navigationOptions = {
+  //   navigationOptions : ({ navigation }) => ({
+  //     headerTitleStyle: { alignSelf: 'center', color : 'white' },
+  // // title: 'Center Title',
+  //     title: 'username',
+  //     headerLeft:
+
+  //       <Ionicons name = 'md-menu' onPress={() => navigation.openDrawer()} size = {34} color = '#ffdc34' />,
+  //     headerStyle: {
+  //       backgroundColor: '#110133',
+  //     },
+  //   }),
+  // };
+
 
   render() {
     const { navigation } = this.props
@@ -56,15 +27,15 @@ export default class DrawerContainer extends React.Component<any, any> {
         <Text
           onPress={() => navigation.navigate('AppTabNavigator')}
           style={styles.uglyDrawerItem}>
-          mainpage
+          Tasks
         </Text>
         <Text
-          onPress={() => navigation.navigate('ItemshopScreen')}
+          onPress={() => navigation.navigate('Itemshop')}
           style={styles.uglyDrawerItem}>
-          Itemshop
+            Itemshop
         </Text>
         <Text
-          onPress={() => navigation.navigate('CharacterchangeScreen')}
+          onPress={() => navigation.navigate('Item')}
           style={styles.uglyDrawerItem}>
           Character
         </Text>
@@ -97,13 +68,10 @@ export default class DrawerContainer extends React.Component<any, any> {
               {cancelable: false},
             );
 
-
-
-
           }
           }
-          style={styles.uglyDrawerItem}>
-          Logout
+          style={styles.uglyDrawerItem}>Logout
+         {/* <SimpleLineIcons name = 'logout' size = {36} color = '#110133' /> */}
         </Text>
       </View>
     )
@@ -120,11 +88,12 @@ const styles = StyleSheet.create({
   uglyDrawerItem: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#E73536',
+    color: '#110133',
     padding: 15,
     margin: 5,
     borderRadius: 2,
-    borderColor: '#E73536',
+    // borderColor: '#E73536',
+    borderColor : '#110133',
     borderWidth: 1,
     textAlign: 'center'
   }

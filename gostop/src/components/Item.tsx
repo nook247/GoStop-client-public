@@ -1,79 +1,70 @@
 import React, { Component } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { connect } from 'react-redux';
-import { imagechange, imagechange1, imagechange2, imagechange3 } from '../actions';
+import { imagechange, imagechange1, imagechange2 } from '../actions/';
+import Characterinfo from '../components/characterinfo';
 
-// tslint:disable-next-line: prefer-const
-let database;
-
-class Main extends Component<any, any> {
+class Item extends Component<any, any, any> {
 
   constructor(props, context) {
     super(props, context);
 
-    // console.log(this.props.uri1);
-    this.state = {
-      heads: [],
-      tops: [],
-      pantss: [],
-      pets: [],
-    };
   }
 
-  public componentDidMount() {
-    fetch('https://application-mock-server.localtunnel.meitems').then((res) => {
-      console.log(res);
-      if (res.status === 200 || res.status === 201) {
-        // tslint:disable-next-line: ter-arrow-parens
-        res.json().then(data => {
-          console.log(data);
-          this.setState({ heads: data });
-          // console.log(this.state);
-        });
-      }else {
-        console.error(res.statusText);
-      }
-    }).catch(err => console.error(err));
+  // public componentDidMount() {
+  //   fetch(`{fakeserver}/items`).then((res) => {
+  //     console.log(res);
+  //     if (res.status === 200 || res.status === 201) {
+  //       // tslint:disable-next-line: ter-arrow-parens
+  //       res.json().then(data => {
+  //         console.log(data);
+  //         this.setState({ heads: data });
+  //         // console.log(this.state);
+  //       });
+  //     }else {
+  //       console.error(res.statusText);
+  //     }
+  //   }).catch(err => console.error(err));
 
-    fetch('https://application-mock-server.localtunnel.meitems').then((res) => {
-      if (res.status === 200 || res.status === 201) {
-        // tslint:disable-next-line: ter-arrow-parens
-        res.json().then(data => {
-          console.log(data);
-          this.setState({ tops: data });
-          // console.log(this.state);
-        });
-      }else {
-        console.error(res.statusText);
-      }
-    }).catch(err => console.error(err));
+  //   fetch(`{fakeserver}/items`).then((res) => {
+  //     if (res.status === 200 || res.status === 201) {
+  //       // tslint:disable-next-line: ter-arrow-parens
+  //       res.json().then(data => {
+  //         console.log(data);
+  //         this.setState({ tops: data });
+  //         // console.log(this.state);
+  //       });
+  //     }else {
+  //       console.error(res.statusText);
+  //     }
+  //   }).catch(err => console.error(err));
 
-    fetch('https://application-mock-server.localtunnel.meitems').then((res) => {
-      if (res.status === 200 || res.status === 201) {
-        // tslint:disable-next-line: ter-arrow-parens
-        res.json().then(data => {
-          console.log(data);
-          this.setState({ pantss: data });
-          // console.log(this.state);
-        });
-      }else {
-        console.error(res.statusText);
-      }
-    }).catch(err => console.error(err));
+  //   fetch(`{fakeserver}/items`).then((res) => {
+  //     if (res.status === 200 || res.status === 201) {
+  //       // tslint:disable-next-line: ter-arrow-parens
+  //       res.json().then(data => {
+  //         console.log(data);
+  //         this.setState({ pantss: data });
+  //         // console.log(this.state);
+  //       });
+  //     }else {
+  //       console.error(res.statusText);
+  //     }
+  //   }).catch(err => console.error(err));
 
-    fetch('https://application-mock-server.localtunnel.meitems').then((res) => {
-      if (res.status === 200 || res.status === 201) {
-        // tslint:disable-next-line: ter-arrow-parens
-        res.json().then(data => {
-          console.log(data);
-          this.setState({ pets: data });
-          // console.log(this.state);
-        });
-      }else {
-        console.error(res.statusText);
-      }
-    }).catch(err => console.error(err));
-  }
+  //   fetch(`{fakeserver}/items`).then((res) => {
+  //     if (res.status === 200 || res.status === 201) {
+  //       // tslint:disable-next-line: ter-arrow-parens
+  //       res.json().then(data => {
+  //         console.log(data);
+  //         this.setState({ pets: data });
+  //         // console.log(this.state);
+  //       });
+  //     }else {
+  //       console.error(res.statusText);
+  //     }
+  //   }).catch(err => console.error(err));
+  // }
 
   public render() {
 
@@ -85,31 +76,24 @@ class Main extends Component<any, any> {
             //     <Text style={{ fontSize: 15 }}>빨간색</Text>
             //   </TouchableOpacity>;
             // });
+
     return (
           <View style={s.contain}>
-            {/* {console.log(this.props.uri)} */}
-            <Image
-            style={s.basichead}
-            source={{ uri: this.props.uri }}/>
-            <Image
-            style={s.basictop}
-            source={{ uri: this.props.uri1 }}/>
-            <Image
-            style={s.basicpants}
-            source={{ uri: this.props.uri2 }}/>
-            <Image
-            style={s.basicpet}
-            source={{ uri: this.props.uri3 }}/>
+            <View style ={{ flex : 7 }}>
+                <Characterinfo/>
+              </View>
+
+          <View style ={{ flex : 23.5 }}>
           <Text style={s.head1}>머리</Text>
           <View style={s.container} >
 
-            {this.state.heads.map((head, index) => {
+            {this.props.heads.map((head, index) => {
               // tslint:disable-next-line: no-unused-expression
-              // console.log(index);
-              // console.log(head.uri);
-              return <TouchableOpacity style={s.red} key={index}
-              onPress = {() => { this.props.imagechange(head.uri); }}>
-                <Text style={{ fontSize: 15 }}>빨간색</Text>
+              // console.log('가지고옴', head);
+              return <TouchableOpacity key={index}
+              onPress = {() => { this.props.imagechange(head); }}>
+                {/* <Text style={{ fontSize: 15 }}> 착용 </Text> */}
+                <Image key={index} style={s.pink} source={{ uri: head }}/>
               </TouchableOpacity>;
             })}
 
@@ -131,13 +115,14 @@ class Main extends Component<any, any> {
           <Text style={s.head}>상의</Text>
           <View style={s.container}>
 
-          {this.state.tops.map((top, index) => {
+          {this.props.tops.map((top, index) => {
               // tslint:disable-next-line: no-unused-expression
               // console.log(index);
-              // console.log(head.uri);
-            return <TouchableOpacity style={s.yellow} key={index}
-              onPress = {() => { this.props.imagechange1(top.uri); }}>
-                <Text style={{ fontSize: 15 }}>노란색</Text>
+              // console.log('가지고옴', top);
+            return <TouchableOpacity key={index}
+              onPress = {() => { this.props.imagechange1(top); }}>
+                {/* <Text style={{ fontSize: 15 }}> 착용 </Text> */}
+                <Image key={index} style={s.pink} source={{ uri: top }}/>
               </TouchableOpacity>;
           })}
 
@@ -158,13 +143,14 @@ class Main extends Component<any, any> {
           <Text style={s.head}>하의</Text>
           <View style={s.container}>
 
-          {this.state.pantss.map((pants, index) => {
+          {this.props.pantss.map((pants, index) => {
               // tslint:disable-next-line: no-unused-expression
               // console.log(index);
-              // console.log(head.uri);
-            return <TouchableOpacity style={s.blue} key={index}
-              onPress = {() => { this.props.imagechange2(pants.uri); }}>
-                <Text style={{ fontSize: 15 }}>파란색</Text>
+              // console.log('가지고옴', pants);
+            return <TouchableOpacity key={index}
+              onPress = {() => { this.props.imagechange2(pants); }}>
+                {/* <Text style={{ fontSize: 15 }}> 착용 </Text> */}
+                <Image key={index} style={s.pink} source={{ uri: pants }}/>
               </TouchableOpacity>;
           })}
 
@@ -182,19 +168,6 @@ class Main extends Component<any, any> {
             </TouchableOpacity> */}
           </View>
 
-          <Text style={s.head}>펫</Text>
-          <View style={s.container}>
-
-          {this.state.pets.map((pet, index) => {
-              // tslint:disable-next-line: no-unused-expression
-              // console.log(index);
-              // console.log(head.uri);
-            return <TouchableOpacity style={s.gray} key={index}
-              onPress = {() => { this.props.imagechange3(pet.uri); }}>
-                <Text style={{ fontSize: 15 }}>진회색</Text>
-              </TouchableOpacity>;
-          })}
-
           {/* <TouchableOpacity style={s.pet1}
             onPress = {() => { this.props.imagechange3(database.pet[0].uri); }}>
               <Text style={{ fontSize: 15 }}>주황몬</Text>
@@ -208,7 +181,6 @@ class Main extends Component<any, any> {
               <Text style={{ fontSize: 15 }}>파랑몬</Text>
             </TouchableOpacity> */}
           </View>
-
           </View>
     );
   }
@@ -216,7 +188,12 @@ class Main extends Component<any, any> {
 
 const s = StyleSheet.create({
   contain:{
-    marginTop: 30,
+    borderWidth: 1,
+    borderColor: 'black',
+    // backgroundColor : '#110133',
+    flex: 1,
+    width : '100%',
+
   },
   container: {
     marginTop: 5,
@@ -224,83 +201,30 @@ const s = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  pink: {
+    marginLeft: 25,
+    backgroundColor: 'white',
+    padding: 20,
+    height: 30,
+    width: 50,
+    resizeMode:'contain',
+    alignItems: 'center',
+  },
   red: {
     marginLeft: 10,
-    backgroundColor: 'red',
-    padding: 10,
-    borderRadius: 20,
-  },
-  yellow: {
-    marginLeft: 30,
-    backgroundColor: 'yellow',
-    padding: 10,
-    borderRadius: 20,
-  },
-  blue: {
-    marginLeft: 30,
-    backgroundColor: 'blue',
-    padding: 10,
-    borderRadius: 20,
-  },
-  gray: {
-    marginLeft: 30,
-    backgroundColor: 'gray',
-    padding: 10,
+    padding: 5,
+    backgroundColor: 'white',
     borderRadius: 20,
   },
   head: {
-    marginLeft: 15,
+    marginLeft: 25,
+    marginTop: 20,
   },
   head1: {
-    marginLeft: 15,
-    marginTop: 300,
+    marginLeft: 25,
+    marginTop: 70,
   },
-  pet1: {
-    marginLeft: 10,
-    backgroundColor: 'gray',
-    padding: 10,
-    borderRadius: 20,
-  },
-  pet2: {
-    marginLeft: 30,
-    backgroundColor: 'gray',
-    padding: 10,
-    borderRadius: 20,
-  },
-  pet3: {
-    marginLeft: 30,
-    backgroundColor: 'gray',
-    padding: 10,
-    borderRadius: 20,
-  },
-  basichead: {
-    marginTop: '-5%',
-    marginLeft: '9%',
-    marginBottom: '-5%',
-    height:'10%',
-    width:'10%',
-    resizeMode:'contain',
-  },
-  basictop: {
-    marginLeft: '9%',
-    height:'10%',
-    width:'11%',
-    resizeMode:'contain',
-  },
-  basicpants: {
-    marginLeft: '9%',
-    marginBottom: '-3%',
-    height:'7%',
-    width:'8%',
-    resizeMode:'contain',
-  },
-  basicpet: {
-    marginLeft: '9%',
-    marginBottom: '-70%',
-    height:'10%',
-    width:'11%',
-    resizeMode:'contain',
-  },
+
 });
 
 const mapDispatchToProps = (dispatch) => {
@@ -309,7 +233,6 @@ const mapDispatchToProps = (dispatch) => {
     imagechange : (uri: any) => dispatch(imagechange(uri)),
     imagechange1 : (uri1: any) => dispatch(imagechange1(uri1)),
     imagechange2 : (uri2: any) => dispatch(imagechange2(uri2)),
-    imagechange3 : (uri3: any) => dispatch(imagechange3(uri3)),
   };
 };
 
@@ -318,8 +241,11 @@ function mapStateToProps(state) {
     uri: state.changeReducer.uri,
     uri1: state.changeReducer1.uri1,
     uri2: state.changeReducer2.uri2,
-    uri3: state.changeReducer3.uri3,
+    heads: state.additem.heads,
+    tops: state.additem1.tops,
+    pantss: state.additem2.pantss,
+
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Main);
+export default connect(mapStateToProps, mapDispatchToProps)(Item);

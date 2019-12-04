@@ -1,4 +1,4 @@
-import { COINCHANGE, FETCH_CHARACTERINFO, FETCH_HABITSINFO, HabitsAction, HEALTHCHANGE, POINTCHANGE, SET_DIFF } from '../actions/characterinfoaction';
+import { COINCHANGE, FETCH_CHARACTERINFO, FETCH_HABITSINFO, HabitsAction, HEALTHCHANGE, POINTCHANGE} from '../actions/characterinfoaction';
 import fakeserver from '../fakeserver';
 
 export interface HabitsState {
@@ -92,14 +92,14 @@ const changepointreducer = (state : HabitsState = initialState, action : HabitsA
   //       healthvalue : state.healthvalue - action.value,
   //     });
 
-    case FETCH_CHARACTERINFO:
-      return Object.assign({}, state, {
-        name : action.name,
-        healthvalue : action.healthvalue,
-        pointsvalue : action.pointsvalue,
-        coinsvalue : action.coinsvalue,
-        level : action.level,
-      });
+    // case FETCH_CHARACTERINFO:
+    //   return Object.assign({}, state, {
+    //     name : action.name,
+    //     healthvalue : action.healthvalue,
+    //     pointsvalue : action.pointsvalue,
+    //     coinsvalue : action.coinsvalue,
+    //     level : action.level,
+    //   });
 
     default:
       return state;

@@ -1,13 +1,13 @@
 import { SAVETODOS, Todos, TodosAction, Todosarr } from '../actions/todosaction';
 
 const initialtodos : Todos = {
-  id : 'id',
-  title : 'title',
-  description : 'description',
+  id : '',
+  title : '제목을 입력하세요',
+  description : '설명을 입력하세요',
   // alarmId : 'alamId',
   difficulty : 1,
-  dateStart : '2019-11-28',
-  dateEnd : '2019-12-01',
+  dateStart : '2000-01-01',
+  dateEnd : '2999-12-31',
   completed : false,
 };
 
