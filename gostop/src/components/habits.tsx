@@ -1,19 +1,14 @@
 import React, { Component } from 'react';
-import { AsyncStorage, StyleSheet, Text, TouchableOpacity, View, Button, ScrollView } from 'react-native';
+import { AsyncStorage, StyleSheet, Text, TouchableOpacity, View, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 import { coinchange, healthchange, pointchange } from '../actions/characterinfoaction';
 import fakeserver from '../fakeserver';
 import Characterinfo from './characterinfo';
 import  savehabit  from '../actions/habitaction';
 import { getuser } from '../actions/getuseraction';
-// import Icon from 'react-native-ionicons';
-import AntDesign from '@expo/vector-icons/AntDesign'
-import {Ionicons} from "@expo/vector-icons";
-import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Entypo from '@expo/vector-icons/Entypo';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import Signin from './Signin';
-
 
 export interface Habit {
   id : string;
@@ -40,15 +35,46 @@ class Habits extends Component<any, habitsStates> {
     super(props);
   }
 
+  async getrefreshtoken () {
+    let refreshtoken = '';
+    await AsyncStorage.getItem('refreshtoken', (err, result) => {
+      refreshtoken = result;
+    });
+    const myInit = {
+      method : 'POST',
+      headers : {
+        'Content-Type' : 'application/json',
+      },
+      body : JSON.stringify(
+        { refreshToken : refreshtoken },
+      ),
+    };
 
-async getdata(){
+    fetch(`${fakeserver}/auth/refresh`, myInit)
+    .then((res) => {
+      console.log('리프레시 요청보내고 나서 받은 헤더야!!, 새로운 토큰 들어있니?', res.headers['map']['set-cookie']);
+      const newcookie = res.headers['map']['set-cookie'];
+      if (res.status === 200 || res.status === 201) {
+        res.json()
+        .then(async (data) => {
+          await this.props.getuser(data._id, data.email, data.name, data.userCode, data.level, data.health, data.point, data.coin, newcookie);
+          AsyncStorage.setItem('token', newcookie);
+        });
+      }
+    })
+    .catch((err) => {
+      console.log('refresh request failed!', err);
+      this.props.navigation.navigate(Signin);
+    });
+  }
+
+  async getdata() {
     let token = '';
     await AsyncStorage.getItem('token', (err, result) => {
-      token = result
-    }
-    )
+      token = result;
+    });
     let header = new Headers();
-    header.append('Cookie', token)
+    header.append('Cookie', token);
     const myInit = {
       method : 'GET',
       headers : header,
@@ -56,64 +82,67 @@ async getdata(){
     }
 
     fetch(`${fakeserver}/users/info`, myInit)
-    .then((res) => {
-      if (res.status === 200 || res.status === 201) {
-        res.json()
-        .then(async (data) => {
-          await this.props.getuser(data._id, data.email, data.name, data.userCode,data.level, data.health, data.point, data.coin, token);
+      .then((res) => {
+        if (res.status === 200 || res.status === 201) {
+          res.json()
+          .then(async (data) => {
+            await this.props.getuser(data._id, data.email, data.name, data.userCode, data.level, data.health, data.point, data.coin, token);
+          })
         }
-        )}}
-        )
-        .catch((err) => {
-          console.log('get userinfo failed!');
-          this.props.navigation.navigate(Signin);
-        });
+      })
+      .catch((err) => {
+        console.log(err)
+        console.log('get request failed!');
+            // this.props.navigation.navigate(Signin);
+      });
 
     fetch(`${fakeserver}/users/habits`, myInit)
-    .then((res) => {
-      if (res.status === 200 || res.status === 201) { 
-        res.json()
-        .then( (data) => {
-          if (!data.habits.length) {
-            // let initState = {
-            //   id : '',
-            //   title : '제목을 입력하세요',
-            //   description : '설명을 입력하세요',
-            //   // alarmId : '',
-            //   difficulty : 3,
-            //   positive : true
-            // };
-            // this.props.savehabit([initState]);
-          } else {
-            const habits = [];
-            data.habits.forEach( element => {
-              const habitobj = {
-                id : element['_id'],
-                title : element['title'],
-                description : element['description'],
-                difficulty : element['difficulty'],
-                positive : element['positive'],
-                // alarmId : element["alarmId"] || '',
-              }
-              habits.push(habitobj);
-            })
-            this.props.savehabit(habits);
+      .then((res) => {
+        if (res.status === 200 || res.status === 201) {
+          res.json()
+          .then((data) => {
+            if (!data.habits.length) {
+              // let initState = {
+              //   id : '',
+              //   title : '제목을 입력하세요',
+              //   description : '설명을 입력하세요',
+              //   // alarmId : '',
+              //   difficulty : 3,
+              //   positive : true
+              // };
+              // this.props.savehabit([initState]);
+            } else {
+              const habits = [];
+              data.habits.forEach((element) => {
+                const habitobj = {
+                  id : element['_id'],
+                  title : element['title'],
+                  description : element['description'],
+                  difficulty : element['difficulty'],
+                  positive : element['positive'],
+                  // alarmId : element["alarmId"] || '',
+                }
+                habits.push(habitobj);
+              })
+              this.props.savehabit(habits);
 
-          }
-        },
+            }
+          },
 
-            );
-      } else {
-        console.error(res.statusText);
-      }
-    }).catch(err => console.error(err));
+              );
+        } else {
+          console.error(res.statusText);
+        }
+      }).catch(err => console.error(err));
 
-}
+  }
 
-public componentDidMount() {
-
-  this.getdata();
-}
+  public async componentDidMount() {
+    this.getrefreshtoken();
+    this.getdata();
+    // AsyncStorage.removeItem('token');
+    // this.props.navigation.navigate('AuthLoading');
+  }
 
   public render() {
 
@@ -124,7 +153,6 @@ public componentDidMount() {
                 <Characterinfo/>
               </View>
 
-
               <View style = {{ flex : 20,  backgroundColor : 'white' }}>
 
                   <ScrollView style={styles.scrollView}>
@@ -133,13 +161,13 @@ public componentDidMount() {
 
                   <View style = {styles.positive}>
                   <TouchableOpacity style={{ backgroundColor:'transparent' }}
-                  onPress = {() => { this.props.pointchange(item.difficulty * 10);
+                  onPress = {() => {
+                    this.props.pointchange(item.difficulty * 10);
                     this.props.coinchange(item.difficulty * 10);
                   }}>
                     <Entypo name = 'circle-with-plus' size = {36} color = 'white' />
                     </TouchableOpacity>
-                    
-              </View>
+                </View>
 
               <View style = {styles.habits}
                       onTouchEnd = {() => {
@@ -163,18 +191,20 @@ public componentDidMount() {
 
                 })
             }
+            <View style = {{ flex : 10, backgroundColor : 'transparent', height : 100 }}>
+            </View>
             </ScrollView>
 
       </View>
 
-      <View style = {styles.addcontainer}>
+      <View style = {{ position: 'absolute', backgroundColor: 'transparent', right: 165, bottom: 10 }}>
           <TouchableOpacity style={styles.addBtn}
               onPress={() => this.props.navigation.navigate('AddHabit')} >
-            <MaterialIcons name = 'playlist-add' size = {52} color = '#110133' />
+            <MaterialIcons name = 'playlist-add' size = {52} color = 'white' />
           </TouchableOpacity>
       </View>
 
-  </View>
+   </View>
     );
   }
 }
@@ -186,7 +216,7 @@ const mapStateToProps = (state) => {
 
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     pointchange : value => dispatch(pointchange(value)),
     coinchange : value => dispatch(coinchange(value)),
@@ -211,6 +241,7 @@ const styles = StyleSheet.create({
   },
   onehabit : {
     flexDirection : 'row',
+    flex : 18,
     // height : 70,
     // width : '100%',
     borderBottomColor : '#F4F4F5',
@@ -236,12 +267,12 @@ const styles = StyleSheet.create({
   habittitle :{
     flex : 1,
     fontSize : 20,
-    color : '#110133',
+    color : 'black',
   },
   habitdesc : {
     flex : 1,
     fontSize : 14,
-    color : '#110133',
+    color : 'silver',
   },
   addcontainer : {
     flex : 2,
@@ -252,7 +283,7 @@ const styles = StyleSheet.create({
     margin : 20,
   },
   addBtn : {
-    backgroundColor:'white',
+    backgroundColor:'#110133',
     marginRight : 15,
     borderRadius : 10,
     borderWidth : 1,

@@ -49,7 +49,7 @@ const getuserreducer = (state : userState = initialState, action : GetuserAction
       var changehealth = state.health;
 
       var levelpoint = 200 + 50 * (state.level - 1);
-      if ( changepoint >= levelpoint) {
+      if (changepoint >= levelpoint) {
         changepoint = changepoint - levelpoint;
         changehealth = 200;
         changelevel = changelevel + 1;
@@ -74,10 +74,11 @@ const getuserreducer = (state : userState = initialState, action : GetuserAction
       .then((res) => {
         if (res.status === 200 || res.status === 201) { // 성공을 알리는 HTTP 상태 코드면
           res.json()
-        .then(() => console.log('point patch 성공'));
+        .then(() => {
+          console.log('point patch 성공');
+        });
         }
       });
-      
       return Object.assign({}, state, pointchangedata,
         );
       

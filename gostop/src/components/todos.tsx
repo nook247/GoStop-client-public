@@ -7,6 +7,7 @@ import fakeserver from '../fakeserver';
 import Characterinfo from './characterinfo';
 import  savetodos  from '../actions/todosaction';
 import { MaterialIcons } from '@expo/vector-icons';
+import { getuser } from '../actions/getuseraction';
 
 export interface Todo {
   id : string;
@@ -54,10 +55,12 @@ class Todos extends Component<any, TodosStates> {
     }
 
     fetch(`${fakeserver}/todos/${item.id}`, myInit)
-    .then((res) => {
+    .then( async (res) => {
       if (res.status === 200 || res.status === 201) {
         res.json()
             .then(() => console.log('checkbox put 성공'));
+      } else if(res.status === 401){
+          console.log('patch 실패?',res.status)
       }
     });
   }
@@ -199,21 +202,15 @@ public todos(item, index){
           <Characterinfo/>
         </View>
 
-      <View style = { { flex : 2, justifyContent : 'space-between', backgroundColor : 'white' } }>
-       <TouchableOpacity style = {{ backgroundColor : 'transparent' }}
-          onPress = {() => {
-            this.setState({
+      <View style = { { flex : 2, flexDirection : 'row', backgroundColor : '#ffdc34', paddingHorizontal : 17, justifyContent : 'space-between' } }>
+      <Text style={styles.buttonText} onPress = {() => {
+              this.setState({
               totallist : true,
             });
-          }}>
-            <Text style = {{ alignSelf : 'center', color : '#110133', fontSize : 18 }}>전체보기</Text>
-         </TouchableOpacity>
+            }}>전체목록</Text>
+        <Text style = {styles.doneText}> 완료 {this.state.completecount}건 미완료 {this.props.todosarr.length - this.state.completecount} 건</Text>
 
-      </View>
-
-      <View  style = {{ flex : 20, backgroundColor : 'white'}}>
-
-          <View onTouchEnd = {() => {
+<View style = {styles.date} onTouchEnd = {() => {
             this.setState({
               totallist : false,
             });
@@ -227,6 +224,11 @@ public todos(item, index){
             >
             <TodoDatePicker />
           </View>
+       
+
+      </View>
+
+      <View  style = {{ flex : 20, backgroundColor : 'white'}}>
 
           <ScrollView style={styles.scrollView}>
 
@@ -244,18 +246,16 @@ public todos(item, index){
 
         }
     })}
-    </ScrollView>
-
-      <View>
-        <Text> 완료 {this.state.completecount}건, 미완료 {this.props.todosarr.length - this.state.completecount} 건</Text>
-      </View>
+            <View style = {{ flex : 10, backgroundColor : 'transparent', height : 100 }}>
+        </View>
+      </ScrollView>
 
       </View>
 
-      <View style = {styles.addcontainer}>
+      <View style = {{ position: 'absolute', backgroundColor: 'transparent', right: 165, bottom: 10 }}>
           <TouchableOpacity style={styles.addBtn}
               onPress={() => this.props.navigation.navigate('AddTodos')} >
-            <MaterialIcons name = 'playlist-add' size = {52} color = '#110133' />
+            <MaterialIcons name = 'playlist-add' size = {52} color = 'white' />
           </TouchableOpacity>
       </View>
 
@@ -280,6 +280,9 @@ const mapDispatchToProps = dispatch => {
     savetodos : (arr) => {
       dispatch(savetodos(arr));
     },
+    getuser : (id, email, name, userCode, level, health, point, coin, token) => {
+      dispatch(getuser(id, email, name, userCode, level, health, point, coin, token))
+    },
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Todos);
@@ -288,6 +291,21 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width : '100%',
+  },
+  doneText : {
+    // flex : 3,
+    color: '#110133',
+    fontSize : 15,
+    fontWeight : 'bold',
+  },
+  buttonText: {
+    // flex : 2,
+    color: '#110133',
+    fontSize: 20,
+    fontWeight : 'bold',
+  },
+  date : {
+    // flex : 1,
   },
   scrollView: {
   },
@@ -318,17 +336,17 @@ const styles = StyleSheet.create({
   habittitle :{
     flex : 1,
     fontSize : 20,
-    color : '#110133',
+    color : 'black',
   },
   tododate : {
     flex : 1,
     fontSize : 14,
-    color : 'silver',
+    color : 'black',
   },
   habitdesc : {
     flex : 1,
     fontSize : 14,
-    color : '#110133',
+    color : 'silver',
   },
   addcontainer : {
     flex : 2,
@@ -339,7 +357,7 @@ const styles = StyleSheet.create({
     margin : 20,
   },
   addBtn : {
-    backgroundColor:'white',
+    backgroundColor:'#110133',
     marginRight : 15,
     borderRadius : 10,
     borderWidth : 1,

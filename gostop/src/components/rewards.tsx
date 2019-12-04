@@ -141,14 +141,16 @@ class Rewards extends Component<any, rewardsStates> {
 
         })
     }
+            <View style = {{ flex : 10, backgroundColor : 'transparent', height : 100 }}>
+            </View>
 
 </ScrollView>
     </View>
 
-    <View style = {styles.addcontainer}>
+    <View style = {{ position: 'absolute', backgroundColor: 'transparent', right: 165, bottom: 10 }}>
           <TouchableOpacity style={styles.addBtn}
               onPress={() => this.props.navigation.navigate('AddReward')} >
-            <MaterialIcons name = 'playlist-add' size = {52} color = '#110133' />
+            <MaterialIcons name = 'playlist-add' size = {52} color = 'white' />
           </TouchableOpacity>
       </View>
             </View>
@@ -207,12 +209,12 @@ const styles = StyleSheet.create({
   habittitle :{
     flex : 1,
     fontSize : 20,
-    color : '#110133',
+    color : 'black',
   },
   habitdesc : {
     flex : 1,
     fontSize : 14,
-    color : '#110133',
+    color : 'silver',
   },
   coin : {
     fontSize : 20,
@@ -228,7 +230,7 @@ const styles = StyleSheet.create({
     margin : 20,
   },
   addBtn : {
-    backgroundColor:'white',
+    backgroundColor:'#110133',
     marginRight : 15,
     borderRadius : 10,
     borderWidth : 1,
