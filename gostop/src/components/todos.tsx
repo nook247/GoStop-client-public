@@ -83,15 +83,17 @@ class Todos extends Component<any, TodosStates> {
         .then(data => {
 
           if(!data.todos.length){
-          //   let initState = {
-          //     id : '',
-          //     title : '제목을 입력하세요',
-          //     desc : '설명을 입력하세요',
-          //     alarm : true,
-          //     completed : true,
-          //     difficulty : 3,
-          //   }
-          // this.props.savetodos([initState]);
+            let initState = {
+            id : '',
+            title : '제목을 입력하세요',
+            description : '설명을 입력하세요',
+            // alarmId : 'alamId',
+            difficulty : 1,
+            dateStart : '2000-01-01',
+            dateEnd : '2999-12-31',
+            completed : false,
+            }
+          this.props.savetodos([initState]);
           } else {
             const todos = [];
             data.todos.forEach( element => {

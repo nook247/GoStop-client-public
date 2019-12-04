@@ -46,13 +46,14 @@ class Rewards extends Component<any, rewardsStates> {
         .then(data => {
 
           if(!data.rewards.length){
-          //   let initState = {
-          //     id : '',
-          //     title : '제목을 입력하세요',
-          //     desc : '설명을 입력하세요',
-          //     coin : 10,
-          //   }
-          // this.props.savereward([initState]);
+            let initState = {
+            id : 'id',
+            title : '제목을 입력하세요',
+            description : '설명을 입력하세요',
+            // alarmId : 'alamId',
+            coin : 30,
+            }
+          this.props.savereward([initState]);
           } else {
             const rewards = [];
             data.rewards.forEach( element => {
@@ -108,6 +109,9 @@ class Rewards extends Component<any, rewardsStates> {
 
       <TouchableOpacity style={{ justifyContent : 'center', alignItems : 'center'  ,backgroundColor:'transparent' }}
       onPress = {() => { 
+        if(this.props.coinsvalue < item.coin){
+          alert('코인이 부족하여 선택한 보상을 구매할 수 없습니다');
+        } else {
         console.log('보상 구매했니?')
         Alert.alert(
           '보상을 구매하시겠습니까?',
@@ -126,6 +130,7 @@ class Rewards extends Component<any, rewardsStates> {
           ],
           {cancelable: false},
         );
+        }
         }}
       >
         <Text style = {styles.coin}>{item.coin}</Text>
@@ -161,6 +166,7 @@ class Rewards extends Component<any, rewardsStates> {
 const mapStateToProps = (state) => {
   return {
     rewardarr : state.rewardreducer.rewardarr,
+    coinsvalue : state.getuserreducer.coin,
   };
 };
 
