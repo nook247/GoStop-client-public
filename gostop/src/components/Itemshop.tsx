@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { connect } from 'react-redux';
-import { imagechange, imagechange1, imagechange2, imagechange3 } from '../Actions/';
-import { coinchange } from '../Actions/characterinfoaction';
+import { imagechange, imagechange1, imagechange2, imagechange3 } from '../actions';
+import { coinchange } from '../actions/characterinfoaction';
 
 // tslint:disable-next-line: prefer-const
 let database;

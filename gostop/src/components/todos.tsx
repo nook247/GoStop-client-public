@@ -126,17 +126,21 @@ class Todos extends Component<any, TodosStates> {
   }
 
   public calculus(date){
+    //console.log('데이터 어디서 오는지? : ', date)
 
+    if (date) {  // date null 아닐 때만
     var yyyy = date.substr(0,4);
     var mm = date.substr(5,2);
     var dd = date.substr(8,2);
+    
 
     var resultdate = new Date(yyyy, mm-1, dd);
     return resultdate;
+    }
   }
 
 public todos(item){ 
-  return  <View style = {styles.onehabit} key = {item.description}>
+  return  <View style = {styles.onehabit} key = {item.title}>
 
   <View style = {styles.positive}>
   <CheckBox

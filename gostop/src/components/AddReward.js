@@ -1,12 +1,15 @@
 import React, { Component } from "react";
-import { TextInput, Text, StyleSheet, View, Button, TouchableOpacity,
-TouchableHighlight, AsyncStorage } from "react-native";
+import { View, AsyncStorage } from "react-native";
 import { readBuilderProgram } from "typescript";
 import { connect } from 'react-redux';
 import savereward from '../actions/rewardaction'
 import fakeserver from '../fakeserver'
+import styles from './cssStyles'
 
-// this.props.rewardsarr , this.props.savereward()
+import AddOrModifyButton from './commonComponents/AddOrModifyButton'
+import ResetButton from './commonComponents/ResetButton'
+import CoinSection from './commonComponents/CoinSection'
+import ContentsSection from "./commonComponents/ContentsSection";
 
 class AddReward extends Component {
     constructor(props) {
@@ -18,9 +21,7 @@ class AddReward extends Component {
         }        
     }
 
-    clearText = () => {
-        this._titleInput.setNativeProps({text: ''});
-        this._contentsInput.setNativeProps({text: ''})        
+    clearText = () => {    
         this.setState({
             title: '',
             description: '',
@@ -28,17 +29,16 @@ class AddReward extends Component {
         })
     }
 
-    sendData = async() => {   // 수정 요망
+    sendData = async() => {   
         let reward = this.state;        
         let arr = this.props.rewardarr
-        console.log('원래 state : ', arr)
+       
         if (arr) {
             this.props.savereward([...arr, reward])
         }
         else {
             this.props.savereward([reward])
         }
-        //this.props.savereward([...arr, reward])
         
         let token = '';
         await AsyncStorage.getItem('token', (err, result) => {
@@ -65,81 +65,46 @@ class AddReward extends Component {
         return (
             <View style={styles.mainContainer}>
 
-                <View style={styles.subContainer}>
-                
-                <View style={styles.InputContainer}>            
-                    <Text>제목 : </Text>
-                    <TextInput style={styles.Input} placeholder='Reward'
-                    ref={component => this._titleInput = component}
-                    onChangeText={(text) => 
-                        { this.setState({title: text})
-                          
-                    }}/>
-                </View>
-                
-                <View style={styles.InputContainer}>
-                    <Text>내용 : </Text>
-                    <TextInput style={styles.Input} placeholder='Contents'
-                    ref={component => this._contentsInput = component}  
-                    onChangeText={(text) => 
-                        { this.setState({description: text})
-                          
-                    }}/>
-                </View>
+                <ContentsSection 
+                    titleDefaultValue={this.state.title}
+                    onChangeTitle={(text) =>                         
+                        { this.setState({ title: text })
+                    }}
+                    onChangeContents={(text) =>                         
+                        { this.setState({ description: text })
+                    }}
+                    TextAreaDefaultValue={this.state.description}
+                    category={'Reward'}
+                />
+
+                <CoinSection coin={this.state.coin}
+                    onPressFunction={(coin) => 
+                        { this.setState({ coin: coin })
+                    }} 
+                />
 
                 <View style={styles.ButtonContainer}>
-                    <Text>코인 : </Text>
-                    <TouchableHighlight
-                    style={
-                        this.state.coin === 10 ? 
-                        styles.buttonSelected :styles.buttonStyle} activeOpacity={0.5}
-                    onPress={() => { this.setState({coin: 10}) }} >
-                    <Text style={styles.textStyle}>10</Text>
-                    </TouchableHighlight>
+                    <AddOrModifyButton addOrModify='add'
+                    func={this.sendData} category='Reward'
+                    navigation={this.props.navigation}/>
 
-                    <TouchableHighlight
-                    style={
-                        this.state.coin === 20 ? 
-                        styles.buttonSelected :styles.buttonStyle} activeOpacity={0.5}
-                    onPress={() => { this.setState({coin: 20}) }} >
-                    <Text style={styles.textStyle}>20</Text>
-                    </TouchableHighlight>
-
-                    <TouchableHighlight
-                    style={
-                        this.state.coin === 30 ? 
-                        styles.buttonSelected :styles.buttonStyle} activeOpacity={0.5}
-                    onPress={() => { this.setState({coin: 30})}} >
-                    <Text style={styles.textStyle}>30</Text>
-                    </TouchableHighlight>            
+                    <ResetButton clearText={this.clearText} /> 
+                    
                 </View>
 
-                <TouchableOpacity
-                    style={styles.addButton} activeOpacity={0.5}
-                    onPress={() => {
-                        this.sendData();
-                        alert("추가되었습니다")
-                        this.props.navigation.navigate('Reward')
-                    }} >
-                    <Text style={styles.textStyle}>추가</Text>
-                </TouchableOpacity>  
-
-            </View>
             </View>
         )
     }
 }
 
-//export default AddReward;
-
+// store 조회
 const mapStateToProps = (state) => {  
-    //console.log('state 나와', state)
     return {
       rewardarr : state.rewardreducer.rewardarr
     }
 }  
 
-// 데이터 수정하기
+// store 변경
 const mapDispatchToProps = dispatch => {
     return {      
       savereward : (arr) => {
@@ -149,69 +114,3 @@ const mapDispatchToProps = dispatch => {
 };
   
 export default connect(mapStateToProps, mapDispatchToProps)(AddReward);
-
-
-const styles = StyleSheet.create({
-    mainContainer: {
-        flex:1,
-        margin: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderColor: 'blue',
-        borderWidth:2
-    },
-    subContainer: {
-        borderColor: 'black',
-        borderWidth:2
-    },
-    sideBar: {
-        padding: 10,
-        backgroundColor: "#fcba03",
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: "#fff",
-        alignItems: 'center',
-        alignSelf: 'flex-start',
-        width: 'auto'
-    },
-    InputContainer: {
-        flexDirection: 'row',
-        marginTop: 10
-    },
-    Input: {
-        width: 200,
-        height: 30,
-        borderColor: 'gray',
-        borderWidth: 1
-    },
-    ButtonContainer: {        
-        flexDirection: 'row',        
-    },
-    buttonStyle: {
-        marginLeft: 20,
-        paddingLeft: 10,
-        paddingRight: 10,
-        backgroundColor: "#fcba03",
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: "#fff"
-    },
-    buttonSelected: {
-        marginLeft: 20,
-        paddingLeft: 10,
-        paddingRight: 10,
-        backgroundColor: "#ff5500",
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: "#fff"
-    },
-    addButton: {
-        padding: 5,
-        backgroundColor: "#fcba03",
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: "#fff",
-        alignItems: 'center',
-        width: 60
-    }
-})
