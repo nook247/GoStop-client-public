@@ -18,7 +18,11 @@ import DeleteButton from './commonComponents/DeleteButton'
 import DifficultySection from './commonComponents/DifficultySection'
 import ContentsSection from "./commonComponents/ContentsSection";
 
-class ModifyTodos extends Component {
+class ModifyTodos extends Component<any, any> {
+    todoIdToModify: any;
+    dataToModify: any;
+    title: any;
+    TimePicker: any;
     constructor(props) {
         super(props);
         this.state = {
@@ -184,32 +188,58 @@ class ModifyTodos extends Component {
                         let todoData = data.todos.filter(element => element.title === this.props.navigation.state.params.title)
                         this.todoIdToModify = todoData[0]["_id"]
 
-                        const myInit = {
-                            method : 'PATCH',
-                            body: JSON.stringify(todo),
-                            headers : header,
-                            Cookie : token
-                        }        
-                
-                        fetch(`${fakeserver}/todos/${this.todoIdToModify}`, myInit)
-                        .then(res => console.log(res))
-                        .catch(error => console.error('Error : ', error));
+                        if (method === 'DELETE') {
+                            let myInit = {
+                                method : 'DELETE',
+                                headers : header,
+                                Cookie : token
+                            }        
+                    
+                            fetch(`${fakeserver}/todos/${this.todoIdToModify}`, myInit)
+                            .then(res => console.log(res))
+                            .catch(error => console.error(error));
+                        }
+                        else {
+                            let myInit = {
+                                method : 'PATCH',
+                                body: JSON.stringify(todo),
+                                headers : header,
+                                Cookie : token
+                            }        
+                    
+                            fetch(`${fakeserver}/todos/${this.todoIdToModify}`, myInit)
+                            .then(res => console.log(res))
+                            .catch(error => console.error(error));
+                        }
                     })
 
                 }
             })
         }
         else {
-            const myInit = {
-                method : 'PATCH',
-                body: JSON.stringify(todo),
-                headers : header,
-                Cookie : token
-            }        
-    
-            fetch(`${fakeserver}/todos/${this.todoIdToModify}`, myInit)
-            .then(res => console.log(res))
-            .catch(error => console.error('Error : ', error));
+            if (method === 'DELETE') {
+                let myInit = {
+                    method : 'DELETE',
+                    headers : header,
+                    Cookie : token
+                }        
+        
+                fetch(`${fakeserver}/todos/${this.todoIdToModify}`, myInit)
+                .then(res => console.log(res))
+                .catch(error => console.error(error));
+            }
+            else {
+                let myInit = {
+                    method : 'PATCH',
+                    body: JSON.stringify(todo),
+                    headers : header,
+                    Cookie : token
+                }        
+        
+                fetch(`${fakeserver}/todos/${this.todoIdToModify}`, myInit)
+                .then(res => console.log(res))
+                .catch(error => console.error('Error : ', error));
+            }
         }
     }
 
@@ -279,18 +309,19 @@ class ModifyTodos extends Component {
                             this.TimePicker = ref;
                         }}
                         onCancel={() => this.onCancel()}
-                        onConfirm={(hour, minute) => {
-                            this.onConfirm(hour, minute);
-                            this.alarmOn();
-                        }}
+                        // onConfirm={(hour, minute) => {
+                        //     this.onConfirm(hour, minute);
+                        //     this.alarmOn();
+                        // }}
+                        itemStyle={{ backgroundColor: 'lightgrey', marginLeft: 0, paddingLeft: 15 }}
                     />
                 </View>
 
                 <View style={styles.componentsContainer}>
                     <Text style={styles.titleStyle}>Date</Text>
-                    <DatePicker setDate={this.setDate} startOrEnd='Start' 
+                    <DatePicker startOrEnd='Start' 
                     forModify={this.state.todo.dateStart.toString().slice(0,10)}/>
-                    <DatePicker setDate={this.setDate} startOrEnd='End' 
+                    <DatePicker startOrEnd='End' 
                     forModify={this.state.todo.dateEnd.toString().slice(0,10)}/>
                 </View>
                 

@@ -12,7 +12,10 @@ import DeleteButton from './commonComponents/DeleteButton'
 import CoinSection from './commonComponents/CoinSection'
 import ContentsSection from "./commonComponents/ContentsSection";
 
-class ModifyReward extends Component {
+class ModifyReward extends Component<any, any> {
+    rewardIdToModify: any;
+    title: any;
+    dataToModify: any;
     constructor(props) {
         super(props);
         this.state = {
@@ -89,32 +92,58 @@ class ModifyReward extends Component {
                         let rewardData = data.rewards.filter(element => element.title === this.props.navigation.state.params.title)
                         this.rewardIdToModify = rewardData[0]["_id"]
 
-                        const myInit = {
-                            method : 'PATCH',
-                            body: JSON.stringify(reward),
-                            headers : header,
-                            Cookie : token
-                        }        
-                
-                        fetch(`${fakeserver}/rewards/${this.rewardIdToModify}`, myInit)
-                        .then(res => console.log(res))
-                        .catch(error => console.error('Error : ', error));
+                        if (method === 'DELETE') {
+                            let myInit = {
+                                method : 'DELETE',
+                                headers : header,
+                                Cookie : token
+                            }        
+                    
+                            fetch(`${fakeserver}/todos/${this.rewardIdToModify}`, myInit)
+                            .then(res => console.log(res))
+                            .catch(error => console.error(error));
+                        }
+                        else {
+                            let myInit = {
+                                method : 'PATCH',
+                                body: JSON.stringify(reward),
+                                headers : header,
+                                Cookie : token
+                            }        
+                    
+                            fetch(`${fakeserver}/rewards/${this.rewardIdToModify}`, myInit)
+                            .then(res => console.log(res))
+                            .catch(error => console.error('Error : ', error));
+                        }
                     })
 
                 }
             })
         }
         else {
-            const myInit = {
-                method : 'PATCH',
-                body: JSON.stringify(reward),
-                headers : header,
-                Cookie : token
-            }        
-    
-            fetch(`${fakeserver}/rewards/${this.rewardIdToModify}`, myInit)
-            .then(res => console.log(res))
-            .catch(error => console.error('Error : ', error));
+            if (method === 'DELETE') {
+                let myInit = {
+                    method : 'DELETE',
+                    headers : header,
+                    Cookie : token
+                }        
+        
+                fetch(`${fakeserver}/rewards/${this.rewardIdToModify}`, myInit)
+                .then(res => console.log(res))
+                .catch(error => console.error(error));
+            }
+            else {
+                let myInit = {
+                    method : 'PATCH',
+                    body: JSON.stringify(reward),
+                    headers : header,
+                    Cookie : token
+                }        
+        
+                fetch(`${fakeserver}/rewards/${this.rewardIdToModify}`, myInit)
+                .then(res => console.log(res))
+                .catch(error => console.error('Error : ', error));
+            }
         }
     }
 

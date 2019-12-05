@@ -11,27 +11,56 @@ import styles from './cssStyles'
 
 import AddOrModifyButton from './commonComponents/AddOrModifyButton'
 import ResetButton from './commonComponents/ResetButton'
+import DeleteButton from './commonComponents/DeleteButton'
 import DifficultySection from './commonComponents/DifficultySection'
 import PositiveSection from './commonComponents/PositiveSection'
 import ContentsSection from "./commonComponents/ContentsSection";
 
-class AddHabit extends Component {
+class ModifyHabit extends Component<any, any> {
+    habitIdToModify: any;
+    title: any;
+    dataToModify: any;
+    TimePicker: any;
     constructor(props) {
         super(props);
         this.state = {
             habit: {
                 title: '',
                 description: '',
-                difficulty: '',            
-                completed: true,
-                positive: ''
+                difficulty: '',     
+                completed: true,       
+                positive: true
             },
             alarmTime : {
                 status: false,
                 time: '',
                 dayOfWeek: ''
             }
-        }     
+        }    
+        this.habitIdToModify;
+        this.title;
+        this.dataToModify;
+    }
+
+    componentDidMount() {
+        this.title = this.props.navigation.state.params.title
+        let dataToModify = this.props.habitarr.filter(
+            element => element.title === this.props.navigation.state.params.title
+        )
+        this.dataToModify = dataToModify[0]
+
+        let { title, description, completed, difficulty, positive } = dataToModify[0] 
+
+        this.setState({
+            habit: {
+                title,
+                description,                
+                difficulty,
+                completed, 
+                positive
+            }
+        })   
+        this.habitIdToModify = dataToModify[0]["id"]
     }
 
     onCancel() {
@@ -86,13 +115,13 @@ class AddHabit extends Component {
         })
     }
 
-    clearText = () => {   
+    clearText = () => {     
         this.setState({
             habit: {
                 title: '',
                 description: '',
+                alarmId: this.state.habit.alarmId,
                 difficulty: '',
-                completed: true,
                 positive: ''
             },
             alarmTime: {
@@ -102,61 +131,130 @@ class AddHabit extends Component {
             }
         })
     }
-      
-    sendData = async() => {  
-        let habit = this.state.habit     
-        let arr = this.props.habitarr       
-        this.props.savehabit([...arr, habit])
-        
+
+    EditData = async(method) => {  
+        let habit = this.state.habit;
+        let arr = this.props.habitarr
+
+        for (let i=0; i<arr.length; i++) {
+            if (arr[i]["title"] === this.title) {
+                if (method === 'DELETE') {
+                    arr.splice(i, 1)
+                }
+                else {
+                    arr[i] = habit;
+                }
+                break;
+            }
+        }
+
+        this.props.savehabit([...arr])
+
         let token = '';
         await AsyncStorage.getItem('token', (err, result) => {
             token = result
         })
-
         let header = new Headers();
         header.append('Cookie', token)
         header.append('Content-Type', 'application/json')
 
-        const myInit = {
-            method : 'POST',
-            body: JSON.stringify(habit),
+        const getInit = {
+            method : 'GET',
             headers : header,
             Cookie : token
         }
+       
+        if (this.habitIdToModify === undefined) {
+            fetch(`${fakeserver}/users/habits`, getInit)
+            .then((res) => {
+                if (res.status === 200 || res.status === 201) {
+                    res.json().then((data) => {
+                        let habitData = data.habits.filter(element => element.title === this.props.navigation.state.params.title)
+                        this.habitIdToModify = habitData[0]["_id"]
 
-        fetch(`${fakeserver}/habits`, myInit)
-        .then(res => console.log(res))
-        .catch(error => console.error(error));
+                        if (method === 'DELETE') {
+                            let myInit = {
+                                method : 'DELETE',
+                                headers : header,
+                                Cookie : token
+                            }        
+                    
+                            fetch(`${fakeserver}/habits/${this.habitIdToModify}`, myInit)
+                            .then(res => console.log(res))
+                            .catch(error => console.error(error));
+                        }
+                        else {
+                            let myInit = {
+                                method : 'PATCH',
+                                body: JSON.stringify(habit),
+                                headers : header,
+                                Cookie : token
+                            }        
+                    
+                            fetch(`${fakeserver}/habits/${this.habitIdToModify}`, myInit)
+                            .then(res => console.log(res))
+                            .catch(error => console.error(error));
+                        }
+                    })
+
+                }
+            })
+        }
+        else {            
+            if (method === 'DELETE') {
+                let myInit = {
+                    method : 'DELETE',
+                    headers : header,
+                    Cookie : token
+                }        
+        
+                fetch(`${fakeserver}/habits/${this.habitIdToModify}`, myInit)
+                .then(res => console.log(res))
+                .catch(error => console.error(error));
+            }
+            else {
+                let myInit = {
+                    method : 'PATCH',
+                    body: JSON.stringify(habit),
+                    headers : header,
+                    Cookie : token
+                }        
+        
+                fetch(`${fakeserver}/habits/${this.habitIdToModify}`, myInit)
+                .then(res => console.log(res))
+                .catch(error => console.error(error));
+            }
+        }
     }
 
     render() {
         return (
-            <View style={styles.mainContainer}>  
-            <ScrollView>     
+            <View style={styles.mainContainer}>
+            <ScrollView>
 
                 <View style={{flexDirection: 'row', backgroundColor: '#110133',
-                paddingLeft: 10}}>
+                    paddingLeft: 10}}>
                     <Text style={{fontSize: 20,
                         fontWeight: 'bold', color: 'white'}}>Title</Text>
-                    <AddOrModifyButton addOrModify='add'
-                    func={this.sendData} category='Habits'
+                    <AddOrModifyButton addOrModify='modify'
+                    func={this.EditData} category='Habits'
                     navigation={this.props.navigation}/>
                 </View>
-
+                
                 <ContentsSection 
-                    titleDefaultValue={this.state.habit.title}
-                    onChangeTitle={(text) =>                         
-                        { this.setState({
-                            habit: { ...this.state.habit, title: text }
-                        })
-                    }}
-                    onChangeContents={(text) =>                         
-                        { this.setState({
-                            habit: { ...this.state.habit, description: text }
-                        })
-                    }}
-                    TextAreaDefaultValue={this.state.habit.description}
-                    category={'Habit'}
+                titleDefaultValue={this.state.habit.title}
+                onChangeTitle={(text) =>                         
+                    { this.setState({
+                        habit: { ...this.state.habit, title: text }
+                    })
+                }}
+                onChangeContents={(text) =>                         
+                    { this.setState({
+                        habit: { ...this.state.habit, description: text }
+                    })
+                }}
+                TextAreaDefaultValue={this.state.habit.description}
+                category={'Habit'}
                 />
 
                 <PositiveSection positive={this.state.habit.positive}
@@ -202,18 +300,25 @@ class AddHabit extends Component {
                             this.TimePicker = ref;
                         }}
                         onCancel={() => this.onCancel()}
-                        onConfirm={(hour, minute) => {
-                            this.onConfirm(hour, minute);
-                            this.alarmOn();
-                        }}
+                        // onConfirm={
+                            
+                        //     (hour, minute) => {
+                        //     this.onConfirm(hour, minute);
+                        //     this.alarmOn();
+                        //  }
+                        // }
+                        itemStyle={{ backgroundColor: 'lightgrey', marginLeft: 0, paddingLeft: 15 }}
                     />
                 </View>
-                
-                <View>             
-                    <ResetButton clearText={this.clearText} />                    
+
+                <View>
+                    <ResetButton clearText={this.clearText} />
+
+                    <DeleteButton EditData={this.EditData} category='Habits'
+                    navigation={this.props.navigation} />
                 </View>
 
-            </ScrollView>  
+            </ScrollView>
             </View>
         )
     }
@@ -235,4 +340,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
   
-export default connect(mapStateToProps, mapDispatchToProps)(AddHabit);
+export default connect(mapStateToProps, mapDispatchToProps)(ModifyHabit);
