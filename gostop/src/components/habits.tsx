@@ -62,9 +62,11 @@ class Habits extends Component<any, habitsStates> {
         });
       }
     })
-    .catch((err) => {
+    .catch(async (err) => {
       console.log('refresh request failed!', err);
-      this.props.navigation.navigate(Signin);
+      await AsyncStorage.removeItem('token');
+      await AsyncStorage.removeItem('refreshtoken');
+      this.props.navigation.navigate('AuthLoading');
     });
   }
 
@@ -90,9 +92,12 @@ class Habits extends Component<any, habitsStates> {
           })
         }
       })
-      .catch((err) => {
+      .catch(async (err) => {
         console.log(err)
         console.log('get request failed!');
+        await AsyncStorage.removeItem('token');
+        await AsyncStorage.removeItem('refreshtoken');
+        this.props.navigation.navigate('AuthLoading');
             // this.props.navigation.navigate(Signin);
       });
 

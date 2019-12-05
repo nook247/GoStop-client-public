@@ -4,7 +4,7 @@ import DateTimePicker from "react-native-modal-datetime-picker";
 import savedate from '../actions/dateaction';
 import { connect } from 'react-redux';
  
-class TodoDatePicker extends Component {
+class TodoDatePicker extends Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {
@@ -67,6 +67,7 @@ class TodoDatePicker extends Component {
     let month = today.getMonth() + 1;  // 월
     let date2 = today.getDate();  // 날짜
 
+    let returntoday = '';
     returntoday = year + '/' + month + '/' + date2
     return (
       <View style = {{ alignItems : 'flex-end',    justifyContent : 'center'}}>
