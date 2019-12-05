@@ -11,7 +11,7 @@ import ResetButton from './commonComponents/ResetButton'
 import CoinSection from './commonComponents/CoinSection'
 import ContentsSection from "./commonComponents/ContentsSection";
 
-class AddReward extends Component {
+class AddReward extends Component<any, any> {
     constructor(props) {
         super(props);
         this.state = {

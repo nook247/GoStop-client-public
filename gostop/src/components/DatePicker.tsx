@@ -6,7 +6,7 @@ import saveStartDate from '../actions/startdateaction'
 import saveEndDate from '../actions/enddateaction'
 import styles from './cssStyles'
 
-class DatePicker extends Component {
+class DatePicker extends Component<any, any> {
   constructor(props) {
     super(props);
     this.state = {

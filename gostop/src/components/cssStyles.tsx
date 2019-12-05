@@ -8,14 +8,15 @@ import { StyleSheet } from "react-native";
 #F4F4F5 (whitesmoke)
 #C3C0C7 (silver)
 */
-export default styles = StyleSheet.create({
+const styles = StyleSheet.create({
     mainContainer: {        // 화면 전체를 감싸는 박스
         flex:1
     },
     Input: {        // 입력창
         marginBottom: 10,
         borderRadius: 2,
-        backgroundColor: '#00918e'
+        backgroundColor: '#00918e',
+        height: 40
     },
     textArea: {
         height: 60
@@ -83,3 +84,5 @@ export default styles = StyleSheet.create({
         margin: 'auto'
     }
 })
+
+export default styles;

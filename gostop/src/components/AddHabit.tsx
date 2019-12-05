@@ -2,47 +2,44 @@ import React, { Component } from "react";
 import { Text, View, TouchableOpacity,
 TouchableHighlight, AsyncStorage } from "react-native";
 import { readBuilderProgram } from "typescript";
-import DatePicker from './DatePicker';
 import TimePicker from "react-native-24h-timepicker";
 import { ScrollView } from "react-native-gesture-handler";
 import { connect } from 'react-redux';
-import savetodos from '../actions/todosaction'
+import savehabit from '../actions/habitaction'
 import fakeserver from '../fakeserver'
-import saveStartDate from '../actions/startdateaction'
-import saveEndDate from '../actions/enddateaction'
 import styles from './cssStyles'
 
 import AddOrModifyButton from './commonComponents/AddOrModifyButton'
 import ResetButton from './commonComponents/ResetButton'
 import DifficultySection from './commonComponents/DifficultySection'
+import PositiveSection from './commonComponents/PositiveSection'
 import ContentsSection from "./commonComponents/ContentsSection";
 
-class AddTodos extends Component {
+class AddHabit extends Component<any, any> {
+    TimePicker: any;
     constructor(props) {
         super(props);
         this.state = {
-            todo: {
+            habit: {
                 title: '',
                 description: '',
-                difficulty: '',  
-                dateStart: '',
-                dateEnd: '',         
-                completed: true
+                difficulty: '',            
+                completed: true,
+                positive: ''
             },
             alarmTime : {
                 status: false,
                 time: '',
                 dayOfWeek: ''
             }
-        }
-        this.dateReset = false;
+        }     
     }
 
     onCancel() {
         this.TimePicker.close();
       }
   
-    onConfirm(hour, minute) {
+    onConfirm(hour: number, minute: number) {
         let stateToChange = this.state.alarmTime
         stateToChange.time = `${hour}:${minute}`
 
@@ -90,15 +87,14 @@ class AddTodos extends Component {
         })
     }
 
-    clearText = () => {  
+    clearText = () => {   
         this.setState({
-            todo: {
+            habit: {
                 title: '',
                 description: '',
-                difficulty: '',  
-                dateStart: '',
-                dateEnd: '',         
-                completed: true
+                difficulty: '',
+                completed: true,
+                positive: ''
             },
             alarmTime: {
                 status: false,
@@ -106,87 +102,87 @@ class AddTodos extends Component {
                 dayOfWeek: ''
             }
         })
-        this.props.saveStartDate('')
-        this.props.saveEndDate('')
     }
       
-    sendData = async() => {   
-        let StartDateStore = this.props.StartDate;
-        let EndDateStore = this.props.EndDate;
-
-        let todo = this.state.todo;   
-        todo.dateStart = StartDateStore;
-        todo.dateEnd = EndDateStore;  
+    sendData = async() => {  
+        let habit = this.state.habit     
+        let arr = this.props.habitarr       
+        this.props.savehabit([...arr, habit])
         
-        let todoArr = this.props.todosarr        
-        this.props.savetodos([...todoArr, todo])
-
         let token = '';
         await AsyncStorage.getItem('token', (err, result) => {
             token = result
         })
+
         let header = new Headers();
         header.append('Cookie', token)
         header.append('Content-Type', 'application/json')
 
         const myInit = {
             method : 'POST',
-            body: JSON.stringify(todo),
+            body: JSON.stringify(habit),
             headers : header,
             Cookie : token
         }
 
-        fetch(`${fakeserver}/todos`, myInit)
+        fetch(`${fakeserver}/habits`, myInit)
         .then(res => console.log(res))
-        .catch(error => console.error('Error : ', error));
+        .catch(error => console.error(error));
     }
 
     render() {
         return (
-            <View style={styles.mainContainer}>
-            <ScrollView>
+            <View style={styles.mainContainer}>  
+            <ScrollView>     
 
                 <View style={{flexDirection: 'row', backgroundColor: '#110133',
                 paddingLeft: 10}}>
                     <Text style={{fontSize: 20,
                         fontWeight: 'bold', color: 'white'}}>Title</Text>
                     <AddOrModifyButton addOrModify='add'
-                    func={this.sendData} category='Todos'
+                    func={this.sendData} category='Habits'
                     navigation={this.props.navigation}/>
                 </View>
-                
+
                 <ContentsSection 
-                    titleDefaultValue={this.state.todo.title}
+                    titleDefaultValue={this.state.habit.title}
                     onChangeTitle={(text) =>                         
                         { this.setState({
-                            todo: { ...this.state.todo, title: text }
+                            habit: { ...this.state.habit, title: text }
                         })
                     }}
                     onChangeContents={(text) =>                         
                         { this.setState({
-                            todo: { ...this.state.todo, description: text }
+                            habit: { ...this.state.habit, description: text }
                         })
                     }}
-                    TextAreaDefaultValue={this.state.todo.description}
-                    category={'Todos'}
-                />               
+                    TextAreaDefaultValue={this.state.habit.description}
+                    category={'Habit'}
+                />
 
-                <DifficultySection difficulty={this.state.todo.difficulty}
+                <PositiveSection positive={this.state.habit.positive}
+                    onPressFunction={(positive) => { this.setState({
+                        habit: { ...this.state.habit, positive: positive }
+                        })
+                    }}
+                />
+
+                <DifficultySection difficulty={this.state.habit.difficulty}
                     onPressFunction={(diff) => { this.setState({
-                        todo: { ...this.state.todo, difficulty: diff }
+                        habit: { ...this.state.habit, difficulty: diff }
                         })
                     }} 
                 />
 
-                <View style={styles.componentsContainer}>         
-                
+                <View style={styles.componentsContainer}>  
+
                     <Text style={styles.titleStyle}>Alarm</Text>
-                
+
                     <View style={{
-                        ...styles.ButtonContainer,
-                        marginTop:10, justifyContent: 'space-between'
+                        ...styles.ButtonContainer, 
+                        marginTop: 10, justifyContent: 'space-between'
                     }}>
-                        <Text style={styles.subtitleStyle}>Time : {this.state.alarmTime.time}</Text>    
+                        <Text style={styles.subtitleStyle}>Time : {this.state.alarmTime.time}</Text>   
 
                         <TouchableOpacity
                             onPress={() => this.TimePicker.open()}
@@ -198,7 +194,7 @@ class AddTodos extends Component {
                     </View>
                     
                     <View>
-                        <Text style={{fontSize:17, fontWeight: 'normal', marginBottom: 10}}>요일 :</Text>
+                        <Text style={styles.subtitleStyle}>요일</Text>
                         <View style={styles.ButtonContainer}>{this.lapsList()}</View>
                     </View>
 
@@ -207,24 +203,19 @@ class AddTodos extends Component {
                             this.TimePicker = ref;
                         }}
                         onCancel={() => this.onCancel()}
-                        onConfirm={(hour, minute) => {
-                            this.onConfirm(hour, minute);
-                            this.alarmOn();
-                        }}
+                        // onConfirm={(hour, minute) => {
+                        //     this.onConfirm(hour, minute);
+                        //     this.alarmOn();
+                        // }}
+                        itemStyle={{ backgroundColor: 'lightgrey', marginLeft: 0, paddingLeft: 15 }}
                     />
                 </View>
+                
+                <View>             
+                    <ResetButton clearText={this.clearText} />                    
+                </View>
 
-                <View style={styles.componentsContainer}>
-                    <Text style={styles.titleStyle}>Date</Text>
-                    <DatePicker startOrEnd='Start' forModify={false}/>
-                    <DatePicker startOrEnd='End' forModify={false}/>
-                </View>
-                
-                <View>
-                    <ResetButton clearText={this.clearText} />
-                </View>
-                
-            </ScrollView>
+            </ScrollView>  
             </View>
         )
     }
@@ -233,25 +224,17 @@ class AddTodos extends Component {
 // store 조회
 const mapStateToProps = (state) => {  
     return {
-      todosarr : state.todosreducer.todosarr,
-      StartDate : state.StartDateReducer.date,
-      EndDate : state.EndDateReducer.date
+      habitarr : state.habitreducer.habitarr
     }
 }  
 
 // store 변경
 const mapDispatchToProps = dispatch => {
     return {      
-      savetodos : (arr) => {
-        dispatch(savetodos(arr));
+      savehabit : (arr) => {
+        dispatch(savehabit(arr));
       },
-      saveStartDate : (date) => {
-        dispatch(saveStartDate(date));
-      },
-      saveEndDate : (date) => {
-        dispatch(saveEndDate(date));
-      }
     };
 };
   
-export default connect(mapStateToProps, mapDispatchToProps)(AddTodos);
+export default connect(mapStateToProps, mapDispatchToProps)(AddHabit);

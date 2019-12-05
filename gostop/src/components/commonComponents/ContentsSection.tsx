@@ -12,8 +12,7 @@ export default function ContentsSection(props) {
             <View>            
                 
                 <TextInput style={styles.Input} placeholder={'  ' + props.category + '  '}
-                defaultValue={props.titleDefaultValue}
-                height={40}                   
+                defaultValue={props.titleDefaultValue}                
                 onChangeText={(text) => { props.onChangeTitle(text) }}
                 />
             </View>
@@ -32,6 +31,3 @@ export default function ContentsSection(props) {
         </View>
     )
 }
-
-// <Text style={{
-//     ...styles.titleStyle, color:'white'}}>Title</Text>
