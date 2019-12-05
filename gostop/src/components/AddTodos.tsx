@@ -29,7 +29,7 @@ class AddTodos extends Component<any, any> {
                 difficulty: '',  
                 dateStart: '',
                 dateEnd: '',         
-                completed: true
+                completed: false
             },
             alarmTime : {
                 status: false,
@@ -100,7 +100,7 @@ class AddTodos extends Component<any, any> {
                 difficulty: '',  
                 dateStart: '',
                 dateEnd: '',         
-                completed: true
+                completed: false
             },
             alarmTime: {
                 status: false,
