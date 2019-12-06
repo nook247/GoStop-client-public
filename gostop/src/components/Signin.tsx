@@ -33,8 +33,6 @@ export default class Signin extends Component<any, signinState> {
       password : password,
     };
 
-    console.log('logindata', logindata)
-    
     fetch(`${fakeserver}/auth/login`, {
       method : 'POST',
       body : JSON.stringify(logindata),
@@ -43,14 +41,12 @@ export default class Signin extends Component<any, signinState> {
       },
     }).then((res) => {
       const cookie = res.headers['map']['set-cookie'];
-      console.log('쿠키니? 이게 원래 받은 토큰!!!', cookie);
 
       AsyncStorage.setItem('token', cookie);
       if (res.status === 200 || res.status === 201) {
         res.json()
       .then((data) =>  {
         const refreshtoken = data["refreshToken"];
-        console.log('refreshtoken---------------', refreshtoken);
         AsyncStorage.setItem('refreshtoken', refreshtoken);
         this.props.navigation.navigate('Habits');
       });
@@ -110,12 +106,12 @@ export default class Signin extends Component<any, signinState> {
           <Text style={styles.submitButtonText}>로그인</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.submitButton}
           onPress={() => this.google_login()}
         >
           <Text style={styles.submitButtonText}>구글 로그인</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         </View>
 
         <TouchableOpacity

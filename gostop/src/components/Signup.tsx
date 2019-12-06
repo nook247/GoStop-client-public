@@ -54,7 +54,6 @@ export default class Signup extends Component<any, any> {
       },
     }).then((res) => {
       if (res.status === 200 || res.status === 201) {
-        console.log('여기는 뭐야?', res);
       alert(`${email}로 가입이 완료되었습니다\n로그인 화면으로 이동`);
       this.props.navigation.navigate('Signin');
       } else {

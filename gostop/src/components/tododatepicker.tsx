@@ -23,10 +23,6 @@ class TodoDatePicker extends Component<any, any> {
 
   DateConverter = (dateArr) => {
     let [dayOfWeek, month, day, year] = dateArr;
-    console.log('요일 : ', dayOfWeek)
-    console.log('월 : ', month)
-    console.log('일 : ', day)
-    console.log('년 : ', year)
 
     let dayOfWeekConvert = {
        'Mon' : '월요일', 'Tue' : '화요일', 'Wed' : '수요일', 'Thu' : '목요일', 

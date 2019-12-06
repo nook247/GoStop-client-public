@@ -52,7 +52,6 @@ class Habits extends Component<any, habitsStates> {
 
     fetch(`${fakeserver}/auth/refresh`, myInit)
     .then((res) => {
-      console.log('리프레시 요청보내고 나서 받은 헤더야!!, 새로운 토큰 들어있니?', res.headers['map']['set-cookie']);
       const newcookie = res.headers['map']['set-cookie'];
       if (res.status === 200 || res.status === 201) {
         res.json()
@@ -64,8 +63,6 @@ class Habits extends Component<any, habitsStates> {
     })
     .catch(async (err) => {
       console.log('refresh request failed!', err);
-      // await AsyncStorage.removeItem('token');
-      // await AsyncStorage.removeItem('refreshtoken');
       await AsyncStorage.clear();
       this.props.navigation.navigate('AuthLoading');
     });

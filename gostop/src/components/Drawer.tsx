@@ -43,7 +43,6 @@ export default class DrawerContainer extends React.Component<any, any> {
                     },
                   })
                   .then(async (res) => {
-                    console.log(res);
                     await AsyncStorage.clear();
                     navigation.navigate('AuthLoading');
                   });

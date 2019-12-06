@@ -151,7 +151,7 @@ class Todos extends Component<any, TodosStates> {
         },
 
             );
-      } else { // 실패를 알리는 HTTP 상태 코드면
+      } else { 
         console.error(res.statusText);
       }
     }).catch(err => console.error(err));
@@ -159,9 +159,9 @@ class Todos extends Component<any, TodosStates> {
   }
 
   public calculus(date){
-    //console.log('데이터 어디서 오는지? : ', date)
 
-    if (date) {  // date null 아닐 때만
+
+    if (date) {  
     var yyyy = date.substr(0,4);
     var mm = date.substr(5,2);
     var dd = date.substr(8,2);
