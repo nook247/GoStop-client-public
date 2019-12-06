@@ -35,8 +35,7 @@ export default function DifficultySection(props) {
                         onPressFunction={props.onPressFunction}
                         key={index} />
                     ) })   
-                }
-              
+                }              
             </View>
 
         </View> 

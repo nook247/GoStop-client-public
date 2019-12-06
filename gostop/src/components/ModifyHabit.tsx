@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Text, View, TouchableOpacity,
 TouchableHighlight, AsyncStorage } from "react-native";
-import { readBuilderProgram } from "typescript";
 import TimePicker from "react-native-24h-timepicker";
 import { ScrollView } from "react-native-gesture-handler";
 import { connect } from 'react-redux';
@@ -304,13 +303,6 @@ class ModifyHabit extends Component<any, any> {
                             this.TimePicker = ref;
                         }}
                         onCancel={() => this.onCancel()}
-                        // onConfirm={
-                            
-                        //     (hour, minute) => {
-                        //     this.onConfirm(hour, minute);
-                        //     this.alarmOn();
-                        //  }
-                        // }
                         itemStyle={{ backgroundColor: 'lightgrey', marginLeft: 0, paddingLeft: 15 }}
                     />
                 </View>

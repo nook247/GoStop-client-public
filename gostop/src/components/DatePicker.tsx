@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { TouchableOpacity, View, StyleSheet, Text } from "react-native";
+import { TouchableOpacity, View, Text } from "react-native";
 import DateTimePicker from "react-native-modal-datetime-picker";
 import { connect } from 'react-redux';
 import saveStartDate from '../actions/startdateaction'

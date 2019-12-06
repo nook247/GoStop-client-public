@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, TouchableOpacity, Alert } from "react-native";
+import { Text, Alert } from "react-native";
 
 export default function DeleteButton(props) {
     return (
@@ -10,9 +10,8 @@ export default function DeleteButton(props) {
                         '해당 항목을 삭제합니다',
                         '정말로 삭제하시겠습니까?',
                         [
-                            { text: 'No', onPress: () => console.log('Cancel Pressed.') },
+                            { text: 'No' },
                             { text: 'Yes', onPress: () => {
-                                console.log('OK')
                                 props.EditData('DELETE')
                                 alert('삭제되었습니다')
                                 props.navigation.navigate(props.category)

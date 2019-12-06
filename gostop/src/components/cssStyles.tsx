@@ -1,13 +1,5 @@
 import { StyleSheet } from "react-native";
 
-/*
-노랑 #ffdc34
-남색 #110133
-파랑 #00918e
-초록 #4dd599
-#F4F4F5 (whitesmoke)
-#C3C0C7 (silver)
-*/
 const styles = StyleSheet.create({
     mainContainer: {        // 화면 전체를 감싸는 박스
         flex:1
@@ -15,6 +7,7 @@ const styles = StyleSheet.create({
     Input: {        // 입력창
         marginBottom: 10,
         borderRadius: 2,
+        paddingLeft: 5,
         backgroundColor: '#00918e',
         height: 40
     },
@@ -24,14 +17,10 @@ const styles = StyleSheet.create({
 
     // 공용 컴포넌트 스타일
     componentsContainer: {
-        //borderColor: 'blue',
-        //borderWidth: 1,
         padding: 10,
         marginBottom: 10
     },
     topButtonContainer: {
-        //borderColor: 'blue',
-        //borderWidth: 1,
         flexDirection: 'row', 
         justifyContent: 'flex-end',
         backgroundColor: '#110133', 
