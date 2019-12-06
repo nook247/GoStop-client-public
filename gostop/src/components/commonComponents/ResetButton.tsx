@@ -7,7 +7,8 @@ export default function ResetButton(props) {
         <TouchableOpacity style={styles.AMRButton} activeOpacity={0.5}
         onPress={props.clearText}>
             <Text style={
-                {...styles.buttonText, fontSize: 20, fontWeight: 'bold'}
+                {...styles.buttonText, fontSize: 20, fontWeight: 'bold',
+                color: '#66635a'}
             }>RESET</Text>
         </TouchableOpacity>
     )

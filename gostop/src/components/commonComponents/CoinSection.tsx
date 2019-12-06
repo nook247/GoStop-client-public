@@ -7,7 +7,8 @@ function EachCoin(props) {
         <TouchableHighlight
             style={
                 props.coin === props.coinDefault ? 
-                styles.buttonSelected :styles.buttonStyle} activeOpacity={0.5}
+                {...styles.buttonSelected, marginRight: 20} :
+                {...styles.buttonStyle, marginRight: 20}} activeOpacity={0.5}
                 onPress={() => {
                     props.onPressFunction(props.coinDefault)
                 }} >
@@ -25,7 +26,7 @@ export default function CoinSection(props) {
             
             <View style={{
                 ...styles.ButtonContainer,
-                marginBottom:0, marginTop: 10}}>
+                marginBottom:0, marginTop: 10, justifyContent: 'flex-start'}}>
                 
                 {coin.map((element, index) => {
                     return (

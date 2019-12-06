@@ -5,7 +5,7 @@ import styles from '../cssStyles'
 export default function AddOrModifyButton(props) {
     return (
         <Text
-            style={{color: 'white', position: 'absolute', right: 20}}
+            style={{color: 'white', marginLeft: 10, marginRight: 10}}
             onPress={() => {
                 props.func();
 

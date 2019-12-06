@@ -64,10 +64,11 @@ class AddReward extends Component<any, any> {
         return (
             <View style={styles.mainContainer}>
 
-                <View style={{flexDirection: 'row', backgroundColor: '#110133',
-                paddingLeft: 10}}>
+                <View style={styles.topButtonContainer}>
                     <Text style={{fontSize: 20,
-                        fontWeight: 'bold', color: 'white'}}>Title</Text>
+                        fontWeight: 'bold', color: 'white',
+                        position: 'absolute', left: 10}}>Title</Text>
+                        
                     <AddOrModifyButton addOrModify='add'
                     func={this.sendData} category='Reward'
                     navigation={this.props.navigation}/>
@@ -91,7 +92,7 @@ class AddReward extends Component<any, any> {
                     }} 
                 />
 
-                <View>
+                <View style={{...styles.ButtonContainer, justifyContent: 'flex-end'}}>
                     <ResetButton clearText={this.clearText} />                     
                 </View>
 

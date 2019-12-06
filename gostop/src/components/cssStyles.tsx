@@ -24,11 +24,18 @@ const styles = StyleSheet.create({
 
     // 공용 컴포넌트 스타일
     componentsContainer: {
-        borderColor: 'red',
+        //borderColor: 'blue',
         //borderWidth: 1,
         padding: 10,
-        //backgroundColor: '#ffdc34',
         marginBottom: 10
+    },
+    topButtonContainer: {
+        //borderColor: 'blue',
+        //borderWidth: 1,
+        flexDirection: 'row', 
+        justifyContent: 'flex-end',
+        backgroundColor: '#110133', 
+        paddingLeft: 10
     },
     titleStyle: {
         fontSize: 20,
@@ -42,40 +49,40 @@ const styles = StyleSheet.create({
     ButtonContainer: {      //여러 개의 버튼을 묶는 요소    
         flexDirection: 'row',   
         borderColor: 'red',
-        //backgroundColor: '#ffdc34',
-        //borderWidth: 1,
+        //: 1,
+        justifyContent: 'space-between',
         marginBottom: 10
     },
     buttonStyle: {      // positive, 난이도, 요일, 코인 등 각 버튼 요소        
         padding: 5,
+        paddingLeft: 10,
+        paddingRight: 10,
         borderRadius: 2,
-        backgroundColor:'#C3C0C7',
-        marginLeft: 'auto',
-        marginRight: 'auto' 
+        backgroundColor:'#C3C0C7'
     },
     buttonSelected: {       // 버튼을 선택했을 때의 스타일
         padding: 5,
+        paddingLeft: 10,
+        paddingRight: 10,
         borderRadius: 2,
-        backgroundColor: "#110133",
-        marginLeft: 'auto',
-        marginRight: 'auto' 
+        backgroundColor: "#110133"
     },    
     alarmButton: {      // 알림 버튼
         padding: 5,
+        paddingLeft: 10,
+        paddingRight: 10,
         borderRadius: 2,
-        backgroundColor: "#00918e"
-        
+        backgroundColor: "#00918e"        
     },
     AMRButton: {        // 추가/수정/리셋 버튼
         marginLeft: 10,
         marginRight: 10,
         marginBottom: 10,
-        display: 'flex',
         alignItems: 'center',
         padding: 5,
         paddingLeft: 10,
         paddingRight: 10,
-        backgroundColor: "#00918e",
+        backgroundColor: "#fff",
         borderRadius: 2
     },
     buttonText: {       // 버튼 내 텍스트 스타일
