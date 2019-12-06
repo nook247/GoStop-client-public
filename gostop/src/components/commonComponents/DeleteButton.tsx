@@ -1,10 +1,10 @@
 import React from "react";
 import { Text, TouchableOpacity, Alert } from "react-native";
-import styles from '../cssStyles'
 
 export default function DeleteButton(props) {
     return (
-        <TouchableOpacity style={styles.AMRButton} activeOpacity={0.5}
+        <Text style={{
+            fontSize: 20, fontWeight: 'normal', color: 'white', marginLeft: 10, marginRight: 10}}
                 onPress={() => {
                     Alert.alert(
                         '해당 항목을 삭제합니다',
@@ -19,10 +19,6 @@ export default function DeleteButton(props) {
                             } }
                         ]
                     )
-                }}>
-            <Text style={
-                {...styles.buttonText, fontSize: 20, fontWeight: 'bold'}
-            }>DELETE</Text>
-        </TouchableOpacity>
+                }}>DELETE</Text>
     )
 }

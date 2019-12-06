@@ -135,10 +135,11 @@ class AddHabit extends Component<any, any> {
             <View style={styles.mainContainer}>  
             <ScrollView>     
 
-                <View style={{flexDirection: 'row', backgroundColor: '#110133',
-                paddingLeft: 10}}>
+                <View style={styles.topButtonContainer}>
                     <Text style={{fontSize: 20,
-                        fontWeight: 'bold', color: 'white'}}>Title</Text>
+                        fontWeight: 'bold', color: 'white',
+                        position: 'absolute', left: 10}}>Title</Text>
+                        
                     <AddOrModifyButton addOrModify='add'
                     func={this.sendData} category='Habits'
                     navigation={this.props.navigation}/>
@@ -211,7 +212,7 @@ class AddHabit extends Component<any, any> {
                     />
                 </View>
                 
-                <View>             
+                <View style={{...styles.ButtonContainer, justifyContent: 'flex-end'}}>             
                     <ResetButton clearText={this.clearText} />                    
                 </View>
 

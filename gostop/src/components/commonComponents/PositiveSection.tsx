@@ -18,21 +18,24 @@ function EachPositive(props) {
 
 export default function PositiveSection(props) {
     let positive = [ [true, 'Positive'], [false, 'Negative'] ]
-    return (           
-        <View style={{
-            ...styles.ButtonContainer,
-            marginBottom:0}}>
-            
-            {positive.map((element, index) => {
-                return (
-                    <EachPositive 
-                    positive={props.positive}
-                    positiveDefault={element[0]} positiveStr={element[1]}
-                    onPressFunction={props.onPressFunction}
-                    key={index} />
-                ) })   
-            }
-            
-        </View>
+    return (    
+        <View style={styles.componentsContainer}>      
+            <View style={{
+                ...styles.ButtonContainer,
+                width: 200, marginLeft: 'auto', marginRight: 'auto',
+                marginBottom:0}}>
+                
+                {positive.map((element, index) => {
+                    return (
+                        <EachPositive 
+                        positive={props.positive}
+                        positiveDefault={element[0]} positiveStr={element[1]}
+                        onPressFunction={props.onPressFunction}
+                        key={index} />
+                    ) })   
+                }
+                
+            </View>
+        </View> 
     )
 }
