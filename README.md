@@ -1,3 +1,1 @@
-클라이언트 초기설정을 진행합니다
-
-config 변경
+expo start

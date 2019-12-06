@@ -23,10 +23,6 @@ class TodoDatePicker extends Component<any, any> {
 
   DateConverter = (dateArr) => {
     let [dayOfWeek, month, day, year] = dateArr;
-    console.log('요일 : ', dayOfWeek)
-    console.log('월 : ', month)
-    console.log('일 : ', day)
-    console.log('년 : ', year)
 
     let dayOfWeekConvert = {
        'Mon' : '월요일', 'Tue' : '화요일', 'Wed' : '수요일', 'Thu' : '목요일', 
@@ -38,8 +34,6 @@ class TodoDatePicker extends Component<any, any> {
       'Nov' : '11', 'Dec' : '12'
     }
 
-    // let str = year + '년 ' + monthConvert[month] + ' ' + day + '일 ' + dayOfWeekConvert[dayOfWeek];
-    // let str = year + '년 ' + monthConvert[month] + ' ' + day + '일 ' 
      let str = year + '/' + monthConvert[month] + '/' + day 
 
     return str;
@@ -59,8 +53,6 @@ class TodoDatePicker extends Component<any, any> {
  
   render() {
     const date = this.state.date 
-    // const initialdate = date.slice(0,4) + '년 ' + date.slice(5,7) + '월 ' + date.slice(8,10) + '일'
-    // const initialdate = date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate()
 
     let today = new Date(); 
     let year = today.getFullYear(); // 년도
@@ -107,10 +99,6 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     paddingVertical: 5,
     borderRadius: 2,
-    alignItems: 'center',
-    // borderColor : 'black',
-    // borderWidth : 1,
-    // alignSelf: 'flex-end',
     width: 90
   },
   buttonText: {

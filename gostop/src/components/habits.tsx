@@ -52,7 +52,6 @@ class Habits extends Component<any, habitsStates> {
 
     fetch(`${fakeserver}/auth/refresh`, myInit)
     .then((res) => {
-      console.log('리프레시 요청보내고 나서 받은 헤더야!!, 새로운 토큰 들어있니?', res.headers['map']['set-cookie']);
       const newcookie = res.headers['map']['set-cookie'];
       if (res.status === 200 || res.status === 201) {
         res.json()
@@ -64,8 +63,7 @@ class Habits extends Component<any, habitsStates> {
     })
     .catch(async (err) => {
       console.log('refresh request failed!', err);
-      await AsyncStorage.removeItem('token');
-      await AsyncStorage.removeItem('refreshtoken');
+      await AsyncStorage.clear();
       this.props.navigation.navigate('AuthLoading');
     });
   }
@@ -95,10 +93,8 @@ class Habits extends Component<any, habitsStates> {
       .catch(async (err) => {
         console.log(err)
         console.log('get request failed!');
-        await AsyncStorage.removeItem('token');
-        await AsyncStorage.removeItem('refreshtoken');
+        await AsyncStorage.clear();
         this.props.navigation.navigate('AuthLoading');
-            // this.props.navigation.navigate(Signin);
       });
 
     fetch(`${fakeserver}/users/habits`, myInit)
@@ -108,14 +104,28 @@ class Habits extends Component<any, habitsStates> {
           .then((data) => {
             if (!data.habits.length) {
               let initState = {
-                id : '',
+                // id : '',
                 title : '제목을 입력하세요',
                 description : '설명을 입력하세요',
                 // alarmId : 'aaa',
                 difficulty : 1,
                 positive : true,
               };
+              //초기 상태 일단 포스트 보내고, 저장한다. 
+              let header = new Headers();
+              header.append('Cookie', token)
+              header.append('Content-Type', 'application/json')
+              const postInit = {
+                  method : 'POST',
+                  body: JSON.stringify(initState),
+                  headers : header,
+                  Cookie : token
+              }
+              fetch(`${fakeserver}/habits`, postInit)
+              .then(() => console.log('initial habit post ok'))
+              .catch(error => console.error('왜안되니?', error));
               this.props.savehabit([initState]);
+
             } else {
               const habits = [];
               data.habits.forEach((element) => {
@@ -145,10 +155,6 @@ class Habits extends Component<any, habitsStates> {
   public async componentDidMount() {
     this.getrefreshtoken();
     this.getdata();
-   
-    
-    // AsyncStorage.removeItem('token');
-    // this.props.navigation.navigate('AuthLoading');
   }
 
   public render() {
@@ -249,8 +255,6 @@ const styles = StyleSheet.create({
   onehabit : {
     flexDirection : 'row',
     flex : 18,
-    // height : 70,
-    // width : '100%',
     borderBottomColor : '#F4F4F5',
     borderBottomWidth : 1,
   },

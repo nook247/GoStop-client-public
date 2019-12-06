@@ -1,27 +1,11 @@
 import React from 'react'
-import { StyleSheet, Text, View, Alert, AsyncStorage, Button } from 'react-native';
-import { } from 'react-navigation';
+import { StyleSheet, Text, View, Alert, AsyncStorage } from 'react-native';
 import fakeserver from '../fakeserver';
-import { Ionicons, SimpleLineIcons, FontAwesome } from '@expo/vector-icons';
 
 export default class DrawerContainer extends React.Component<any, any> {
-  // static navigationOptions = {
-  //   navigationOptions : ({ navigation }) => ({
-  //     headerTitleStyle: { alignSelf: 'center', color : 'white' },
-  // // title: 'Center Title',
-  //     title: 'username',
-  //     headerLeft:
-
-  //       <Ionicons name = 'md-menu' onPress={() => navigation.openDrawer()} size = {34} color = '#ffdc34' />,
-  //     headerStyle: {
-  //       backgroundColor: '#110133',
-  //     },
-  //   }),
-  // };
-
 
   render() {
-    const { navigation } = this.props
+    const { navigation } = this.props;
     return (
       <View style={styles.container}>
         <Text
@@ -59,20 +43,18 @@ export default class DrawerContainer extends React.Component<any, any> {
                     },
                   })
                   .then(async (res) => {
-                    console.log(res);
-                    await AsyncStorage.removeItem('token');
-                    await AsyncStorage.removeItem('refreshtoken');
-                    navigation.navigate('AuthLoading') })
-                }
-                }
+                    await AsyncStorage.clear();
+                    navigation.navigate('AuthLoading');
+                  });
+                },
+                },
               ],
-              {cancelable: false},
+              { cancelable: false },
             );
 
           }
           }
           style={styles.uglyDrawerItem}>Logout
-         {/* <SimpleLineIcons name = 'logout' size = {36} color = '#110133' /> */}
         </Text>
       </View>
     )
@@ -84,7 +66,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#f6f6f6',
     paddingTop: 40,
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
   },
   uglyDrawerItem: {
     fontSize: 18,
@@ -93,9 +75,8 @@ const styles = StyleSheet.create({
     padding: 15,
     margin: 5,
     borderRadius: 2,
-    // borderColor: '#E73536',
     borderColor : '#110133',
     borderWidth: 1,
-    textAlign: 'center'
-  }
-})
+    textAlign: 'center',
+  },
+});

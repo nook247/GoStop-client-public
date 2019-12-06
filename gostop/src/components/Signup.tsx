@@ -53,11 +53,11 @@ export default class Signup extends Component<any, any> {
         'Content-Type' : 'application/json',
       },
     }).then((res) => {
-      if (res.status === 200 || res.status === 201) { // 성공을 알리는 HTTP 상태 코드면
-        res.json()
-      .then(() => {alert(`${email}로 가입이 완료되었습니다\n로그인 화면으로 이동`);
+      if (res.status === 200 || res.status === 201) {
+      alert(`${email}로 가입이 완료되었습니다\n로그인 화면으로 이동`);
       this.props.navigation.navigate('Signin');
-    });
+      } else {
+        alert('회원가입에 실패하였습니다.\n입력한 정보를 다시 확인해주세요');
       }
     });
   }
@@ -74,37 +74,23 @@ export default class Signup extends Component<any, any> {
         <TextInput
           style={styles.input}
           underlineColorAndroid='transparent'
-          placeholder='  habit@gostop.com'
+          placeholder='habit@gostop.com'
           placeholderTextColor='#dadada'
           autoCapitalize='none'
           onChangeText={this.handleEmail}
         />
-        {/* <TouchableOpacity
-          style={styles.submitButton}
-          onPress={() => alert('이메일 중복확인')}
-        >
-          <Text style={styles.submitButtonText}>중복확인</Text>
-        </TouchableOpacity> */}
         <Text style = {styles.categoryText}>닉네임</Text>
         <TextInput
           style={styles.input}
           underlineColorAndroid='transparent'
-          // placeholder='닉네임'
           placeholderTextColor='#9a73ef'
           autoCapitalize='none'
           onChangeText={this.handleNickname}
         />
-        {/* <TouchableOpacity
-          style={styles.submitButton}
-          onPress={() => alert('닉네임 중복확인')}
-        >
-          <Text style={styles.submitButtonText}>중복확인</Text>
-        </TouchableOpacity> */}
         <Text style = {styles.categoryText}>비밀번호</Text>
         <TextInput
           style={styles.input}
           underlineColorAndroid='transparent'
-          // placeholder='Password'
           placeholderTextColor='#9a73ef'
           autoCapitalize='none'
           onChangeText={this.handlePassword}
@@ -114,7 +100,6 @@ export default class Signup extends Component<any, any> {
         <TextInput
           style={styles.input}
           underlineColorAndroid='transparent'
-          // placeholder='Password check'
           placeholderTextColor='#9a73ef'
           autoCapitalize='none'
           onChangeText={this.handlePasswordCheck}
@@ -155,7 +140,6 @@ export default class Signup extends Component<any, any> {
 const styles = StyleSheet.create({
   container: {
     paddingTop: 23,
-    // backgroundColor : '#ffdc34',
   },
   header : {
     backgroundColor : '#110133',
@@ -170,6 +154,7 @@ const styles = StyleSheet.create({
     marginLeft : 15,
   },
   input: {
+    paddingLeft : 10,
     margin: 15,
     height: 40,
     borderColor: '#110133',

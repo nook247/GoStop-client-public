@@ -4,7 +4,6 @@ import additem from './AddHead';
 import additem2 from './AddPants';
 import additem1 from './AddTop';
 // tslint:disable-next-line: ordered-imports
-import changepointreducer from './ChangePointReducer';
 // tslint:disable-next-line: ordered-imports
 // tslint:disable-next-line: ordered-imports
 import getuserreducer from './GetuserReducer';
@@ -25,7 +24,6 @@ export default combineReducers({
   changeReducer,
   changeReducer1,
   changeReducer2,
-  changepointreducer,
   todosreducer,
   getuserreducer,
   habitreducer,
@@ -35,8 +33,6 @@ export default combineReducers({
   additem1,
   additem2,
   StartDateReducer,
-  EndDateReducer
+  EndDateReducer,
 
 });
-
-// StartDateReducer, EndDateReducer 추가로 combine
