@@ -66,6 +66,21 @@ class Todos extends Component<any, TodosStates> {
   }
 
   public async componentDidMount() {
+    // complete 갯수 맞춰주기
+    const { navigation } = this.props;
+    navigation.addListener('didFocus', () => {
+      this.setState({
+        completecount : 0,
+      })
+      for(let i=0; i<this.props.todosarr.length; i++){
+        if (this.props.todosarr[i].completed) {
+          this.setState({
+            completecount : this.state.completecount + 1,
+          });
+        }
+      }
+    });
+    // fetch
     let token = '';
     await AsyncStorage.getItem('token', (err, result) => {
       token = result
@@ -93,6 +108,19 @@ class Todos extends Component<any, TodosStates> {
             dateEnd : '2999-12-31',
             completed : false,
             }
+             //초기 상태 일단 포스트 보내고, 저장한다. 
+            let header = new Headers();
+            header.append('Cookie', token)
+            header.append('Content-Type', 'application/json')
+            const postInit = {
+                method : 'POST',
+                body: JSON.stringify(initState),
+                headers : header,
+                Cookie : token
+            }
+            fetch(`${fakeserver}/todos`, postInit)
+            .then(() => console.log('initial todos post ok'))
+            .catch(error => console.error('왜안되니?', error));
           this.props.savetodos([initState]);
           } else {
             const todos = [];
@@ -314,8 +342,6 @@ const styles = StyleSheet.create({
   },
   onehabit : {
     flexDirection : 'row',
-    // height : 70,
-    // width : '100%',
     borderBottomColor : '#F4F4F5',
     borderBottomWidth : 1,
   },

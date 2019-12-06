@@ -1,10 +1,8 @@
-import React, { Component } from 'react';
-import { Platform, View, TouchableOpacity, Button, Text, Image, StyleSheet } from 'react-native';
-import { createAppContainer, createDrawerNavigator, createMaterialTopTabNavigator, createSwitchNavigator, SafeAreaView, DrawerItems, ScrollView } from 'react-navigation';
+import React from 'react';
+import { Platform, View,  StyleSheet } from 'react-native';
+import { createAppContainer, createDrawerNavigator, createMaterialTopTabNavigator, createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import DrawerContainer from '../components/Drawer';
-import ItemshopScreen from './ItemshopScreen';
-import CharacterchangeScreen from './CharacterchangeScreen'; ;
 import Signin from '../components/Signin';
 import Signup from '../components/Signup';
 import AuthLoadingScreen from './AuthLoadingScreen';
@@ -36,9 +34,8 @@ const todosStack = createStackNavigator(
     AddTodos : { screen : AddTodos },
     ModifyTodos : { screen : ModifyTodos },
   },
-  { 
-    headerMode: 'none'
-  });
+  {
+    headerMode: 'none' });
 
 const rewardStack = createStackNavigator(
   {
@@ -49,35 +46,33 @@ const rewardStack = createStackNavigator(
   {
     headerMode: 'none' });
 
-const AppTabNavigator = createMaterialTopTabNavigator({
-  habits : { screen : habitStack },
-  todos : { screen : todosStack },
-  rewards : { screen : rewardStack },
-},                                                    {
-  animationEnabled: true,
-  swipeEnabled: true,
-  tabBarPosition: 'bottom',
-  tabBarOptions: {
-    style: {
-      ...Platform.select({
-        android:{
-          backgroundColor:'#110133',
-          height : '7%',
-        },
-      }),
-    },
-    labelStyle: {
-      fontSize: 15,
-    },
-    // iconStyle: { height: 20 },
-    activeTintColor: '#ffdc34',
-    // inactiveTintColor: '#d1cece',
-    inactiveTintColor: 'white',
-    upperCaseLabel: false,
-    // showLabel: true,
-    // showIcon: true,
+const AppTabNavigator = createMaterialTopTabNavigator(
+  {
+    habits : { screen : habitStack },
+    todos : { screen : todosStack },
+    rewards : { screen : rewardStack },
   },
-});
+  {
+    animationEnabled: true,
+    swipeEnabled: true,
+    tabBarPosition: 'bottom',
+    tabBarOptions: {
+      style: {
+        ...Platform.select({
+          android:{
+            backgroundColor:'#110133',
+            height : '7%',
+          },
+        }),
+      },
+      labelStyle: {
+        fontSize: 15,
+      },
+      activeTintColor: '#ffdc34',
+      inactiveTintColor: 'white',
+      upperCaseLabel: false,
+    },
+  });
 
 const DrawerStack = createDrawerNavigator(
   {
@@ -89,8 +84,8 @@ const DrawerStack = createDrawerNavigator(
     contentComponent: DrawerContainer,
     initialRouteName : 'AppTabNavigator',
     navigationOptions : ({ navigation }) => ({
-      headerTitleStyle: { alignSelf: 'center', color : 'white', fontSize : 20, },
-      title: 'DO THE NEXT RIGHT THING!',
+      headerTitleStyle: { alignSelf: 'center', color : 'white', fontSize : 20 },
+      title : 'JUST DO THE NEXT RIGHT THING',
       headerLeft:
       <View style = {styles.menu}>
         <Ionicons name = 'md-menu' onPress={() => navigation.toggleDrawer()} size = {34} color = '#ffdc34' />

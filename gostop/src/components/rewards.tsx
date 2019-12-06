@@ -5,7 +5,7 @@ import { coinchange } from '../actions/characterinfoaction';
 import fakeserver from '../fakeserver';
 import Characterinfo from './characterinfo';
 import savereward from '../actions/rewardaction';
-import { MaterialIcons, Entypo, FontAwesome } from '@expo/vector-icons';
+import { MaterialIcons, FontAwesome } from '@expo/vector-icons';
 
 export interface Reward {
   id : string;
@@ -47,13 +47,26 @@ class Rewards extends Component<any, rewardsStates> {
 
           if(!data.rewards.length){
             let initState = {
-            id : 'id',
-            title : '제목을 입력하세요',
-            description : '설명을 입력하세요',
+              id : 'id',
+              title : '제목을 입력하세요',
+              description : '설명을 입력하세요',
             // alarmId : 'alamId',
-            coin : 30,
+              coin : 30,
+            };
+              //초기 상태 일단 포스트 보내고, 저장한다. 
+            let header = new Headers();
+            header.append('Cookie', token)
+            header.append('Content-Type', 'application/json')
+            const postInit = {
+              method : 'POST',
+              body: JSON.stringify(initState),
+              headers : header,
+              Cookie : token
             }
-          this.props.savereward([initState]);
+            fetch(`${fakeserver}/rewards`, postInit)
+              .then(() => console.log('initial rewards post ok'))
+              .catch(error => console.error('왜안되니?', error));
+            this.props.savereward([initState]);
           } else {
             const rewards = [];
             data.rewards.forEach( element => {
@@ -66,98 +79,92 @@ class Rewards extends Component<any, rewardsStates> {
               rewards.push(rewardobj);
             })
             this.props.savereward(rewards);
-       }
-      }
+          }
+        }
 
             );
-      } else { // 실패를 알리는 HTTP 상태 코드면
-        console.error(res.statusText);
+      } else {
+        console.error(res);
       }
     }).catch(err => console.error(err));
 
   }
   public render() {
-    const { navigate } = this.props.navigation;
     return (
       <View style = {styles.container}>
         <View style ={{ flex : 7 }}>
           <Characterinfo/>
         </View>
 
-
         <View style = {{ flex : 20, backgroundColor : 'white' }}>
 
         <ScrollView style={styles.scrollView}>
-        {this.props.rewardarr.map((item, index) => {
-          return   <View style = {styles.onehabit} key = {index}>
+          {this.props.rewardarr.map((item, index) => {
+            return   <View style = {styles.onehabit} key = {index}>
 
-        <View style = {styles.positive}>
-        <FontAwesome name = 'gift' size = {36} color = 'white' />
+            <View style = {styles.positive}>
+            <FontAwesome name = 'gift' size = {36} color = 'white' />
 
-        </View>
+            </View>
 
-        <View style = {styles.habits}
+            <View style = {styles.habits}
               onTouchEnd = {() => {
                 this.props.navigation.navigate('ModifyReward', {
                   title : item.title,
                 })
               }} >
-          <Text style = {styles.habittitle}>{item.title}</Text>
-          <Text style = {styles.habitdesc}>{item.description}</Text>
-      </View >
-      <View style = {styles.negative}>
+              <Text style = {styles.habittitle}>{item.title}</Text>
+              <Text style = {styles.habitdesc}>{item.description}</Text>
+            </View >
+            <View style = {styles.negative}>
 
-      <TouchableOpacity style={{ justifyContent : 'center', alignItems : 'center'  ,backgroundColor:'transparent' }}
-      onPress = {() => { 
-        if(this.props.coinsvalue < item.coin){
-          alert('코인이 부족하여 선택한 보상을 구매할 수 없습니다');
-        } else {
-        console.log('보상 구매했니?')
-        Alert.alert(
-          '보상을 구매하시겠습니까?',
-          '',
-          [
-            {
-              text: 'Cancel',
-              onPress: () => console.log('Cancel Pressed'),
-              style: 'cancel',
-            },
-            {text: 'OK', 
-            onPress: () => {
-              this.props.coinchange(-(item.coin));
-            }
-            }
-          ],
-          {cancelable: false},
-        );
-        }
-        }}
-      >
-        <Text style = {styles.coin}>{item.coin}</Text>
-        <Image
-        style={{ width: 20, height: 20 }}
-        source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}
-        
-                      />
-        </TouchableOpacity>
-      </View>
+            <TouchableOpacity style={{ justifyContent : 'center', alignItems : 'center'  ,backgroundColor:'transparent' }}
+            onPress = {() => { 
+              if(this.props.coinsvalue < item.coin){
+                alert('코인이 부족하여 선택한 보상을 구매할 수 없습니다');
+              } else {
+                console.log('보상 구매했니?');
+                Alert.alert(
+                '보상을 구매하시겠습니까?',
+                '', [
+                  {
+                    text: 'Cancel',
+                    onPress: () => console.log('Cancel Pressed'),
+                    style: 'cancel',
+                  },
+                  {text: 'OK',
+                    onPress: () => {
+                      this.props.coinchange(-(item.coin));
+                    },
+                  },
+                ],
+                { cancelable: false },
+              );
+              }
+            }}
+            >
+              <Text style = {styles.coin}>{item.coin}</Text>
+              <Image
+              style={{ width: 20, height: 20 }}
+              source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
+              </TouchableOpacity>
+          </View>
 
-      </View>;
-
-        })
-    }
+          </View>;
+          })
+          }
             <View style = {{ flex : 10, backgroundColor : 'transparent', height : 100 }}>
             </View>
 
-</ScrollView>
-    </View>
+          </ScrollView>
+          </View>
 
-    <View style = {{ position: 'absolute', backgroundColor: 'transparent', right: 165, bottom: 10 }}>
-          <TouchableOpacity style={styles.addBtn}
-              onPress={() => this.props.navigation.navigate('AddReward')} >
-            <MaterialIcons name = 'playlist-add' size = {52} color = 'white' />
-          </TouchableOpacity>
-      </View>
+          <View style = {{ position: 'absolute', backgroundColor: 'transparent', right: 165, bottom: 10 }}>
+                <TouchableOpacity style={styles.addBtn}
+                    onPress={() => this.props.navigation.navigate('AddReward')} >
+                  <MaterialIcons name = 'playlist-add' size = {52} color = 'white' />
+                </TouchableOpacity>
+            </View>
             </View>
     );
   }
@@ -170,7 +177,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     coinchange : value => dispatch(coinchange(value)),
     savereward : (arr) => {
@@ -190,8 +197,6 @@ const styles = StyleSheet.create({
   },
   onehabit : {
     flexDirection : 'row',
-    // height : 70,
-    // width : '100%',
     borderBottomColor : '#F4F4F5',
     borderBottomWidth : 1,
   },
@@ -243,6 +248,3 @@ const styles = StyleSheet.create({
     borderColor : '#110133',
   },
 });
-
-
-

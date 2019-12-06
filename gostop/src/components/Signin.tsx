@@ -1,14 +1,7 @@
 import React, { Component } from 'react';
 import {
-  AsyncStorage,
-  View, 
-  Text,
-  TouchableOpacity,
-  TextInput,
-  StyleSheet,
-} from 'react-native';
+  AsyncStorage, StyleSheet, Text,  TextInput, TouchableOpacity, View } from 'react-native';
 import fakeserver from '../fakeserver';
-import { Fonts } from '../fonts';
 
 interface signinState {
   email : string;
@@ -56,12 +49,15 @@ export default class Signin extends Component<any, signinState> {
       if (res.status === 200 || res.status === 201) {
         res.json()
       .then((data) =>  {
-        console.log('로그인 시에 받아온 데이터에 refresh token 있니?----------', data)
         const refreshtoken = data["refreshToken"];
         console.log('refreshtoken---------------', refreshtoken);
         AsyncStorage.setItem('refreshtoken', refreshtoken);
         this.props.navigation.navigate('Habits');
       });
+      } else if (res.status === 400) {
+        alert('입력한 값을 다시 확인해주세요.');
+      } else if (res.status === 500) {
+        alert('서버와의 연결이 불안정합니다.\n잠시 후에 다시 시도해주세요.');
       }
     })
     .catch((error) => console.log('fetch error', error))
@@ -73,7 +69,6 @@ export default class Signin extends Component<any, signinState> {
       if (res.status === 200 || res.status === 201) {
         res.text().then(text => console.log(text));
       } else {
-        console.error(res.statusText);
       }
     });
   }
@@ -86,7 +81,6 @@ export default class Signin extends Component<any, signinState> {
         <Text style = {{ marginBottom : '5%', color : '#ffdc34', alignSelf : 'center',
          fontSize : 50, fontStyle : 'italic', fontWeight : 'bold' }}>Go?! Stop?!</Text>
 
-        {/* <Text>E-mail</Text> */}
         <TextInput
           style={styles.input}
           underlineColorAndroid='transparent'
@@ -96,7 +90,6 @@ export default class Signin extends Component<any, signinState> {
           onChangeText={this.handleEmail}
         />
 
-        {/* <Text>Password</Text> */}
         <TextInput
           style={styles.input}
           underlineColorAndroid='transparent'
@@ -107,7 +100,6 @@ export default class Signin extends Component<any, signinState> {
           secureTextEntry={true}
         />
         </View>
-
 
         <View style = {styles.bottom}>
           <View style = {styles.loginButton}>
@@ -150,7 +142,6 @@ const styles = StyleSheet.create({
   top : {
     backgroundColor : '#110133',
     paddingBottom : 15,
-    // marginBottom : 10,
     height : '40%',
     justifyContent : 'flex-end',
 
@@ -161,7 +152,8 @@ const styles = StyleSheet.create({
     paddingTop : 15,
   },
   input: {
-    // margin: 15,
+    paddingLeft : 10,
+    margin: 15,
     marginTop : 15,
     height: 40,
     borderColor: '#dadada',
@@ -171,8 +163,6 @@ const styles = StyleSheet.create({
     alignSelf : 'center',
   },
   loginButton : {
-    // flexDirection : 'row',
-    // justifyContent : 'center',
   },
   submitButton: {
     backgroundColor: '#110133',
@@ -180,9 +170,6 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     height: 40,
     width : '70%',
-    // borderColor : 'black',
-    // borderWidth : 1,
-    // width : '50%',
     alignSelf : 'center',
   },
   submitButtonText: {
