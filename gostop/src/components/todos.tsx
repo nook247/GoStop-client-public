@@ -69,16 +69,15 @@ class Todos extends Component<any, TodosStates> {
     // complete 갯수 맞춰주기
     const { navigation } = this.props;
     navigation.addListener('didFocus', () => {
-      this.setState({
-        completecount : 0,
-      })
+      let count = 0;
       for(let i=0; i<this.props.todosarr.length; i++){
-        if (this.props.todosarr[i].completed) {
-          this.setState({
-            completecount : this.state.completecount + 1,
-          });
+        if (this.props.todosarr[i]["completed"]) {
+          count++
         }
       }
+      this.setState({
+        completecount : count,
+      });
     });
     // fetch
     let token = '';
