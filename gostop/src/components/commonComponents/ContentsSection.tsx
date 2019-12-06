@@ -9,19 +9,19 @@ export default function ContentsSection(props) {
             ...styles.componentsContainer,
             backgroundColor: '#110133', paddingBottom: 15}}>
             
-            <View>            
-                
-                <TextInput style={styles.Input} placeholder={'  ' + props.category + '  '}
-                defaultValue={props.titleDefaultValue}                
+            <View>        
+                <TextInput style={styles.Input} placeholder={props.category}
+                defaultValue={props.titleDefaultValue}    
+                selectionColor='white'    
                 onChangeText={(text) => { props.onChangeTitle(text) }}
                 />
             </View>
             
             <View>
-                <Text style={{
-                    ...styles.titleStyle, color:'white'}}>Notes</Text>
+                <Text style={{...styles.titleStyle, color:'white'}}>Notes</Text>
+                
                 <Textarea style={styles.Input} containerStyle={styles.textArea}                      
-                placeholder=' Notes '
+                placeholder='Notes' selectionColor='white'
                 maxCharLimit={150} height={60} padding={5}
                 defaultValue={props.TextAreaDefaultValue}                        
                 onChangeText={(text) => { props.onChangeContents(text) }}

@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { View, Text, AsyncStorage } from "react-native";
-import { readBuilderProgram } from "typescript";
 import { connect } from 'react-redux';
 import savereward from '../actions/rewardaction'
 import fakeserver from '../fakeserver'
