@@ -1,81 +1,66 @@
 import React, { Component } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {  AsyncStorage, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { connect } from 'react-redux';
 import { imagechange, imagechange1, imagechange2 } from '../actions/';
 import Characterinfo from '../components/characterinfo';
+import fakeserver from '../fakeserver';
 
 class Item extends Component<any, any, any> {
 
   constructor(props, context) {
     super(props, context);
 
+    this.state = {
+      database: {
+        // tslint:disable-next-line: object-literal-key-quotes
+        'hasItems': [
+          {
+            // tslint:disable-next-line: object-literal-key-quotes
+            'item': {
+              // tslint:disable-next-line: object-literal-key-quotes
+              'category': '',
+              // tslint:disable-next-line: object-literal-key-quotes
+              'itemImg': '',
+            },
+          },
+        ],
+      },
+    };
+
   }
 
-  // public componentDidMount() {
-  //   fetch(`{fakeserver}/items`).then((res) => {
-  //     console.log(res);
-  //     if (res.status === 200 || res.status === 201) {
-  //       // tslint:disable-next-line: ter-arrow-parens
-  //       res.json().then(data => {
-  //         console.log(data);
-  //         this.setState({ heads: data });
-  //         // console.log(this.state);
-  //       });
-  //     }else {
-  //       console.error(res.statusText);
-  //     }
-  //   }).catch(err => console.error(err));
-
-  //   fetch(`{fakeserver}/items`).then((res) => {
-  //     if (res.status === 200 || res.status === 201) {
-  //       // tslint:disable-next-line: ter-arrow-parens
-  //       res.json().then(data => {
-  //         console.log(data);
-  //         this.setState({ tops: data });
-  //         // console.log(this.state);
-  //       });
-  //     }else {
-  //       console.error(res.statusText);
-  //     }
-  //   }).catch(err => console.error(err));
-
-  //   fetch(`{fakeserver}/items`).then((res) => {
-  //     if (res.status === 200 || res.status === 201) {
-  //       // tslint:disable-next-line: ter-arrow-parens
-  //       res.json().then(data => {
-  //         console.log(data);
-  //         this.setState({ pantss: data });
-  //         // console.log(this.state);
-  //       });
-  //     }else {
-  //       console.error(res.statusText);
-  //     }
-  //   }).catch(err => console.error(err));
-
-  //   fetch(`{fakeserver}/items`).then((res) => {
-  //     if (res.status === 200 || res.status === 201) {
-  //       // tslint:disable-next-line: ter-arrow-parens
-  //       res.json().then(data => {
-  //         console.log(data);
-  //         this.setState({ pets: data });
-  //         // console.log(this.state);
-  //       });
-  //     }else {
-  //       console.error(res.statusText);
-  //     }
-  //   }).catch(err => console.error(err));
-  // }
+  // tslint:disable-next-line: member-access
+  async getdata() {
+    let token = '';
+    await AsyncStorage.getItem('token', (err, result) => {
+      token = result;
+    },
+    );
+    // tslint:disable-next-line: prefer-const
+    let header = new Headers();
+    header.append('Cookie', token);
+    const myInit = {
+      method : 'GET',
+      headers : header,
+      Cookie : token,
+    };
+    fetch(`${fakeserver}/users/hasItems`, myInit).then((res) => {
+      // console.log(res);
+      if (res.status === 200 || res.status === 201) {
+        // tslint:disable-next-line: ter-arrow-parens
+        res.json().then(data => {
+          this.setState({ database: data });
+        });
+      }else {
+        console.error(res.statusText);
+      }
+    }).catch(err => console.error(err));
+  }
+  public componentDidMount() {
+    this.getdata();
+  }
 
   public render() {
-
-            // // tslint:disable-next-line: ter-indent
-            // const heads = database.map((head) => {
-            //   // tslint:disable-next-line: no-unused-expression
-            //   <TouchableOpacity style={s.red}
-            //   onPress = {() => { this.props.imagechange(head.uri); }}>
-            //     <Text style={{ fontSize: 15 }}>빨간색</Text>
-            //   </TouchableOpacity>;
-            // });
 
     return (
           <View style={s.contain}>
@@ -87,99 +72,73 @@ class Item extends Component<any, any, any> {
           <Text style={s.head1}>머리</Text>
           <View style={s.container} >
 
+              {this.state.database.hasItems.map((element, index) => {
+                            // tslint:disable-next-line: no-unused-expression
+                if (element.item.category === 'head') {
+                  return <TouchableOpacity key={index}
+                          onPress = {() => { this.props.imagechange(element.item.itemImg); }}>
+                           <Image key={index} style={s.pink} source={{ uri: element.item.itemImg }}/>
+                         </TouchableOpacity>;
+                }
+              })}
+
             {this.props.heads.map((head, index) => {
               // tslint:disable-next-line: no-unused-expression
-              // console.log('가지고옴', head);
-              return <TouchableOpacity key={index}
-              onPress = {() => { this.props.imagechange(head); }}>
-                {/* <Text style={{ fontSize: 15 }}> 착용 </Text> */}
-                <Image key={index} style={s.pink} source={{ uri: head }}/>
-              </TouchableOpacity>;
+
+              return<TouchableOpacity key={index}
+                            onPress = {() => { this.props.imagechange(head); }}>
+                              <Image key={index} style={s.pink} source={{ uri: head }}/>
+                            </TouchableOpacity>;
+
             })}
 
-            {/* {heads} */}
-            {/* <TouchableOpacity style={s.red}
-            onPress = {() => { this.props.imagechange(database.uri); }}>
-              <Text style={{ fontSize: 15 }}>빨간색</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={s.yellow}
-            onPress = {() => { this.props.imagechange(database.head[1].uri); }}>
-              <Text style={{ fontSize: 15 }}>노란색</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={s.blue}
-            onPress = {() => { this.props.imagechange(database.head[2].uri); }}>
-              <Text style={{ fontSize: 15 }}>파란색</Text>
-            </TouchableOpacity> */}
           </View>
 
           <Text style={s.head}>상의</Text>
           <View style={s.container}>
 
+          {this.state.database.hasItems.map((element, index) => {
+                            // tslint:disable-next-line: no-unused-expression
+            if (element.item.category === 'top') {
+              return <TouchableOpacity key={index}
+                        onPress = {() => { this.props.imagechange(element.item.itemImg); }}>
+                        <Image key={index} style={s.pink} source={{ uri: element.item.itemImg }}/>
+                    </TouchableOpacity>;
+            }
+          })}
+
           {this.props.tops.map((top, index) => {
               // tslint:disable-next-line: no-unused-expression
-              // console.log(index);
-              // console.log('가지고옴', top);
             return <TouchableOpacity key={index}
               onPress = {() => { this.props.imagechange1(top); }}>
-                {/* <Text style={{ fontSize: 15 }}> 착용 </Text> */}
                 <Image key={index} style={s.pink} source={{ uri: top }}/>
               </TouchableOpacity>;
           })}
 
-          {/* <TouchableOpacity style={s.red}
-            onPress = {() => { this.props.imagechange1(database.top[0].uri); }}>
-              <Text style={{ fontSize: 15 }}>빨간색</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={s.yellow}
-            onPress = {() => { this.props.imagechange1(database.top[1].uri); }}>
-              <Text style={{ fontSize: 15 }}>노란색</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={s.blue}
-            onPress = {() => { this.props.imagechange1(database.top[2].uri); }}>
-              <Text style={{ fontSize: 15 }}>파란색</Text>
-            </TouchableOpacity> */}
           </View>
 
           <Text style={s.head}>하의</Text>
           <View style={s.container}>
 
+          {this.state.database.hasItems.map((element, index) => {
+                            // tslint:disable-next-line: no-unused-expression
+            if (element.item.category === 'bottom') {
+              return <TouchableOpacity key={index}
+                        onPress = {() => { this.props.imagechange(element.item.itemImg); }}>
+                        <Image key={index} style={s.pink} source={{ uri: element.item.itemImg }}/>
+                    </TouchableOpacity>;
+            }
+          })}
+
           {this.props.pantss.map((pants, index) => {
               // tslint:disable-next-line: no-unused-expression
-              // console.log(index);
-              // console.log('가지고옴', pants);
             return <TouchableOpacity key={index}
               onPress = {() => { this.props.imagechange2(pants); }}>
-                {/* <Text style={{ fontSize: 15 }}> 착용 </Text> */}
                 <Image key={index} style={s.pink} source={{ uri: pants }}/>
               </TouchableOpacity>;
           })}
 
-          {/* <TouchableOpacity style={s.red}
-            onPress = {() => { this.props.imagechange2(database.pants[0].uri); }}>
-              <Text style={{ fontSize: 15 }}>빨간색</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={s.yellow}
-            onPress = {() => { this.props.imagechange2(database.pants[1].uri); }}>
-              <Text style={{ fontSize: 15 }}>노란색</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={s.blue}
-            onPress = {() => { this.props.imagechange2(database.pants[2].uri); }}>
-              <Text style={{ fontSize: 15 }}>파란색</Text>
-            </TouchableOpacity> */}
           </View>
-
-          {/* <TouchableOpacity style={s.pet1}
-            onPress = {() => { this.props.imagechange3(database.pet[0].uri); }}>
-              <Text style={{ fontSize: 15 }}>주황몬</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={s.pet2}
-            onPress = {() => { this.props.imagechange3(database.pet[1].uri); }}>
-              <Text style={{ fontSize: 15 }}>하얀몬</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={s.pet3}
-            onPress = {() => { this.props.imagechange3(database.pet[2].uri); }}>
-              <Text style={{ fontSize: 15 }}>파랑몬</Text>
-            </TouchableOpacity> */}
           </View>
           </View>
     );
@@ -190,7 +149,6 @@ const s = StyleSheet.create({
   contain:{
     borderWidth: 1,
     borderColor: 'black',
-    // backgroundColor : '#110133',
     flex: 1,
     width : '100%',
 
@@ -219,10 +177,16 @@ const s = StyleSheet.create({
   head: {
     marginLeft: 25,
     marginTop: 20,
+    borderBottomWidth: 0.5,
+    borderColor: 'black',
+    width: '80%',
   },
   head1: {
     marginLeft: 25,
     marginTop: 70,
+    borderBottomWidth: 0.5,
+    borderColor: 'black',
+    width: '80%',
   },
 
 });

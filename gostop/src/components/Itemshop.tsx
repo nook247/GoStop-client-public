@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View, Alert } from 'react-native';
+import { Alert, AsyncStorage, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { connect } from 'react-redux';
 import { additem, additem1, additem2, imagechange, imagechange1, imagechange2 } from '../actions/';
 import { coinchange } from '../actions/characterinfoaction';
@@ -27,7 +27,6 @@ class Itemshop extends Component<any, any> {
           this.setState({
             database: data,
           });
-          console.log(this.state.database);
         });
       }else {
         console.error(res.statusText);
@@ -35,47 +34,30 @@ class Itemshop extends Component<any, any> {
     }).catch(err => console.error(err));
   }
 
-  // public sendHead = (newuri) => {
-  //   // tslint:disable-next-line: prefer-const
-  //   // tslint:disable-next-line: no-unused-expression
-  //   fetch(`{fakeserver}/items`, {
-  //     method: 'POST',
-  //     body: JSON.stringify({ uri: newuri }),
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //   }).then(res => res.json())
-  //   .then(res => console.log('성공: ', JSON.stringify(res)))
-  //   .catch(err => console.error(err));
-  // }
+  public sendItem = async(itemid) => {
+    // tslint:disable-next-line: prefer-const
+    // tslint:disable-next-line: no-unused-expression
+    let token = '';
+    await AsyncStorage.getItem('token', (err, result) => {
+      token = result;
+    });
+    // tslint:disable-next-line: prefer-const
+    let header = new Headers();
+    header.append('Cookie', token);
+    header.append('Content-Type', 'application/json');
 
-  // public sendTop = (newuri) => {
-  //   // tslint:disable-next-line: prefer-const
-  //   // tslint:disable-next-line: no-unused-expression
-  //   fetch(`{fakeserver}/items`, {
-  //     method: 'POST',
-  //     body: JSON.stringify({ uri: newuri }),
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //   }).then(res => res.json())
-  //   .then(res => console.log('성공: ', JSON.stringify(res)))
-  //   .catch(err => console.error(err));
-  // }
+    // tslint:disable-next-line: prefer-const
+    let myInit = {
+      method : 'POST',
+      body: JSON.stringify(itemid),
+      headers : header,
+      Cookie : token,
+    };
 
-  // public sendPants = (newuri) => {
-  //   // tslint:disable-next-line: prefer-const
-  //   // tslint:disable-next-line: no-unused-expression
-  //   fetch(`{fakeserver}/items`, {
-  //     method: 'POST',
-  //     body: JSON.stringify({ uri: newuri }),
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //   }).then(res => res.json())
-  //   .then(res => console.log('성공: ', JSON.stringify(res)))
-  //   .catch(err => console.error(err));
-  // }
+    fetch(`${fakeserver}/shop`, myInit)
+    .then(() => console.log('포스트 성공'))
+    .catch(err => console.error(err));
+  }
 
   public render() {
     return (
@@ -84,25 +66,9 @@ class Itemshop extends Component<any, any> {
                 <Characterinfo/>
               </View>
 
-            {/* <Image
-            style={{ marginLeft: '10%', height:'4%', width:'15%', resizeMode:'contain' }}
-            source={{ uri: this.props.uri }}/>
-            <Image
-            style={{ marginLeft: '9%', height:'8%', width:'19%', resizeMode:'contain' }}
-            source={{ uri: this.props.uri1 }}/>
-            <Image
-            style={{ marginLeft: '8%', height:'11%', width:'22%', resizeMode:'contain' }}
-            source={{ uri: this.props.uri2 }}/>
-             */}
              <View style ={{ flex : 23.5 }}>
           <Text style={s.head1}>머리</Text>
           <View style={s.container}>
-
-          {/* {this.state.database.map((head, index) => {
-              // tslint:disable-next-line: no-unused-expression
-              // console.log(index);
-            return <Image style={s.pink} source={{ uri: head.itemImg }} key={index}/>
-          })} */}
 
           {this.state.database.map((head, index) => {
             if (head.category === 'head') {
@@ -124,7 +90,8 @@ class Itemshop extends Component<any, any> {
                         if (head.price < this.props.hascoinsvalue) {
                           this.props.coinchange(-head.price),
                           // tslint:disable-next-line: brace-style
-                          this.props.additem(head.itemImg);
+                          this.props.additem(head.itemImg),
+                          this.sendItem({ item: head._id, totalPrice: head.price, payment: 'coin' });
                         }
                         // tslint:disable-next-line: brace-style
                         else {
@@ -153,83 +120,6 @@ class Itemshop extends Component<any, any> {
             }
           })}
 
-
-          {/* <View style={s.container1}>
-            <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/head6.png' }}/>
-            <TouchableOpacity
-              // tslint:disable-next-line: brace-style
-              onPress = {() => { this.props.coinchange(-50),
-              // tslint:disable-next-line: brace-style
-              this.props.additem('https://totalitems.s3.ap-northeast-2.amazonaws.com/head6.png'); } }>
-              <View style={s.buymain}>
-              <Image
-              style={s.buy} source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
-              <Text>X50</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-
-          <View style={s.container1}>
-            <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/head7.png' }}/>
-            <TouchableOpacity
-              // tslint:disable-next-line: brace-style
-              onPress = {() => { this.props.coinchange(-70),
-              // tslint:disable-next-line: brace-style
-              this.props.additem('https://totalitems.s3.ap-northeast-2.amazonaws.com/head7.png'); } }>
-              <View style={s.buymain}>
-              <Image
-              style={s.buy} source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
-              <Text>X70</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-
-          <View style={s.container1}>
-            <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/head8.png' }}/>
-
-            <TouchableOpacity
-              // tslint:disable-next-line: brace-style
-              onPress = {() => { this.props.coinchange(-90),
-              // tslint:disable-next-line: brace-style
-              this.props.additem('https://totalitems.s3.ap-northeast-2.amazonaws.com/head8.png'); } }>
-              <View style={s.buymain}>
-              <Image
-              style={s.buy} source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
-              <Text>X90</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-
-          <View style={s.container1}>
-            <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/head9.png' }}/>
-              <TouchableOpacity
-              // tslint:disable-next-line: brace-style
-              onPress = {() => { this.props.coinchange(-110),
-              // tslint:disable-next-line: brace-style
-              this.props.additem('https://totalitems.s3.ap-northeast-2.amazonaws.com/head9.png'); } }>
-              <View style={s.buymain}>
-              <Image
-              style={s.buy} source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
-              <Text>X110</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-
-          <View style={s.container1}>
-            <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/head10.png' }}/>
-              <TouchableOpacity
-              // tslint:disable-next-line: brace-style
-              onPress = {() => { this.props.coinchange(-130),
-              // tslint:disable-next-line: brace-style
-              this.props.additem('https://totalitems.s3.ap-northeast-2.amazonaws.com/head10.png'); } }>
-              <View style={s.buymain}>
-              <Image
-              style={s.buy} source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
-              <Text>X130</Text>
-              </View>
-            </TouchableOpacity>
-          </View> */}
-
           </View>
 
           <Text style={s.head}>상의</Text>
@@ -255,7 +145,8 @@ class Itemshop extends Component<any, any> {
                         if (top.price < this.props.hascoinsvalue) {
                           this.props.coinchange(-top.price),
                           // tslint:disable-next-line: brace-style
-                          this.props.additem1(top.itemImg);
+                          this.props.additem1(top.itemImg),
+                          this.sendItem({ item: top._id, totalPrice: top.price, payment: 'coin' });
                         }
                         // tslint:disable-next-line: brace-style
                         else {
@@ -284,81 +175,6 @@ class Itemshop extends Component<any, any> {
             }
           })}
 
-              {/* <View style={s.container1}>
-                <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/top2.png' }}/>
-                <TouchableOpacity
-                  // tslint:disable-next-line: brace-style
-                  onPress = {() => { this.props.coinchange(-50),
-                  // tslint:disable-next-line: brace-style
-                  this.props.additem1('https://totalitems.s3.ap-northeast-2.amazonaws.com/top2.png'); } }>
-                  <View style={s.buymain}>
-                  <Image
-                  style={s.buy} source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
-                  <Text>X50</Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-
-              <View style={s.container1}>
-                <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/top3.png' }}/>
-                <TouchableOpacity
-                  // tslint:disable-next-line: brace-style
-                  onPress = {() => { this.props.coinchange(-70),
-                  // tslint:disable-next-line: brace-style
-                  this.props.additem1('https://totalitems.s3.ap-northeast-2.amazonaws.com/top3.png'); } }>
-                  <View style={s.buymain}>
-                  <Image
-                  style={s.buy} source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
-                  <Text>X70</Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-
-              <View style={s.container1}>
-                <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/top4.png' }}/>
-                <TouchableOpacity
-                  // tslint:disable-next-line: brace-style
-                  onPress = {() => { this.props.coinchange(-90),
-                  // tslint:disable-next-line: brace-style
-                  this.props.additem1('https://totalitems.s3.ap-northeast-2.amazonaws.com/top4.png'); } }>
-                  <View style={s.buymain}>
-                  <Image
-                  style={s.buy} source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
-                  <Text>X90</Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-
-              <View style={s.container1}>
-                <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/top5.png' }}/>
-                <TouchableOpacity
-                  // tslint:disable-next-line: brace-style
-                  onPress = {() => { this.props.coinchange(-110),
-                  // tslint:disable-next-line: brace-style
-                  this.props.additem1('https://totalitems.s3.ap-northeast-2.amazonaws.com/top5.png'); } }>
-                  <View style={s.buymain}>
-                  <Image
-                  style={s.buy} source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
-                  <Text>X110</Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-
-              <View style={s.container1}>
-                <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/top6.png' }}/>
-                <TouchableOpacity
-                  // tslint:disable-next-line: brace-style
-                  onPress = {() => { this.props.coinchange(-130),
-                  // tslint:disable-next-line: brace-style
-                  this.props.additem1('https://totalitems.s3.ap-northeast-2.amazonaws.com/top6.png'); } }>
-                  <View style={s.buymain}>
-                  <Image
-                  style={s.buy} source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
-                  <Text>X130</Text>
-                  </View>
-                </TouchableOpacity>
-              </View> */}
-
           </View>
 
           <Text style={s.head}>하의</Text>
@@ -384,7 +200,8 @@ class Itemshop extends Component<any, any> {
                         if (bottom.price < this.props.hascoinsvalue) {
                           this.props.coinchange(-bottom.price),
                           // tslint:disable-next-line: brace-style
-                          this.props.additem2(bottom.itemImg);
+                          this.props.additem2(bottom.itemImg),
+                          this.sendItem({ item: bottom._id, totalPrice: bottom.price, payment: 'coin' });
                         }
                         // tslint:disable-next-line: brace-style
                         else {
@@ -412,81 +229,6 @@ class Itemshop extends Component<any, any> {
             </View>;
             }
           })}
-
-            {/* <View style={s.container1}>
-             <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/bottm2.png' }}/>
-              <TouchableOpacity
-                // tslint:disable-next-line: brace-style
-                onPress = {() => { this.props.coinchange(-50),
-                // tslint:disable-next-line: brace-style
-                this.props.additem2('https://totalitems.s3.ap-northeast-2.amazonaws.com/bottm2.png'); } }>
-                <View style={s.buymain}>
-                  <Image
-                  style={s.buy} source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
-                  <Text>X50</Text>
-                  </View>
-              </TouchableOpacity>
-            </View>
-
-            <View style={s.container1}>
-              <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/bottm3.png' }}/>
-                <TouchableOpacity
-                  // tslint:disable-next-line: brace-style
-                  onPress = {() => { this.props.coinchange(-70),
-                  // tslint:disable-next-line: brace-style
-                  this.props.additem2('https://totalitems.s3.ap-northeast-2.amazonaws.com/bottm3.png'); } }>
-                  <View style={s.buymain}>
-                  <Image
-                  style={s.buy} source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
-                  <Text>X70</Text>
-                  </View>
-                </TouchableOpacity>
-            </View>
-
-            <View style={s.container1}>
-              <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/bottom4.png' }}/>
-                <TouchableOpacity
-                  // tslint:disable-next-line: brace-style
-                  onPress = {() => { this.props.coinchange(-90),
-                  // tslint:disable-next-line: brace-style
-                  this.props.additem2('https://totalitems.s3.ap-northeast-2.amazonaws.com/bottom4.png'); } }>
-                  <View style={s.buymain}>
-                  <Image
-                  style={s.buy} source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
-                  <Text>X90</Text>
-                  </View>
-                </TouchableOpacity>
-            </View>
-
-            <View style={s.container1}>
-              <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/bottom5.png' }}/>
-                <TouchableOpacity
-                  // tslint:disable-next-line: brace-style
-                  onPress = {() => { this.props.coinchange(-110),
-                  // tslint:disable-next-line: brace-style
-                  this.props.additem2('https://totalitems.s3.ap-northeast-2.amazonaws.com/bottom5.png'); } }>
-                  <View style={s.buymain}>
-                  <Image
-                  style={s.buy} source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
-                  <Text>X110</Text>
-                  </View>
-                </TouchableOpacity>
-            </View>
-
-            <View style={s.container1}>
-              <Image style={s.pink} source={{ uri: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/bottom6.png' }}/>
-                <TouchableOpacity
-                // tslint:disable-next-line: brace-style
-                onPress = {() => { this.props.coinchange(-130),
-                // tslint:disable-next-line: brace-style
-                this.props.additem2('https://totalitems.s3.ap-northeast-2.amazonaws.com/bottom6.png'); } }>
-                <View style={s.buymain}>
-              <Image
-              style={s.buy} source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
-              <Text>X130</Text>
-              </View>
-                </TouchableOpacity>
-            </View> */}
 
           </View>
           </View>
@@ -539,10 +281,16 @@ const s = StyleSheet.create({
   head: {
     marginLeft: 25,
     marginTop: 20,
+    borderBottomWidth: 0.5,
+    borderColor: 'black',
+    width: '90%',
   },
   head1: {
     marginLeft: 25,
     marginTop: 40,
+    borderBottomWidth: 0.5,
+    borderColor: 'black',
+    width: '90%',
   },
 });
 

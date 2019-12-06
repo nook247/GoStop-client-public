@@ -3,8 +3,7 @@ export interface imageState {
   uri1 : any;
 }
 const initialState1 : imageState = {
-  // uri1: 'http://pngimg.com/uploads/polo_shirt/polo_shirt_PNG8166.png',
-  uri1: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/top1.png'
+  uri1: 'https://totalitems.s3.ap-northeast-2.amazonaws.com/top1.png',
 };
 
 import * as types from '../actions/types';
