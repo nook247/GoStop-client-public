@@ -15,9 +15,10 @@ import changeReducer2 from './Itemchange2';
 // tslint:disable-next-line: ordered-imports
 import rewardreducer from './RewardReducer';
 import todosreducer from './TodosReducer';
+// tslint:disable-next-line: ordered-imports
 import datereducer from './DateReducer';
-import StartDateReducer from './StartDateReducer'
-import EndDateReducer from './EndDateReducer'
+import StartDateReducer from './StartDateReducer';
+import EndDateReducer from './EndDateReducer';
 
 
 export default combineReducers({

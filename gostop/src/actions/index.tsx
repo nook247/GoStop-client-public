@@ -25,28 +25,22 @@ export function imagechange2(uristate2) {
 }
 
 export function additem(itemuri) {
-  // console.log('들어오는 액션',itemuri)
   return {
-    
     type: types.ADD_ITEM,
     arr: itemuri,
-  }
+  };
 }
 
 export function additem1(itemuri1) {
-  // console.log('들어오는 액션',itemuri)
   return {
-    
     type: types.ADD_ITEM1,
     arr1: itemuri1,
-  }
+  };
 }
 
 export function additem2(itemuri2) {
-  // console.log('들어오는 액션',itemuri)
   return {
-    
     type: types.ADD_ITEM2,
     arr2: itemuri2,
-  }
+  };
 }
