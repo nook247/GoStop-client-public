@@ -6,15 +6,15 @@ import TimePicker from "react-native-24h-timepicker";
 import { connect } from 'react-redux';
 import savehabit from '../actions/habitaction'
 
-class AddHabit extends Component {
+class ModifyHabit extends Component {
     constructor(props) {
         super(props);
         this.state = {
             habit: {
                 title: '',
                 description: '',
-                difficulty: '',            
-                completed: true,
+                difficulty: '',     
+                completed: true,       
                 positive: true
             },
             alarmTime : {
@@ -22,28 +22,37 @@ class AddHabit extends Component {
                 time: '',
                 dayOfWeek: ''
             }
-        }      
+        }    
+        this.habitIdToModify;
+        this.dataToModify;
     }
 
-    // componentDidMount() {
-    //     fetch('http://52.79.229.136:5000/alarms', {
-    //         method: 'GET',
-    //         headers: {
-    //             'Content-Type': 'application/json'
-    //         }
-    //     }).then(res => res.json())
-    //     .then(res => {            
-    //         this.setState({
-    //             habit: {
-    //                 ...this.state.habit,
-    //                 title: res.title,
-    //                 alarmId: res.length + 1
-    //             }
-    //         })
-    //         //console.log('HABIT is : ', this.state.habit)
-    //     })
-    //     .catch(error => console.error('Error : ', error));
-    // }
+    componentDidMount() {
+        let dataToModify = this.props.habitarr.filter(
+            element => element.title === this.props.navigation.state.params.title
+        )
+        this.dataToModify = dataToModify[0]
+
+        console.log('원래 데이터 : ', this.props.habitarr)
+        console.log('수정할 데이터 : ', dataToModify[0])
+
+        let { title, description, completed, difficulty, positive } = dataToModify[0] 
+
+        this._titleInput.setNativeProps({text: title})
+        this._contentsInput.setNativeProps({text: description})
+
+        this.setState({
+            habit: {
+                title,
+                description,                
+                difficulty,
+                completed, 
+                positive
+            }
+        })   
+        this.habitIdToModify = dataToModify[0]["_id"]
+        console.log("수정할 데이터 ID : ", this.habitIdToModify)    
+    }
 
     onCancel() {
         this.TimePicker.close();
@@ -59,7 +68,7 @@ class AddHabit extends Component {
             }
         });
         this.TimePicker.close();
-        //console.log("TIME IS : ", this.state.alarmTime)
+        console.log("TIME IS : ", this.state.alarmTime)
     }
 
     lapsList() {
@@ -118,14 +127,28 @@ class AddHabit extends Component {
                 dayOfWeek: ''
             }
         })
+        //console.log(this.state)
     }
-      
-    sendData = async() => {   // 수정 요망
-        let habit = this.state.habit;        
+
+    EditData = async() => {  // 수정 요망
+        let habit = this.state.habit;
+
+        //console.log('원래 데이터 : ', this.props.habitarr)
+        //console.log('수정할 데이터2 : ', this.dataToModify)
+
         let arr = this.props.habitarr
-        //console.log('원래 state : ', arr)
-        this.props.savehabit([...arr, habit])
-        
+
+        for (let i=0; i<arr.length; i++) {
+            if (arr[i]["_id"] === this.habitIdToModify) {
+                arr[i] = habit;
+                break;
+            }
+        }
+
+        //console.log('수정 후 데이터 : ', arr)
+
+        this.props.savehabit([...arr])
+
         let token = '';
         await AsyncStorage.getItem('token', (err, result) => {
             token = result
@@ -136,21 +159,22 @@ class AddHabit extends Component {
 
         //console.log('헤더는 ? : ', header)
         const myInit = {
-            method : 'POST',
+            method : 'PATCH',
             body: JSON.stringify(habit),
             headers : header,
             Cookie : token
         }
 
-        fetch('http://52.79.229.136:5000/habits', myInit)
+        fetch(`http://52.79.229.136:5000/habits/${this.habitIdToModify}`, myInit)
         .then(res => res.json())
         .then(res => console.log('Success : ', JSON.stringify(res)))
         .catch(error => console.error('Error : ', error));
     }
 
     render() {
-        //console.log('AddHabit에서 state 잘 전달됐니? : ', this.props.habitarr, '---')
-    
+        //console.log('ModifyHabit에서 state 잘 전달됐니? : ', this.props.habitarr) 
+        //title = this.props.navigation.state.params.title;     
+        //console.log('title전달됐니? ModifyHabit : ', title)
 
         return (
             <View style={styles.mainContainer}>
@@ -266,12 +290,12 @@ class AddHabit extends Component {
                     style={styles.addButton} activeOpacity={0.5}
                     onPress={() => {
                         //console.log(this.state);
-                        this.sendData();
-                        alert("추가되었습니다")
+                        this.EditData();
+                        alert("수정되었습니다")
                         this.props.navigation.navigate('Habits')  // 메인 페이지로 이동
                     }} >
-                    <Text style={styles.textStyle}>추가</Text>
-                </TouchableOpacity>  
+                    <Text style={styles.textStyle}>수정</Text>                    
+                </TouchableOpacity> 
 
                 <TouchableOpacity style={styles.addButton} activeOpacity={0.5}
                 onPress={this.clearText}>
@@ -284,7 +308,7 @@ class AddHabit extends Component {
     }
 }
 
-//export default AddHabit;
+//export default ModifyHabit;
 
 // 데이터 불러오기
 const mapStateToProps = (state) => {  
@@ -294,7 +318,6 @@ const mapStateToProps = (state) => {
     }
 }  
 
-// 데이터 수정하기
 const mapDispatchToProps = dispatch => {
     return {      
       savehabit : (arr) => {
@@ -303,7 +326,7 @@ const mapDispatchToProps = dispatch => {
     };
 };
   
-export default connect(mapStateToProps, mapDispatchToProps)(AddHabit);
+export default connect(mapStateToProps, mapDispatchToProps)(ModifyHabit);
 
 const styles = StyleSheet.create({
     mainContainer: {
@@ -365,38 +388,38 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
         //justifyContent: 'space-around'
         //paddingTop: 100
-    },
-    DayButtonContainer: {        
-    flexDirection: 'row',        
-    },
-    DayButtonStyle: {
-        marginLeft: 5,
-        paddingLeft: 5,
-        paddingRight: 5,
-        backgroundColor: "#fcba03",
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: "#fff"
-    },
-    DayButtonSelected: {
-        marginLeft: 5,
-        paddingLeft: 5,
-        paddingRight: 5,
-        backgroundColor: "#ff5500",
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: "#fff"
-    },
-    button: {
-    backgroundColor: "#4EB151",
-    paddingVertical: 5,
-    borderRadius: 3,
-    alignItems: 'center',
-    alignSelf: 'flex-end',
-    width: 90
-    },
-    buttonText: {
-    color: "#FFFFFF",
-    fontSize: 15,
-    }
+      },
+      DayButtonContainer: {        
+        flexDirection: 'row',        
+      },
+      DayButtonStyle: {
+          marginLeft: 5,
+          paddingLeft: 5,
+          paddingRight: 5,
+          backgroundColor: "#fcba03",
+          borderRadius: 10,
+          borderWidth: 1,
+          borderColor: "#fff"
+      },
+      DayButtonSelected: {
+          marginLeft: 5,
+          paddingLeft: 5,
+          paddingRight: 5,
+          backgroundColor: "#ff5500",
+          borderRadius: 10,
+          borderWidth: 1,
+          borderColor: "#fff"
+      },
+      button: {
+        backgroundColor: "#4EB151",
+        paddingVertical: 5,
+        borderRadius: 3,
+        alignItems: 'center',
+        alignSelf: 'flex-end',
+        width: 90
+      },
+      buttonText: {
+        color: "#FFFFFF",
+        fontSize: 15,
+      }
 })

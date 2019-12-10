@@ -1,7 +1,6 @@
 export const POINTCHANGE = 'POINTCHANGE' as const;
 export const HEALTHCHANGE = 'HEALTHCHANGE' as const;
 export const COINCHANGE = 'COINCHANGE' as const;
-export const SET_DIFF = 'SET_DIFF' as const;
 export const FETCH_CHARACTERINFO = 'FETCH_CHARACTERINFO' as const;
 export const FETCH_HABITSINFO = 'FETCH_HABITSINFO' as const;
 

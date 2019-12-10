@@ -1,98 +1,122 @@
-import { Button, Container, Header, Icon, Left, Right, Text } from 'native-base';
 import React, { Component } from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
-import { createAppContainer, createBottomTabNavigator, createDrawerNavigator, createMaterialTopTabNavigator } from 'react-navigation';
+import { Platform, View, TouchableOpacity, Button, Text, Image, StyleSheet } from 'react-native';
+import { createAppContainer, createDrawerNavigator, createMaterialTopTabNavigator, createSwitchNavigator, SafeAreaView, DrawerItems, ScrollView } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import { Provider } from 'react-redux';
-import { createStore } from 'redux';
-import Characterinfo from '../components/characterinfo';
-import combineReducers from '../reducers/index';
-import HabitScreen from '../screens/HabitScreen';
-import rewardScreen from '../screens/RewardScreen';
-import TodosScreen from '../screens/TodosScreen';
+import DrawerContainer from '../components/Drawer';
 import ItemshopScreen from './ItemshopScreen';
-import CharacterchangeScreen from './CharacterchangeScreen';
-import RewardScreen from './RewardScreen';
+import CharacterchangeScreen from './CharacterchangeScreen';;
+import Signin from '../components/Signin';
+import Signup from '../components/Signup';
+import AuthLoadingScreen from './AuthLoadingScreen';
 
-interface UserState {
-  level : number;
-  healthvalue : number;
-  pointsvalue : number;
-  coinsvalue : number;
-}
+import Habits from '../components/habits';
+import Todos from '../components/todos';
+import Rewards from '../components/rewards';
 
- // 로그인이 되어 있으면 바로 habit 를 띄운다.
-class Homescreen extends Component<any, UserState> {
-  // public static navigationOptions = {
-  //   title: 'Welcome',
-  // };
-  public render() {
-    // const { navigate } = this.props.navigation;
-    return (
-      
-    //  <Provider store = {store}>
-         <Container>
-        <Header>
-          <Left style={{ flexDirection: 'row' }}>
-           <Icon onPress={() => this.props.navigation.openDrawer()} name='md-menu' style={{ color: 'white', marginRight: 15 }} />
-          </Left>
-          <Right>
-           <Icon name='md-cart' style={{ color: 'white' }} />
-          </Right>
-        </Header>
-        <Characterinfo style = {{ flex : 1 }}/>
-        <AppTabContainet style = {{ flex : 5 }}/>
-       </Container>
+import AddHabit from '../components/AddHabit';
+import AddTodos from '../components/AddTodos';
+// import AddReward from '../components/AddReward';
+import ModifyHabit from '../components/ModifyHabit';
+// import ModifyTodos from '../components/ModifyTodos';
+// import ModifyReward from '../components/ModifyReward';
 
-    // </Provider>
-    );
-  }
-}
 
-const store = createStore(combineReducers);
+const habitStack = createStackNavigator({
+  Habits : { screen : Habits },
+  // AddHabit : { screen : AddHabit },
+  // ModifyHabit : { screen : ModifyHabit }
+},
+{headerMode: 'none'});
 
-const appTabNavigator = createMaterialTopTabNavigator({
-  Habit : { screen : HabitScreen },
-  Todos : { screen : TodosScreen },
-  Reward : { screen : RewardScreen },
+const todosStack = createStackNavigator({
+  Todos : { screen : Todos },
+  AddTodos : { screen : AddTodos },
+
+  // ModifyTodos : { screen : ModifyTodos }
+},
+{headerMode: 'none'});
+
+const rewardStack = createStackNavigator({
+  Reward : { screen : Rewards },
+  // AddReward : { screen : AddReward },
+  // ModifyReward : { screen : ModifyReward }
+},
+{headerMode: 'none'});
+
+const AppTabNavigator = createMaterialTopTabNavigator({
+  habitStack : { screen : habitStack },
+  todosStack : { screen : todosStack },
+  rewardStack : { screen : rewardStack },
+  
 },                                                    {
   animationEnabled: true,
-  swipeEnabled: false,
+  swipeEnabled: true,
   tabBarPosition: 'bottom',
   tabBarOptions: {
     style: {
-      ...Platform.select({
-        ios:{
-          backgroundColor:'white',
+        ...Platform.select({
+        android:{
+          backgroundColor:'#f4da6c',
         },
       }),
-    },
+      },
     iconStyle: { height: 15 },
     activeTintColor: '#000',
-    inactiveTintColor: '#d1cece',
+    // inactiveTintColor: '#d1cece',
+    inactiveTintColor: 'white',
     upperCaseLabel: false,
     showLabel: true,
     showIcon: true,
   },
 });
-const AppTabContainet = createAppContainer(appTabNavigator);
 
-const mainNavigator = createStackNavigator({
-  Homescreen: { screen: Homescreen },
-  Characterinfo : { screen : Characterinfo },
-  AppTabContainet : { screen : AppTabContainet },
-  HabitScreen: { screen: HabitScreen },
-  TodosScreen : { screen : TodosScreen },
-  RewardScreen : { screen : rewardScreen },
+  // const drawerNavigator = createDrawerNavigator({
+  //   AppTabNavigator : { screen : AppTabNavigator },
+  //   ItemshopScreen : { screen : ItemshopScreen },
+  //   CharacterchangeScreen : { screen : CharacterchangeScreen },
+  //   AuthLoading: { screen : AuthLoadingScreen}
+  // },
+  //   { contentComponent : DrawerContainer },
+  // );
+
+const DrawerStack = createDrawerNavigator({
+  AppTabNavigator : { screen : AppTabNavigator },
   ItemshopScreen : { screen : ItemshopScreen },
   CharacterchangeScreen : { screen : CharacterchangeScreen },
-});
+},
+  {
+    contentComponent: DrawerContainer,
+    initialRouteName : 'AppTabNavigator',
+    navigationOptions : ({navigation}) =>({
+      headerLeft: <Button title = 'menu'
+      onPress={() => navigation.openDrawer()}></Button>,
+    })
 
-const myDrawerNavigator = createDrawerNavigator({
-  mainNavigator : { screen : mainNavigator },
-  ItemshopScreen : { screen : ItemshopScreen },
-  CharacterchangeScreen : { screen : CharacterchangeScreen },
-});
+  })
 
-const HomeScreen = createAppContainer(myDrawerNavigator);
+const drawerNavigator = createStackNavigator({
+  DrawerStack: { screen: DrawerStack },
+},                                           {
+  headerMode: 'float',
+  navigationOptions: ({ navigation }) => ({
+    headerStyle: { backgroundColor: 'red' },
+    title: 'Welcome!',
+    headerTintColor: 'black',
+  }),
+})
+
+  
+
+const HomeScreen = createAppContainer(createSwitchNavigator(
+  {
+    AuthLoading: AuthLoadingScreen,
+    Signin : Signin,
+    Signup : Signup,
+    drawerNavigator : { screen : drawerNavigator },
+  },
+  {
+    initialRouteName: 'AuthLoading',
+  },
+));
+
 export default HomeScreen;
