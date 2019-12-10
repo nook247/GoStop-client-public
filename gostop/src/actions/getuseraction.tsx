@@ -3,7 +3,7 @@ export const POINTCHANGE = 'POINTCHANGE' as const;
 export const HEALTHCHANGE = 'HEALTHCHANGE' as const;
 export const COINCHANGE = 'COINCHANGE' as const;
 
-export function getuser(id: string, email : string, name : string, userCode : number, level :number, health : number, point : number, coin : number) {
+export function getuser(id: string, email : string, name : string, userCode : number, level :number, health : number, point : number, coin : number, token : string,) {
     return {
         id,
         email,
@@ -13,6 +13,7 @@ export function getuser(id: string, email : string, name : string, userCode : nu
         health,
         point,
         coin,
+        token,
         type : GETUSER,
     };
 }

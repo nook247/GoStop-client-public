@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { AsyncStorage, StyleSheet, Text, TouchableOpacity, View, Button } from 'react-native';
+import { AsyncStorage, StyleSheet, Text, TouchableOpacity, View, Button, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 import { coinchange, healthchange, pointchange } from '../actions/characterinfoaction';
 import fakeserver from '../fakeserver';
@@ -33,12 +33,6 @@ class Habits extends Component<any, habitsStates> {
     super(props);
   }
 
- 
-
-  public componentDidMount() {
-
-    this.getdata();
-  }
 
 async getdata(){
     let token = '';
@@ -59,10 +53,8 @@ async getdata(){
       if (res.status === 200 || res.status === 201) {
         res.json()
         .then(async (data) => {
-          console.log('이게 받아온 user data야', data);
-          await this.props.getuser(data._id, data.email, data.name, data.userCode,data.level, data.health, data.point, data.coin);
-
-          console.log('userinfo store에 저장');
+          console.log('token---------', token)
+          await this.props.getuser(data._id, data.email, data.name, data.userCode,data.level, data.health, data.point, data.coin, token);
         }
         )}}
         )
@@ -72,19 +64,17 @@ async getdata(){
       if (res.status === 200 || res.status === 201) { 
         res.json()
         .then( (data) => {
-          // console.log('습관 데이터 ::', data)
           if (!data.habits.length) {
-            let initState = {
-              id : '',
-              title : '제목을 입력하세요',
-              description : '설명을 입력하세요',
-              // alarmId : '',
-              difficulty : 3,
-              positive : true
-            };
-            this.props.savehabit([initState]);
+            // let initState = {
+            //   id : '',
+            //   title : '제목을 입력하세요',
+            //   description : '설명을 입력하세요',
+            //   // alarmId : '',
+            //   difficulty : 3,
+            //   positive : true
+            // };
+            // this.props.savehabit([initState]);
           } else {
-            // console.log('data.habits 이거야!!!', data.habits);
             const habits = [];
             data.habits.forEach( element => {
               const habitobj = {
@@ -97,7 +87,6 @@ async getdata(){
               }
               habits.push(habitobj);
             })
-            // console.log('가공한 habits 이거야!!', habits)
             this.props.savehabit(habits);
 
           }
@@ -109,6 +98,11 @@ async getdata(){
       }
     }).catch(err => console.error(err));
 
+}
+
+public componentDidMount() {
+
+  this.getdata();
 }
 
   public render() {
@@ -132,7 +126,8 @@ async getdata(){
           onPress={() =>
           this.props.navigation.navigate('AddHabit')}>
           </TouchableOpacity>
- 
+
+          <ScrollView style={styles.scrollView}>
         {this.props.habitarr.map((item) => {
           return   <View style = {styles.onehabit} key = {item.title}>
 
@@ -152,7 +147,7 @@ async getdata(){
           >
               <Text>수정</Text>
             </TouchableOpacity>
-            {/* <TouchableOpacity style={{ backgroundColor:'skyblue' }}
+            <TouchableOpacity style={{ backgroundColor:'skyblue' }}
           onPress = {() => {
             console.log(this.props.habitarr);
             console.log(item.title)
@@ -169,7 +164,7 @@ async getdata(){
           }}
           >
               <Text>삭제</Text>
-            </TouchableOpacity> */}
+            </TouchableOpacity>
             
       </View>
 
@@ -194,6 +189,7 @@ async getdata(){
 
         })
     }
+    </ScrollView>
 
 </View>
 
@@ -217,8 +213,8 @@ const mapDispatchToProps = dispatch => {
     savehabit : (arr) => {
       dispatch(savehabit(arr));
     },
-    getuser : (id, email, name, userCode, level, health, point, coin) => {
-      dispatch(getuser(id, email, name, userCode, level, health, point, coin))
+    getuser : (id, email, name, userCode, level, health, point, coin, token) => {
+      dispatch(getuser(id, email, name, userCode, level, health, point, coin, token))
     },
   };
 };
@@ -231,6 +227,10 @@ const styles = StyleSheet.create({
     borderColor: 'black',
     flex: 1,
     width : '100%',
+  },
+  scrollView: {
+    backgroundColor: 'pink',
+    marginHorizontal: 20,
   },
   onehabit : {
     borderWidth: 1,

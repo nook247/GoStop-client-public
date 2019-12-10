@@ -5,6 +5,7 @@ import { readBuilderProgram } from "typescript";
 import TimePicker from "react-native-24h-timepicker";
 import { connect } from 'react-redux';
 import savehabit from '../actions/habitaction'
+import fakeserver from '../fakeserver'
 
 class ModifyHabit extends Component {
     constructor(props) {
@@ -24,17 +25,16 @@ class ModifyHabit extends Component {
             }
         }    
         this.habitIdToModify;
+        this.title;
         this.dataToModify;
     }
 
     componentDidMount() {
+        this.title = this.props.navigation.state.params.title
         let dataToModify = this.props.habitarr.filter(
             element => element.title === this.props.navigation.state.params.title
         )
         this.dataToModify = dataToModify[0]
-
-        console.log('원래 데이터 : ', this.props.habitarr)
-        console.log('수정할 데이터 : ', dataToModify[0])
 
         let { title, description, completed, difficulty, positive } = dataToModify[0] 
 
@@ -50,8 +50,7 @@ class ModifyHabit extends Component {
                 positive
             }
         })   
-        this.habitIdToModify = dataToModify[0]["_id"]
-        console.log("수정할 데이터 ID : ", this.habitIdToModify)    
+        this.habitIdToModify = dataToModify[0]["id"]
     }
 
     onCancel() {
@@ -68,7 +67,6 @@ class ModifyHabit extends Component {
             }
         });
         this.TimePicker.close();
-        console.log("TIME IS : ", this.state.alarmTime)
     }
 
     lapsList() {
@@ -86,7 +84,6 @@ class ModifyHabit extends Component {
                             dayOfWeek: day
                         }
                         })
-                        //console.log(this.state.alarmTime) 
                     }} >
                 <Text style={styles.textStyle}>{day}</Text>
             </TouchableHighlight>
@@ -97,7 +94,6 @@ class ModifyHabit extends Component {
     setAlarmTime = (time, dayOfWeek) => {
         this.state.alarmTime.time = time
         this.state.alarmTime.dayOfWeek = dayOfWeek
-        //console.log(this.state.alarmTime)
     }
 
     alarmOn = () => {
@@ -107,7 +103,6 @@ class ModifyHabit extends Component {
                 status: true
             }
         })
-        //console.log('ALARM SETTING : ', this.state.alarmTime)
     }
 
     clearText = () => {
@@ -127,25 +122,18 @@ class ModifyHabit extends Component {
                 dayOfWeek: ''
             }
         })
-        //console.log(this.state)
     }
 
     EditData = async() => {  // 수정 요망
         let habit = this.state.habit;
-
-        //console.log('원래 데이터 : ', this.props.habitarr)
-        //console.log('수정할 데이터2 : ', this.dataToModify)
-
         let arr = this.props.habitarr
 
         for (let i=0; i<arr.length; i++) {
-            if (arr[i]["_id"] === this.habitIdToModify) {
+            if (arr[i]["title"] === this.title) {
                 arr[i] = habit;
                 break;
             }
         }
-
-        //console.log('수정 후 데이터 : ', arr)
 
         this.props.savehabit([...arr])
 
@@ -157,25 +145,52 @@ class ModifyHabit extends Component {
         header.append('Cookie', token)
         header.append('Content-Type', 'application/json')
 
-        //console.log('헤더는 ? : ', header)
-        const myInit = {
-            method : 'PATCH',
-            body: JSON.stringify(habit),
+        const getInit = {
+            method : 'GET',
             headers : header,
             Cookie : token
         }
 
-        fetch(`http://52.79.229.136:5000/habits/${this.habitIdToModify}`, myInit)
-        .then(res => res.json())
-        .then(res => console.log('Success : ', JSON.stringify(res)))
-        .catch(error => console.error('Error : ', error));
+        if (this.habitIdToModify === undefined) {
+            fetch(`${fakeserver}/users/habits`, getInit)
+            .then((res) => {
+                if (res.status === 200 || res.status === 201) {
+                    res.json().then((data) => {
+                        let habitData = data.habits.filter(element => element.title === this.props.navigation.state.params.title)
+                        this.habitIdToModify = habitData[0]["_id"]
+
+                        const myInit = {
+                            method : 'PATCH',
+                            body: JSON.stringify(habit),
+                            headers : header,
+                            Cookie : token
+                        }        
+                
+                        fetch(`${fakeserver}/habits/${this.habitIdToModify}`, myInit)
+                        .then(res => res.json())
+                        .then(res => console.log('Success : ', JSON.stringify(res)))
+                        .catch(error => console.error('Error : ', error));
+                    })
+
+                }
+            })
+        }
+        else {
+            const myInit = {
+                method : 'PATCH',
+                body: JSON.stringify(habit),
+                headers : header,
+                Cookie : token
+            }        
+    
+            fetch(`${fakeserver}/habits/${this.habitIdToModify}`, myInit)
+            .then(res => res.json())
+            .then(res => console.log('Success : ', JSON.stringify(res)))
+            .catch(error => console.error('Error : ', error));
+        }
     }
 
     render() {
-        //console.log('ModifyHabit에서 state 잘 전달됐니? : ', this.props.habitarr) 
-        //title = this.props.navigation.state.params.title;     
-        //console.log('title전달됐니? ModifyHabit : ', title)
-
         return (
             <View style={styles.mainContainer}>
 
@@ -191,8 +206,7 @@ class ModifyHabit extends Component {
                                 ...this.state.habit,
                                 title: text
                             }
-                        })
-                          //console.log(this.state)
+                        })                          
                     }}/>
                 </View>
                 
@@ -206,8 +220,7 @@ class ModifyHabit extends Component {
                                 ...this.state.habit,
                                 description: text
                             }
-                        })
-                        //console.log(this.state)
+                        })                        
                     }}/>
                 </View>
 
@@ -222,8 +235,7 @@ class ModifyHabit extends Component {
                             ...this.state.habit,
                             difficulty: 1
                         }
-                    })
-                    //console.log(this.state)
+                    })                    
                     }} >
                     <Text style={styles.textStyle}>1</Text>
                     </TouchableHighlight>
@@ -237,8 +249,7 @@ class ModifyHabit extends Component {
                             ...this.state.habit,
                             difficulty: 2
                         }
-                    }) 
-                    //console.log(this.state)
+                    })                     
                     }} >
                     <Text style={styles.textStyle}>2</Text>
                     </TouchableHighlight>
@@ -253,7 +264,7 @@ class ModifyHabit extends Component {
                             difficulty: 3
                         }
                     })
-                    //console.log(this.state)
+                    
                     }} >
                     <Text style={styles.textStyle}>3</Text>
                     </TouchableHighlight>            
@@ -289,7 +300,7 @@ class ModifyHabit extends Component {
                 <TouchableOpacity
                     style={styles.addButton} activeOpacity={0.5}
                     onPress={() => {
-                        //console.log(this.state);
+                        
                         this.EditData();
                         alert("수정되었습니다")
                         this.props.navigation.navigate('Habits')  // 메인 페이지로 이동
@@ -312,7 +323,7 @@ class ModifyHabit extends Component {
 
 // 데이터 불러오기
 const mapStateToProps = (state) => {  
-    console.log('state 나와', state)
+    //console.log('state 나와', state)
     return {
       habitarr : state.habitreducer.habitarr
     }
