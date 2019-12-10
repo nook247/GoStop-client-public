@@ -1,9 +1,10 @@
 # **Go Stop**
-
-## **미션을 완수하여 캐릭터를 성장시켜라!**
-## **여러분이 바로 그 캐릭터입니다.**
+## 미션을 완수하여 캐릭터를 성장시켜라! 여러분이 바로 그 캐릭터입니다.
 
 **본 어플리케이션의 모든 캐릭터는 [나의 최애캐_오빠돌]의 디자인입니다.**
+
+![habits and todos](https://user-images.githubusercontent.com/49752614/70516818-fc3c6d00-1b7a-11ea-9a6a-7b5bbc1a09c0.gif)
+![Itemshop](https://user-images.githubusercontent.com/49752614/70516906-15ddb480-1b7b-11ea-9203-c3c499bb9eb0.gif)
 
 ## **Motivation**
 
