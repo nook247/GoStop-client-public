@@ -2,10 +2,10 @@ import { SAVEREWARD, Reward, RewardAction, Rewardarr } from '../actions/rewardac
 
 const initialreward : Reward = {
   id : 'id',
-  title : '보상을 입력하세요',
+  title : '제목을 입력하세요',
   description : '설명을 입력하세요',
   // alarmId : 'alamId',
-  coin : 10,
+  coin : 30,
 };
 
 const initialState : Rewardarr = {

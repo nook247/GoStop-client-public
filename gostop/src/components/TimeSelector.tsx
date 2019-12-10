@@ -2,9 +2,10 @@ import React, { Component } from "react";
 import { StyleSheet, View, TouchableOpacity, Text } from "react-native";
 import TimePicker from "react-native-24h-timepicker";
 
-export default class TimeSelector extends Component {
-    constructor() {
-      super();
+export default class TimeSelector extends Component<any, any> {
+  TimePicker: any;
+    constructor(props) {
+      super(props);
       this.state = {
         time: ""
       };

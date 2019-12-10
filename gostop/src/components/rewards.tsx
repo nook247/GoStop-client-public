@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View, AsyncStorage, ScrollView } from 'react-native';
+import { Button, Image, StyleSheet, Text, TouchableOpacity, View, AsyncStorage, ScrollView, Alert } from 'react-native';
 import { connect } from 'react-redux';
 import { coinchange } from '../actions/characterinfoaction';
 import fakeserver from '../fakeserver';
 import Characterinfo from './characterinfo';
 import savereward from '../actions/rewardaction';
+import { MaterialIcons, FontAwesome } from '@expo/vector-icons';
 
 export interface Reward {
   id : string;
@@ -44,14 +45,29 @@ class Rewards extends Component<any, rewardsStates> {
         res.json()
         .then(data => {
 
-          // if(!data.rewards.length){
-          //   let initState = {
-          //     id : '',
-          //     title : '제목을 입력하세요',
-          //     desc : '설명을 입력하세요',
-          //     coin : 10,
-          //   }
-          // } else {
+          if(!data.rewards.length){
+            let initState = {
+              id : 'id',
+              title : '제목을 입력하세요',
+              description : '설명을 입력하세요',
+            // alarmId : 'alamId',
+              coin : 30,
+            };
+              //초기 상태 일단 포스트 보내고, 저장한다. 
+            let header = new Headers();
+            header.append('Cookie', token)
+            header.append('Content-Type', 'application/json')
+            const postInit = {
+              method : 'POST',
+              body: JSON.stringify(initState),
+              headers : header,
+              Cookie : token
+            }
+            fetch(`${fakeserver}/rewards`, postInit)
+              .then(() => console.log('initial rewards post ok'))
+              .catch(error => console.error('왜안되니?', error));
+            this.props.savereward([initState]);
+          } else {
             const rewards = [];
             data.rewards.forEach( element => {
               const rewardobj = {
@@ -63,90 +79,92 @@ class Rewards extends Component<any, rewardsStates> {
               rewards.push(rewardobj);
             })
             this.props.savereward(rewards);
-       // }
-      }
+          }
+        }
 
             );
-      } else { // 실패를 알리는 HTTP 상태 코드면
-        console.error(res.statusText);
+      } else {
+        console.error(res);
       }
     }).catch(err => console.error(err));
 
   }
   public render() {
-    const { navigate } = this.props.navigation;
     return (
-            <View style = {styles.container}>
-              <View style ={{flex : 5}}>
-                <Characterinfo/>
-              </View>
-
-      <View style = { { flex : 1 } }>
-          <Button
-          title='Add reward'
-          onPress={() => navigate('AddReward')}
-          />
+      <View style = {styles.container}>
+        <View style ={{ flex : 7 }}>
+          <Characterinfo/>
         </View>
 
-              <View style = {{ flex : 9 }}>
+        <View style = {{ flex : 20, backgroundColor : 'white' }}>
 
-              <ScrollView style={styles.scrollView}>
-                
-        {this.props.rewardarr.map((item) => {
-          return   <View style = {styles.onehabit} key = {item.title}>
+        <ScrollView style={styles.scrollView}>
+          {this.props.rewardarr.map((item, index) => {
+            return   <View style = {styles.onehabit} key = {index}>
 
-<View style = {styles.positive}>
+            <View style = {styles.positive}>
+            <FontAwesome name = 'gift' size = {36} color = 'white' />
 
-            <TouchableOpacity style={{ backgroundColor:'skyblue' }}
-          onPress = {() => {
-            this.props.navigation.navigate('ModifyReward', {
-              title : item.title,
-            })
-          }}
-          >
-              <Text>수정</Text>
-            </TouchableOpacity>
-            {/* <TouchableOpacity style={{ backgroundColor:'skyblue' }}
-          onPress = {() => {
-            console.log(this.props.habitarr);
-            console.log(item.title)
-            for(let i=0; i<this.props.habitarr.length; i++){
-              if(this.props.habitarr[i].title === item.title){
-                this.props.habitarr.splice(i,1);
-                const newhabitarr = this.props.habitarr;
-                this.props.savehabit(newhabitarr)
-                console.log('newhabitarr',newhabitarr)
-                this.props.navigation.navigate('Habits')
+            </View>
+
+            <View style = {styles.habits}
+              onTouchEnd = {() => {
+                this.props.navigation.navigate('ModifyReward', {
+                  title : item.title,
+                })
+              }} >
+              <Text style = {styles.habittitle}>{item.title}</Text>
+              <Text style = {styles.habitdesc}>{item.description}</Text>
+            </View >
+            <View style = {styles.negative}>
+
+            <TouchableOpacity style={{ justifyContent : 'center', alignItems : 'center'  ,backgroundColor:'transparent' }}
+            onPress = {() => { 
+              if(this.props.coinsvalue < item.coin){
+                alert('코인이 부족하여 선택한 보상을 구매할 수 없습니다');
+              } else {
+                console.log('보상 구매했니?');
+                Alert.alert(
+                '보상을 구매하시겠습니까?',
+                '', [
+                  {
+                    text: 'Cancel',
+                    onPress: () => console.log('Cancel Pressed'),
+                    style: 'cancel',
+                  },
+                  {text: 'OK',
+                    onPress: () => {
+                      this.props.coinchange(-(item.coin));
+                    },
+                  },
+                ],
+                { cancelable: false },
+              );
               }
-            } 
-            
-          }}
-          >
-              <Text>삭제</Text>
-            </TouchableOpacity> */}
-            
-      </View>
+            }}
+            >
+              <Text style = {styles.coin}>{item.coin}</Text>
+              <Image
+              style={{ width: 20, height: 20 }}
+              source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
+              </TouchableOpacity>
+          </View>
 
-      <View style = {styles.habits}>
-          <Text style = {styles.habittitle}>{item.title}</Text>
-          <Text style = {styles.habitdesc}>{item.description}</Text>
+          </View>;
+          })
+          }
+            <View style = {{ flex : 10, backgroundColor : 'transparent', height : 100 }}>
+            </View>
 
-      </View >
+          </ScrollView>
+          </View>
 
-      <View style = {styles.negative}>
-      <TouchableOpacity style={{ backgroundColor:'gray' }}
-      onPress = {() => { this.props.coinchange(-(item.coin)); }}>
-          <Text>--</Text>
-        </TouchableOpacity>
-      </View>
-
-      </View>;
-
-        })
-    }
-
-</ScrollView>
-    </View>
+          <View style = {{ position: 'absolute', backgroundColor: 'transparent', right: 165, bottom: 10 }}>
+                <TouchableOpacity style={styles.addBtn}
+                    onPress={() => this.props.navigation.navigate('AddReward')} >
+                  <MaterialIcons name = 'playlist-add' size = {52} color = 'white' />
+                </TouchableOpacity>
+            </View>
             </View>
     );
   }
@@ -155,10 +173,11 @@ class Rewards extends Component<any, rewardsStates> {
 const mapStateToProps = (state) => {
   return {
     rewardarr : state.rewardreducer.rewardarr,
+    coinsvalue : state.getuserreducer.coin,
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     coinchange : value => dispatch(coinchange(value)),
     savereward : (arr) => {
@@ -171,36 +190,61 @@ export default connect(mapStateToProps, mapDispatchToProps)(Rewards);
 
 const styles = StyleSheet.create({
   container: {
-    borderWidth: 1,
-    borderColor: 'black',
     flex: 1,
     width : '100%',
   },
   scrollView: {
-    backgroundColor: 'pink',
-    marginHorizontal: 20,
   },
   onehabit : {
-    borderWidth: 1,
-    borderColor: 'black',
     flexDirection : 'row',
-    height : 70,
+    borderBottomColor : '#F4F4F5',
+    borderBottomWidth : 1,
   },
   positive: {
     flex: 1,
+    backgroundColor : '#ffdc34',
+    justifyContent : 'center',
+    alignItems : 'center',
   },
   negative: {
     flex: 1,
+    backgroundColor : '#ffdc34',
+    justifyContent : 'center',
+    alignItems : 'center',
   },
   habits: {
     flex: 6,
+    paddingHorizontal : 17,
+    paddingVertical : 10,
   },
   habittitle :{
-    flex : 2,
+    flex : 1,
     fontSize : 20,
+    color : 'black',
   },
   habitdesc : {
     flex : 1,
     fontSize : 14,
+    color : 'silver',
+  },
+  coin : {
+    fontSize : 20,
+    marginRight : 3,
+    color : 'white',
+  },
+  addcontainer : {
+    flex : 2,
+    backgroundColor : 'white',
+    justifyContent : 'flex-end',
+    alignItems : 'center',
+    flexDirection : 'row',
+    margin : 20,
+  },
+  addBtn : {
+    backgroundColor:'#110133',
+    marginRight : 15,
+    borderRadius : 10,
+    borderWidth : 1,
+    borderColor : '#110133',
   },
 });

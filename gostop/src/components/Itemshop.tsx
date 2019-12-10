@@ -1,250 +1,237 @@
 import React, { Component } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, AsyncStorage, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { connect } from 'react-redux';
-import { imagechange, imagechange1, imagechange2, imagechange3 } from '../Actions/';
-import { coinchange } from '../Actions/characterinfoaction';
+import { additem, additem1, additem2, imagechange, imagechange1, imagechange2 } from '../actions/';
+import { coinchange } from '../actions/characterinfoaction';
+import Characterinfo from '../components/characterinfo';
+import fakeserver from '../fakeserver';
 
 // tslint:disable-next-line: prefer-const
-let database;
 
-class Main extends Component<any, any> {
+class Itemshop extends Component<any, any> {
 
   // tslint:disable-next-line: member-access
   constructor(props, context) {
     super(props, context);
+
+    this.state = {
+      database: [],
+    };
   }
 
-  // public componentDidMount() {
-  //   fetch('https://application-mock-server.localtunnel.me/head').then((res) => {
-  //     if (res.status === 200 || res.status === 201) {
-  //       // tslint:disable-next-line: ter-arrow-parens
-  //       res.json().then(data => {
-  //         database = data;
-  //       });
-  //     }else {
-  //       console.error(res.statusText);
-  //     }
-  //   }).catch(err => console.error(err));
-  // }
-  public sendHead = (newuri) => {
-    // tslint:disable-next-line: prefer-const
-    // tslint:disable-next-line: no-unused-expression
-    fetch('https://application-mock-server.localtunnel.me/head', {
-      method: 'POST',
-      body: JSON.stringify({ uri: newuri }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }).then(res => res.json())
-    .then(res => console.log('성공: ', JSON.stringify(res)))
-    .catch(err => console.error(err));
+  public componentDidMount() {
+    fetch(`${fakeserver}/items`).then((res) => {
+      if (res.status === 200 || res.status === 201) {
+        // tslint:disable-next-line: ter-arrow-parens
+        res.json().then(data => {
+          this.setState({
+            database: data,
+          });
+        });
+      }else {
+        console.error(res.statusText);
+      }
+    }).catch(err => console.error(err));
   }
 
-  public sendTop = (newuri) => {
+  public sendItem = async(itemid) => {
     // tslint:disable-next-line: prefer-const
     // tslint:disable-next-line: no-unused-expression
-    fetch('https://application-mock-server.localtunnel.me/top', {
-      method: 'POST',
-      body: JSON.stringify({ uri: newuri }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }).then(res => res.json())
-    .then(res => console.log('성공: ', JSON.stringify(res)))
-    .catch(err => console.error(err));
-  }
+    let token = '';
+    await AsyncStorage.getItem('token', (err, result) => {
+      token = result;
+    });
+    // tslint:disable-next-line: prefer-const
+    let header = new Headers();
+    header.append('Cookie', token);
+    header.append('Content-Type', 'application/json');
 
-  public sendPants = (newuri) => {
     // tslint:disable-next-line: prefer-const
-    // tslint:disable-next-line: no-unused-expression
-    fetch('https://application-mock-server.localtunnel.me/pants', {
-      method: 'POST',
-      body: JSON.stringify({ uri: newuri }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }).then(res => res.json())
-    .then(res => console.log('성공: ', JSON.stringify(res)))
-    .catch(err => console.error(err));
-  }
+    let myInit = {
+      method : 'POST',
+      body: JSON.stringify(itemid),
+      headers : header,
+      Cookie : token,
+    };
 
-  public sendPet = (newuri) => {
-    // tslint:disable-next-line: prefer-const
-    // tslint:disable-next-line: no-unused-expression
-    fetch('https://application-mock-server.localtunnel.me/pet', {
-      method: 'POST',
-      body: JSON.stringify({ uri: newuri }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }).then(res => res.json())
-    .then(res => console.log('성공: ', JSON.stringify(res)))
+    fetch(`${fakeserver}/shop`, myInit)
+    .then(() => console.log('포스트 성공'))
     .catch(err => console.error(err));
   }
 
   public render() {
     return (
           <View style={s.contain}>
-            {/* <Image
-            style={{ marginLeft: '10%', height:'4%', width:'15%', resizeMode:'contain' }}
-            source={{ uri: this.props.uri }}/>
-            <Image
-            style={{ marginLeft: '9%', height:'8%', width:'19%', resizeMode:'contain' }}
-            source={{ uri: this.props.uri1 }}/>
-            <Image
-            style={{ marginLeft: '8%', height:'11%', width:'22%', resizeMode:'contain' }}
-            source={{ uri: this.props.uri2 }}/>
-            <Image
-            style={{ marginLeft: '8%', height:'12%', width:'23%', resizeMode:'contain' }}
-            source={{ uri: this.props.uri3 }}/> */}
+              <View style ={{ flex : 7 }}>
+                <Characterinfo/>
+              </View>
+
+             <View style ={{ flex : 23.5 }}>
           <Text style={s.head1}>머리</Text>
           <View style={s.container}>
-              <Text style={s.pink}>분홍색</Text>
-              <Text style={s.purple}>보라색</Text>
-              <Text style={s.brown}>진갈색</Text>
-              <Text style={s.black}>검은색</Text>
-          </View>
 
-          <View style={s.container}>
-          <TouchableOpacity style={s.green}
-          // tslint:disable-next-line: brace-style
-          onPress = {() => { this.props.coinchange(-5),
-          // tslint:disable-next-line: brace-style
-          this.sendHead('http://pngimg.com/uploads/headphones/headphones_PNG7654.png'); } }>
-              <Text style={{ fontSize: 15 }}>구매</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={s.green1}
-          // tslint:disable-next-line: brace-style
-          onPress = {() => { this.props.coinchange(-10),
-          // tslint:disable-next-line: brace-style
-          this.sendHead('http://pngimg.com/uploads/butterfly/butterfly_PNG1056.png'); } }>
-              <Text style={{ fontSize: 15 }}>구매</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={s.green2}
-          // tslint:disable-next-line: brace-style
-          onPress = {() => { this.props.coinchange(-15),
-          // tslint:disable-next-line: brace-style
-          this.sendHead('http://pngimg.com/uploads/book/book_PNG2111.png'); } }>
-              <Text style={{ fontSize: 15 }}>구매</Text>
-            </TouchableOpacity>
-          <TouchableOpacity style={s.green3}
-          // tslint:disable-next-line: brace-style
-          onPress = {() => { this.props.coinchange(-20),
-          // tslint:disable-next-line: brace-style
-          this.sendHead('http://pngimg.com/uploads/cap/cap_PNG5681.png'); } }>
-              <Text style={{ fontSize: 15 }}>구매</Text>
-            </TouchableOpacity>
+          {this.state.database.map((head, index) => {
+            if (head.category === 'head') {
+              return <View style={s.container1} key={index}>
+              <Image style={s.pink} source={{ uri: head.itemImg }}/>
+              <TouchableOpacity
+                // tslint:disable-next-line: brace-style
+                onPress = {() => {
+                  Alert.alert(
+                    '구매하시겠습니까?',
+                    '',
+                    [
+                      {
+                        text: 'Cancel',
+                        onPress: () => console.log('Cancel Pressed'),
+                        style: 'cancel',
+                      },
+                      {text: 'OK', onPress: () => {
+                        if (head.price < this.props.hascoinsvalue) {
+                          this.props.coinchange(-head.price),
+                          // tslint:disable-next-line: brace-style
+                          this.props.additem(head.itemImg),
+                          this.sendItem({ item: head._id, totalPrice: head.price, payment: 'coin' });
+                        }
+                        // tslint:disable-next-line: brace-style
+                        else {
+                          Alert.alert(
+                            '코인이 부족합니다.',
+                            '',
+                            [
+                              { text: 'OK', onPress: () => { console.log('OK Pressed'); } },
+                            ],
+                          );
+                        }
+                      },
+                      },
+                    ],
+                    { cancelable: false },
+
+                  // tslint:disable-next-line: brace-style
+                  ); } }>
+                <View style={s.buymain}>
+                <Image
+                style={s.buy} source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
+                <Text>X{head.price}</Text>
+                </View>
+              </TouchableOpacity>
+            </View>;
+            }
+          })}
+
           </View>
 
           <Text style={s.head}>상의</Text>
           <View style={s.container}>
-              <Text style={s.pink}>분홍색</Text>
-              <Text style={s.purple}>보라색</Text>
-              <Text style={s.brown}>진갈색</Text>
-              <Text style={s.black}>검은색</Text>
-          </View>
 
-          <View style={s.container}>
-          <TouchableOpacity style={s.green}
-          // tslint:disable-next-line: brace-style
-          onPress = {() => { this.props.coinchange(-5),
-          // tslint:disable-next-line: brace-style
-          this.sendTop('http://pngimg.com/uploads/polo_shirt/polo_shirt_PNG8171.png'); } }>
-              <Text style={{ fontSize: 15 }}>구매</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={s.green1}
-          // tslint:disable-next-line: brace-style
-          onPress = {() => { this.props.coinchange(-10),
-          // tslint:disable-next-line: brace-style
-          this.sendTop('http://pngimg.com/uploads/diamond/diamond_PNG6683.png'); } }>
-              <Text style={{ fontSize: 15 }}>구매</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={s.green2}
-          // tslint:disable-next-line: brace-style
-          onPress = {() => { this.props.coinchange(-15),
-          // tslint:disable-next-line: brace-style
-          this.sendTop('http://pngimg.com/uploads/bmw/bmw_PNG1711.png'); } }>
-              <Text style={{ fontSize: 15 }}>구매</Text>
-            </TouchableOpacity>
-          <TouchableOpacity style={s.green3}
-          // tslint:disable-next-line: brace-style
-          onPress = {() => { this.props.coinchange(-20),
-          // tslint:disable-next-line: brace-style
-          this.sendTop('http://pngimg.com/uploads/men_in_black/men_in_black_PNG27.png'); } }>
-              <Text style={{ fontSize: 15 }}>구매</Text>
-            </TouchableOpacity>
+          {this.state.database.map((top, index) => {
+            if (top.category === 'top') {
+              return <View style={s.container1} key={index}>
+              <Image style={s.pink} source={{ uri: top.itemImg }}/>
+              <TouchableOpacity
+                // tslint:disable-next-line: brace-style
+                onPress = {() => {
+                  Alert.alert(
+                    '구매하시겠습니까?',
+                    '',
+                    [
+                      {
+                        text: 'Cancel',
+                        onPress: () => console.log('Cancel Pressed'),
+                        style: 'cancel',
+                      },
+                      {text: 'OK', onPress: () => {
+                        if (top.price < this.props.hascoinsvalue) {
+                          this.props.coinchange(-top.price),
+                          // tslint:disable-next-line: brace-style
+                          this.props.additem1(top.itemImg),
+                          this.sendItem({ item: top._id, totalPrice: top.price, payment: 'coin' });
+                        }
+                        // tslint:disable-next-line: brace-style
+                        else {
+                          Alert.alert(
+                            '코인이 부족합니다.',
+                            '',
+                            [
+                              { text: 'OK', onPress: () => { console.log('OK Pressed'); } },
+                            ],
+                          );
+                        }
+                      },
+                      },
+                    ],
+                    { cancelable: false },
+
+                  // tslint:disable-next-line: brace-style
+                  ); } }>
+                <View style={s.buymain}>
+                <Image
+                style={s.buy} source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
+                <Text>X{top.price}</Text>
+                </View>
+              </TouchableOpacity>
+            </View>;
+            }
+          })}
+
           </View>
 
           <Text style={s.head}>하의</Text>
           <View style={s.container}>
-              <Text style={s.pink}>분홍색</Text>
-              <Text style={s.purple}>보라색</Text>
-              <Text style={s.brown}>진갈색</Text>
-              <Text style={s.black}>검은색</Text>
-          </View>
 
-          <View style={s.container}>
-          <TouchableOpacity style={s.green}
-          // tslint:disable-next-line: brace-style
-          onPress = {() => { this.props.coinchange(-5),
-          // tslint:disable-next-line: brace-style
-          this.sendPants('http://pngimg.com/uploads/cap/cap_PNG5681.png'); } }>
-              <Text style={{ fontSize: 15 }}>구매</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={s.green1}
-          // tslint:disable-next-line: brace-style
-          onPress = {() => { this.props.coinchange(-10),
-          // tslint:disable-next-line: brace-style
-          this.sendPants('http://pngimg.com/uploads/women_shoes/women_shoes_PNG7474.png'); } }>
-              <Text style={{ fontSize: 15 }}>구매</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={s.green2}
-          // tslint:disable-next-line: brace-style
-          onPress = {() => { this.props.coinchange(-15),
-          // tslint:disable-next-line: brace-style
-          this.sendPants('http://pngimg.com/uploads/balloon/balloon_PNG3402.png'); } }>
-              <Text style={{ fontSize: 15 }}>구매</Text>
-            </TouchableOpacity>
-          <TouchableOpacity style={s.green3}
-          // tslint:disable-next-line: brace-style
-          onPress = {() => { this.props.coinchange(-20),
-          // tslint:disable-next-line: brace-style
-          this.sendPants('http://pngimg.com/uploads/boots/boots_PNG7809.png'); } }>
-              <Text style={{ fontSize: 15 }}>구매</Text>
-            </TouchableOpacity>
-          </View>
+          {this.state.database.map((bottom, index) => {
+            if (bottom.category === 'bottom') {
+              return <View style={s.container1} key={index}>
+              <Image style={s.pink} source={{ uri: bottom.itemImg }}/>
+              <TouchableOpacity
+                // tslint:disable-next-line: brace-style
+                onPress = {() => {
+                  Alert.alert(
+                    '구매하시겠습니까?',
+                    '',
+                    [
+                      {
+                        text: 'Cancel',
+                        onPress: () => console.log('Cancel Pressed'),
+                        style: 'cancel',
+                      },
+                      {text: 'OK', onPress: () => {
+                        if (bottom.price < this.props.hascoinsvalue) {
+                          this.props.coinchange(-bottom.price),
+                          // tslint:disable-next-line: brace-style
+                          this.props.additem2(bottom.itemImg),
+                          this.sendItem({ item: bottom._id, totalPrice: bottom.price, payment: 'coin' });
+                        }
+                        // tslint:disable-next-line: brace-style
+                        else {
+                          Alert.alert(
+                            '코인이 부족합니다.',
+                            '',
+                            [
+                              { text: 'OK', onPress: () => { console.log('OK Pressed'); } },
+                            ],
+                          );
+                        }
+                      },
+                      },
+                    ],
+                    { cancelable: false },
 
-          <Text style={s.head}>펫</Text>
-          <View style={s.container}>
-              <Text style={s.pet1}>캐터피</Text>
-              <Text style={s.pet2}>드래곤</Text>
-              <Text style={s.pet2}>강아지</Text>
-          </View>
+                  // tslint:disable-next-line: brace-style
+                  ); } }>
+                <View style={s.buymain}>
+                <Image
+                style={s.buy} source={{ uri: 'https://cdn.pixabay.com/photo/2019/06/16/16/07/money-4278155_960_720.png' }}/>
+                <Text>X{bottom.price}</Text>
+                </View>
+              </TouchableOpacity>
+            </View>;
+            }
+          })}
 
-          <View style={s.container}>
-          <TouchableOpacity style={s.green}
-          // tslint:disable-next-line: brace-style
-          onPress = {() => { this.props.coinchange(-5),
-          // tslint:disable-next-line: brace-style
-          this.sendPet('http://pngimg.com/uploads/caterpillar/caterpillar_PNG77.png'); } }>
-              <Text style={{ fontSize: 15 }}>구매</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={s.green1}
-          // tslint:disable-next-line: brace-style
-          onPress = {() => { this.props.coinchange(-10),
-          // tslint:disable-next-line: brace-style
-          this.sendPet('http://pngimg.com/uploads/dragon/dragon_PNG84563.png'); } }>
-              <Text style={{ fontSize: 15 }}>구매</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={s.green2}
-          // tslint:disable-next-line: brace-style
-          onPress = {() => { this.props.coinchange(-15),
-          // tslint:disable-next-line: brace-style
-          this.sendPet('http://pngimg.com/uploads/dog/dog_PNG50361.png'); } }>
-              <Text style={{ fontSize: 15 }}>구매</Text>
-            </TouchableOpacity>
           </View>
-
+          </View>
           </View>
     );
   }
@@ -252,7 +239,10 @@ class Main extends Component<any, any> {
 
 const s = StyleSheet.create({
   contain:{
-    marginTop: 30,
+    borderWidth: 1,
+    borderColor: 'black',
+    flex: 1,
+    width : '100%',
   },
   container: {
     marginTop: 5,
@@ -260,86 +250,47 @@ const s = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  container1: {
+    marginLeft: 25,
+    marginTop: 5,
+    marginBottom: 15,
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   pink: {
-    marginLeft: 10,
-    backgroundColor: 'pink',
-    padding: 10,
-    borderRadius: 20,
-    fontSize: 15,
+    padding: 20,
+    height: 30,
+    resizeMode:'contain',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  purple: {
-    marginLeft: 30,
-    backgroundColor: 'purple',
-    padding: 10,
-    borderRadius: 20,
-    fontSize: 15,
+  buymain: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 9,
+    justifyContent: 'center',
   },
-  brown: {
-    marginLeft: 30,
-    backgroundColor: 'brown',
-    padding: 10,
-    borderRadius: 20,
-    fontSize: 15,
-  },
-  green: {
-    marginLeft: 17,
-    backgroundColor: 'green',
-    padding: 10,
-    borderRadius: 20,
-    marginTop: -17,
-  },
-  green1: {
-    marginLeft: 43,
-    backgroundColor: 'green',
-    padding: 10,
-    borderRadius: 20,
-    marginTop: -17,
-  },
-  green2: {
-    marginLeft: 43,
-    backgroundColor: 'green',
-    padding: 10,
-    borderRadius: 20,
-    marginTop: -17,
-  },
-  green3: {
-    marginLeft: 43,
-    backgroundColor: 'green',
-    padding: 10,
-    borderRadius: 20,
-    marginTop: -17,
-  },
-  black: {
-    marginLeft: 30,
-    backgroundColor: 'black',
-    padding: 10,
-    borderRadius: 20,
-    fontSize: 15,
+  buy: {
+    resizeMode:'contain',
+    width: 20,
+    height: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   head: {
-    marginLeft: 15,
+    marginLeft: 25,
+    marginTop: 20,
+    borderBottomWidth: 0.5,
+    borderColor: 'black',
+    width: '90%',
   },
   head1: {
-    marginLeft: 15,
-    marginTop: 60,
-  },
-  pet1: {
-    marginLeft: 10,
-    backgroundColor: 'gray',
-    padding: 10,
-    borderRadius: 20,
-  },
-  pet2: {
-    marginLeft: 30,
-    backgroundColor: 'gray',
-    padding: 10,
-    borderRadius: 20,
-  },
-  pet3: {
-    marginLeft: 30,
-    backgroundColor: 'gray',
-    padding: 10,
-    borderRadius: 20,
+    marginLeft: 25,
+    marginTop: 40,
+    borderBottomWidth: 0.5,
+    borderColor: 'black',
+    width: '90%',
   },
 });
 
@@ -349,8 +300,10 @@ const mapDispatchToProps = (dispatch) => {
     imagechange : (uri: any) => dispatch(imagechange(uri)),
     imagechange1 : (uri1: any) => dispatch(imagechange1(uri1)),
     imagechange2 : (uri2: any) => dispatch(imagechange2(uri2)),
-    imagechange3 : (uri3: any) => dispatch(imagechange3(uri3)),
     coinchange : value => dispatch(coinchange(value)),
+    additem : (heads: any) => dispatch(additem(heads)),
+    additem1 : (tops: any) => dispatch(additem1(tops)),
+    additem2 : (pantss: any) => dispatch(additem2(pantss)),
   };
 };
 
@@ -359,9 +312,12 @@ function mapStateToProps(state) {
     uri: state.changeReducer.uri,
     uri1: state.changeReducer1.uri1,
     uri2: state.changeReducer2.uri2,
-    uri3: state.changeReducer3.uri3,
     coinsvalue : state.changepointreducer.coinsvalue,
+    heads: state.additem.heads,
+    tops: state.additem1.tops,
+    pantss: state.additem2.pantss,
+    hascoinsvalue : state.getuserreducer.coin,
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Main);
+export default connect(mapStateToProps, mapDispatchToProps)(Itemshop);

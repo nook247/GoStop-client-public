@@ -1,2 +1,1 @@
-// module.exports = `http://localhost:5000`;
-module.exports = `http://b3b505c9.ngrok.io`;
+module.exports = `http://52.79.229.136:5000`;
