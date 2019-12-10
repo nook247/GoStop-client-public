@@ -3,8 +3,6 @@
 
 **본 어플리케이션의 모든 캐릭터는 [나의 최애캐_오빠돌]의 디자인입니다.**
 
-![habits and todos](https://user-images.githubusercontent.com/49752614/70516818-fc3c6d00-1b7a-11ea-9a6a-7b5bbc1a09c0.gif)
-![Itemshop](https://user-images.githubusercontent.com/49752614/70516906-15ddb480-1b7b-11ea-9203-c3c499bb9eb0.gif)
 
 ## **Motivation**
 
@@ -13,6 +11,7 @@
 내가 현실세계에서 하는 일들로 캐릭터를 성장시킬 수 있는 생활관리 앱, **GoStop** 입니다. 
 
 ## **HABIT & TODO**
+![habits and todos](https://user-images.githubusercontent.com/49752614/70527314-f6508700-1b8e-11ea-9e6b-ac752e3bfe3b.gif)
 
 새로 만들고 싶은 좋은 습관이나 없애고 싶은 안좋은 습관을 기록해보세요.
 
@@ -40,6 +39,8 @@
 
 
 ## **ITEM**
+![Itemshop](https://user-images.githubusercontent.com/49752614/70527375-213adb00-1b8f-11ea-8c59-f92586bde05a.gif)
+
 
 캐릭터는 코인으로 아이템을 구매할 수 있습니다. 
 
